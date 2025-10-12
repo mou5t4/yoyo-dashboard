@@ -1,5 +1,5 @@
 import { serviceClient } from './base.service';
-import { logger } from '~/lib/logger';
+import { logger } from '~/lib/logger.server';
 
 export interface WiFiNetwork {
   ssid: string;

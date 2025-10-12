@@ -1,4 +1,4 @@
-import { logger } from '~/lib/logger';
+import { logger } from '~/lib/logger.server';
 
 export class DeviceServiceClient {
   private baseUrl: string;

@@ -1,9 +1,13 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
-import { logger } from './logger';
+import { logger } from './logger.server';
 import { DEFAULT_PASSWORD } from './constants';
+import { getUserId as getSessionUserId } from './session.server';
 
 const prisma = new PrismaClient();
+
+// Re-export getUserId from session.server for convenience
+export const getUserId = getSessionUserId;
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);

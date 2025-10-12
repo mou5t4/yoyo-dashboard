@@ -9,8 +9,8 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
-import styles from "~/styles/global.css?url";
-import { APP_NAME } from "~/lib/constants";
+import styles from "./styles/global.css?url";
+import { APP_NAME } from "./lib/constants";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },

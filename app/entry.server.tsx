@@ -3,7 +3,7 @@ import type { AppLoadContext, EntryContext } from "@remix-run/node";
 import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { renderToPipeableStream } from "react-dom/server";
-import { logger } from "~/lib/logger";
+import { logger } from "~/lib/logger.server";
 
 const ABORT_DELAY = 5_000;
 
