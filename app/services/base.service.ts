@@ -1,0 +1,81 @@
+import { logger } from '~/lib/logger';
+
+export class DeviceServiceClient {
+  private baseUrl: string;
+  private authToken?: string;
+
+  constructor() {
+    this.baseUrl = process.env.SERVICE_BASE_URL || 'http://localhost:5000/api';
+    this.authToken = process.env.SERVICE_TOKEN;
+  }
+
+  async get<T>(endpoint: string): Promise<T> {
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        method: 'GET',
+        headers: this.getHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Service error: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      logger.error(`GET ${endpoint} failed`, error);
+      throw error;
+    }
+  }
+
+  async post<T>(endpoint: string, data?: any): Promise<T> {
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: data ? JSON.stringify(data) : undefined,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Service error: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      logger.error(`POST ${endpoint} failed`, error);
+      throw error;
+    }
+  }
+
+  async delete<T>(endpoint: string): Promise<T> {
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Service error: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      logger.error(`DELETE ${endpoint} failed`, error);
+      throw error;
+    }
+  }
+
+  private getHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (this.authToken) {
+      headers['X-Dashboard-Token'] = this.authToken;
+    }
+
+    return headers;
+  }
+}
+
+export const serviceClient = new DeviceServiceClient();
+

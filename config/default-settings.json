@@ -1,0 +1,11 @@
+{
+  "deviceName": "YoyoPod",
+  "maxVolume": 80,
+  "contentFilterEnabled": true,
+  "explicitContentBlocked": true,
+  "locationEnabled": false,
+  "geofencingEnabled": false,
+  "aiEnabled": false,
+  "conversationLogging": true
+}
+
