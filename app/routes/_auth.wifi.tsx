@@ -1,6 +1,6 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { Form, useActionData, useLoaderData, useFetcher } from "@remix-run/react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -8,7 +8,7 @@ import { Label } from "~/components/ui/label";
 import { Badge } from "~/components/ui/badge";
 import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Spinner } from "~/components/ui/spinner";
-import { scanWiFiNetworks, connectToWiFi, getCurrentWiFi } from "~/services/wifi.service";
+import { scanWiFiNetworks, connectToWiFi, getCurrentWiFi } from "~/services/wifi.service.server";
 import { getUserId } from "~/lib/session.server";
 import { prisma } from "~/lib/db.server";
 import { logAuditEvent } from "~/lib/auth.server";
@@ -17,10 +17,19 @@ import { Wifi, Lock, Unlock, RefreshCw, CheckCircle2, XCircle } from "lucide-rea
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
-  const networks = await scanWiFiNetworks();
+  const url = new URL(request.url);
+  const scan = url.searchParams.get("scan");
+
+  // Only get current WiFi on initial load (fast)
   const currentWiFi = await getCurrentWiFi();
 
-  return json({ networks, currentWiFi });
+  // Only scan networks if explicitly requested
+  if (scan === "true") {
+    const networks = await scanWiFiNetworks();
+    return json({ networks, currentWiFi });
+  }
+
+  return json({ networks: null, currentWiFi });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -79,12 +88,24 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function WiFiPage() {
-  const { networks, currentWiFi } = useLoaderData<typeof loader>();
+  const { networks: initialNetworks, currentWiFi } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
+  const fetcher = useFetcher<typeof loader>();
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [scanning, setScanning] = useState(false);
+
+  // Auto-fetch networks on mount if not already loaded
+  useEffect(() => {
+    if (initialNetworks === null && !fetcher.data && fetcher.state === "idle") {
+      fetcher.load("?scan=true");
+    }
+  }, []);
+
+  // Determine the current networks to display
+  const networks = fetcher.data?.networks ?? initialNetworks ?? [];
+  const isLoading = fetcher.state === "loading" || (initialNetworks === null && !fetcher.data);
 
   const getSecurityIcon = (security: string) => {
     return security === "open" ? <Unlock className="h-4 w-4" /> : <Lock className="h-4 w-4" />;
@@ -154,18 +175,24 @@ export default function WiFiPage() {
               variant="outline"
               size="sm"
               onClick={() => {
-                setScanning(true);
-                window.location.reload();
+                fetcher.load("?scan=true");
               }}
-              disabled={scanning}
+              disabled={isLoading}
+              className="touch-manipulation"
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${scanning ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
               Scan
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          {networks.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-8 text-gray-500">
+              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin" />
+              <p>Scanning for networks...</p>
+              <p className="text-sm">This may take a few seconds</p>
+            </div>
+          ) : networks.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Wifi className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>No networks found</p>
@@ -176,10 +203,17 @@ export default function WiFiPage() {
               {networks.map((network) => (
                 <div
                   key={network.ssid}
-                  className={`border rounded-lg p-4 cursor-pointer hover:border-primary-500 ${
+                  className={`border rounded-lg p-4 cursor-pointer hover:border-primary-500 active:bg-gray-100 transition-colors touch-manipulation ${
                     selectedNetwork === network.ssid ? 'border-primary-500 bg-primary-50' : ''
                   }`}
                   onClick={() => setSelectedNetwork(network.ssid)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedNetwork(network.ssid);
+                    }
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -242,7 +276,7 @@ export default function WiFiPage() {
                       )}
 
                       <div className="flex space-x-2">
-                        <Button type="submit" className="flex-1">
+                        <Button type="submit" className="flex-1 touch-manipulation">
                           Connect
                         </Button>
                         <Button
@@ -252,6 +286,7 @@ export default function WiFiPage() {
                             setSelectedNetwork(null);
                             setPassword("");
                           }}
+                          className="touch-manipulation"
                         >
                           Cancel
                         </Button>
