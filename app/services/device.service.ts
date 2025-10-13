@@ -21,7 +21,7 @@ export async function getDeviceStatus(): Promise<DeviceStatus> {
     const status = await serviceClient.get<DeviceStatus>('/device/status');
     return status;
   } catch (error) {
-    logger.error('Failed to fetch device status', error);
+    logger.warn('Device API unavailable, using mock data', { endpoint: '/device/status' });
     // Return realistic mock/fallback data when API is unavailable
     return {
       battery: 85,

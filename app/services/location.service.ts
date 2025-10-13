@@ -14,7 +14,7 @@ export async function getCurrentLocation(): Promise<LocationData | null> {
     const location = await serviceClient.get<LocationData>('/location/current');
     return location;
   } catch (error) {
-    logger.error('Failed to get current location', error);
+    logger.warn('Location API unavailable, using mock data', { endpoint: '/location/current' });
     // Return mock location when API is unavailable
     return {
       latitude: 37.7749,
@@ -35,7 +35,7 @@ export async function getLocationHistory(days: number = 7): Promise<LocationData
     );
     return history;
   } catch (error) {
-    logger.error('Failed to get location history', error);
+    logger.warn('Location API unavailable, using mock data', { endpoint: '/location/history' });
     // Return mock history when API is unavailable
     const now = new Date();
     return [

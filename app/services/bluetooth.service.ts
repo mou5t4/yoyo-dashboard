@@ -14,7 +14,7 @@ export async function scanBluetoothDevices(): Promise<BluetoothDevice[]> {
     const devices = await serviceClient.get<BluetoothDevice[]>('/bluetooth/scan');
     return devices;
   } catch (error) {
-    logger.error('Failed to scan Bluetooth devices', error);
+    logger.warn('Bluetooth API unavailable, using mock data', { endpoint: '/bluetooth/scan' });
     // Return mock available devices when API is unavailable
     return [
       {
@@ -40,7 +40,7 @@ export async function getPairedDevices(): Promise<BluetoothDevice[]> {
     const devices = await serviceClient.get<BluetoothDevice[]>('/bluetooth/devices');
     return devices;
   } catch (error) {
-    logger.error('Failed to get paired devices', error);
+    logger.warn('Bluetooth API unavailable, using mock data', { endpoint: '/bluetooth/devices' });
     // Return mock paired devices when API is unavailable
     return [
       {

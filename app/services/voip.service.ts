@@ -18,7 +18,7 @@ export async function getCallHistory(limit: number = 50): Promise<CallHistoryEnt
     );
     return history;
   } catch (error) {
-    logger.error('Failed to get call history', error);
+    logger.warn('VoIP API unavailable, using mock data', { endpoint: '/voip/call-history' });
     // Return mock call history when API is unavailable
     const now = new Date();
     return [

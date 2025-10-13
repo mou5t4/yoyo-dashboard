@@ -22,7 +22,7 @@ export async function getCurrentPlayback(): Promise<CurrentPlayback | null> {
     const playback = await serviceClient.get<CurrentPlayback>('/content/current-playback');
     return playback;
   } catch (error) {
-    logger.error('Failed to get current playback', error);
+    logger.warn('Content API unavailable, using mock data', { endpoint: '/content/current-playback' });
     // Return mock playback when API is unavailable
     return {
       type: 'music',
@@ -38,7 +38,7 @@ export async function getContentLibrary(): Promise<ContentItem[]> {
     const items = await serviceClient.get<ContentItem[]>('/content/playlists');
     return items;
   } catch (error) {
-    logger.error('Failed to get content library', error);
+    logger.warn('Content API unavailable, using mock data', { endpoint: '/content/playlists' });
     // Return mock library when API is unavailable
     return [
       {

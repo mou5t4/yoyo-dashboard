@@ -27,8 +27,13 @@ export class DeviceServiceClient {
       }
 
       return await response.json();
-    } catch (error) {
-      logger.error(`GET ${endpoint} failed`, error);
+    } catch (error: any) {
+      // Only log as error if it's not a connection refused (expected in dev mode)
+      if (error.cause?.code === 'ECONNREFUSED') {
+        logger.debug(`GET ${endpoint} - API unavailable (connection refused)`);
+      } else {
+        logger.error(`GET ${endpoint} failed`, error);
+      }
       throw error;
     }
   }
@@ -52,8 +57,13 @@ export class DeviceServiceClient {
       }
 
       return await response.json();
-    } catch (error) {
-      logger.error(`POST ${endpoint} failed`, error);
+    } catch (error: any) {
+      // Only log as error if it's not a connection refused (expected in dev mode)
+      if (error.cause?.code === 'ECONNREFUSED') {
+        logger.debug(`POST ${endpoint} - API unavailable (connection refused)`);
+      } else {
+        logger.error(`POST ${endpoint} failed`, error);
+      }
       throw error;
     }
   }
@@ -70,8 +80,13 @@ export class DeviceServiceClient {
       }
 
       return await response.json();
-    } catch (error) {
-      logger.error(`DELETE ${endpoint} failed`, error);
+    } catch (error: any) {
+      // Only log as error if it's not a connection refused (expected in dev mode)
+      if (error.cause?.code === 'ECONNREFUSED') {
+        logger.debug(`DELETE ${endpoint} - API unavailable (connection refused)`);
+      } else {
+        logger.error(`DELETE ${endpoint} failed`, error);
+      }
       throw error;
     }
   }

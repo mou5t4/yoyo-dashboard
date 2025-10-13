@@ -21,7 +21,7 @@ export async function getConversations(date?: string): Promise<Conversation[]> {
     const conversations = await serviceClient.get<Conversation[]>(endpoint);
     return conversations;
   } catch (error) {
-    logger.error('Failed to get conversations', error);
+    logger.warn('AI API unavailable, using mock data', { endpoint: '/ai/conversations' });
     // Return mock conversations when API is unavailable
     const now = new Date();
     return [
@@ -50,7 +50,7 @@ export async function getConversationTranscript(
     );
     return transcript;
   } catch (error) {
-    logger.error('Failed to get conversation transcript', error);
+    logger.warn('AI API unavailable, using mock data', { endpoint: `/ai/conversation/${conversationId}/transcript` });
     // Return mock transcript when API is unavailable
     return {
       messages: [
