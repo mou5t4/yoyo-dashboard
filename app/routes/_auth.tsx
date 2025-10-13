@@ -2,17 +2,18 @@ import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, Form } from "@remix-run/react";
 import { getUserId, getUser } from "~/lib/auth.server";
 import { APP_NAME } from "~/lib/constants";
-import { 
-  Home, 
-  Settings, 
-  Wifi, 
-  Bluetooth, 
-  MapPin, 
-  Phone, 
-  Music, 
-  Bot, 
-  Calendar, 
+import {
+  Home,
+  Settings,
+  Wifi,
+  Bluetooth,
+  MapPin,
+  Phone,
+  Music,
+  Bot,
+  Calendar,
   BarChart3,
+  Volume2,
   Menu,
   X,
   LogOut
@@ -45,6 +46,7 @@ export default function AuthLayout() {
     { name: "Dashboard", href: "/dashboard", icon: Home },
     { name: "WiFi", href: "/wifi", icon: Wifi },
     { name: "Bluetooth", href: "/bluetooth", icon: Bluetooth },
+    { name: "Audio", href: "/audio", icon: Volume2 },
     { name: "Location", href: "/location", icon: MapPin },
     { name: "Contacts", href: "/contacts", icon: Phone },
     { name: "Content", href: "/content", icon: Music },
