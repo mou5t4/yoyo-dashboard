@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Alert, AlertDescription } from "~/components/ui/alert";
-import { scanBluetoothDevices, getPairedDevices, pairBluetoothDevice, connectBluetoothDevice, forgetBluetoothDevice } from "~/services/bluetooth.service";
+import { scanBluetoothDevices, getPairedDevices, pairBluetoothDevice, connectBluetoothDevice, forgetBluetoothDevice } from "~/services/bluetooth.service.server";
 import { Bluetooth, RefreshCw, Headphones, Speaker, HelpCircle, CheckCircle2, XCircle } from "lucide-react";
 
 export async function loader({ request }: LoaderFunctionArgs) {

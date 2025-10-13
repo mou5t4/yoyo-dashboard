@@ -8,7 +8,7 @@ import { Label } from "~/components/ui/label";
 import { Badge } from "~/components/ui/badge";
 import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Switch } from "~/components/ui/switch";
-import { getCurrentLocation, getLocationHistory } from "~/services/location.service";
+import { getCurrentLocation, getLocationHistory } from "~/services/location.service.server";
 import { prisma } from "~/lib/db.server";
 import { getUserId, logAuditEvent } from "~/lib/auth.server";
 import { geofenceSchema, locationSettingsSchema } from "~/lib/validation";
