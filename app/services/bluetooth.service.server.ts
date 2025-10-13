@@ -139,20 +139,33 @@ export async function getPairedDevices(): Promise<BluetoothDevice[]> {
 
 export async function pairBluetoothDevice(address: string): Promise<{ success: boolean; error?: string }> {
   try {
+    // Power on bluetooth
     await execAsync('bluetoothctl power on');
-    const { stdout, stderr } = await execAsync(`bluetoothctl pair ${address}`);
 
-    if (stderr.includes('Failed') || stdout.includes('Failed')) {
-      return { success: false, error: 'Failed to pair device' };
+    // Use echo to pipe commands to bluetoothctl with timeout
+    const pairCommand = `echo -e "pair ${address}\\nquit" | timeout 30 bluetoothctl`;
+    const { stdout, stderr } = await execAsync(pairCommand);
+
+    // Check for success indicators
+    if (stdout.includes('Pairing successful') || stdout.includes('AlreadyExists')) {
+      // Trust the device after pairing
+      try {
+        await execAsync(`echo -e "trust ${address}\\nquit" | bluetoothctl`);
+      } catch {
+        // Trust failure is not critical
+      }
+
+      logger.info(`Paired Bluetooth device: ${address}`);
+      return { success: true };
     }
 
-    // Trust the device after pairing
-    try {
-      await execAsync(`bluetoothctl trust ${address}`);
-    } catch {
-      // Trust failure is not critical
+    // Check for failure
+    if (stderr.includes('Failed') || stdout.includes('Failed to pair') || stdout.includes('org.bluez.Error')) {
+      const errorMsg = stdout.includes('not available') ? 'Device not available' : 'Failed to pair device';
+      return { success: false, error: errorMsg };
     }
 
+    // If we get here, assume success (some devices pair silently)
     logger.info(`Paired Bluetooth device: ${address}`);
     return { success: true };
   } catch (error: any) {
@@ -164,12 +177,24 @@ export async function pairBluetoothDevice(address: string): Promise<{ success: b
 export async function connectBluetoothDevice(address: string): Promise<{ success: boolean; error?: string }> {
   try {
     await execAsync('bluetoothctl power on');
-    const { stdout, stderr } = await execAsync(`bluetoothctl connect ${address}`);
 
-    if (stderr.includes('Failed') || stdout.includes('Failed')) {
-      return { success: false, error: 'Failed to connect to device' };
+    // Use echo to pipe commands to bluetoothctl
+    const connectCommand = `echo -e "connect ${address}\\nquit" | timeout 30 bluetoothctl`;
+    const { stdout, stderr } = await execAsync(connectCommand);
+
+    // Check for success
+    if (stdout.includes('Connection successful') || stdout.includes('AlreadyConnected')) {
+      logger.info(`Connected to Bluetooth device: ${address}`);
+      return { success: true };
     }
 
+    // Check for failure
+    if (stderr.includes('Failed') || stdout.includes('Failed to connect') || stdout.includes('org.bluez.Error')) {
+      const errorMsg = stdout.includes('not available') ? 'Device not available' : 'Failed to connect to device';
+      return { success: false, error: errorMsg };
+    }
+
+    // If we get here, assume success
     logger.info(`Connected to Bluetooth device: ${address}`);
     return { success: true };
   } catch (error: any) {
@@ -180,9 +205,17 @@ export async function connectBluetoothDevice(address: string): Promise<{ success
 
 export async function disconnectBluetoothDevice(address: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const { stdout, stderr } = await execAsync(`bluetoothctl disconnect ${address}`);
+    const disconnectCommand = `echo -e "disconnect ${address}\\nquit" | bluetoothctl`;
+    const { stdout, stderr } = await execAsync(disconnectCommand);
 
-    if (stderr.includes('Failed') || stdout.includes('Failed')) {
+    // Check for success
+    if (stdout.includes('Successful disconnected') || stdout.includes('NotConnected')) {
+      logger.info(`Disconnected Bluetooth device: ${address}`);
+      return { success: true };
+    }
+
+    // Check for failure
+    if (stderr.includes('Failed') || stdout.includes('Failed to disconnect')) {
       return { success: false, error: 'Failed to disconnect device' };
     }
 
@@ -198,15 +231,23 @@ export async function forgetBluetoothDevice(address: string): Promise<{ success:
   try {
     // First disconnect if connected
     try {
-      await execAsync(`bluetoothctl disconnect ${address}`);
+      await execAsync(`echo -e "disconnect ${address}\\nquit" | bluetoothctl`);
     } catch {
       // Ignore if not connected
     }
 
     // Remove the device
-    const { stdout, stderr } = await execAsync(`bluetoothctl remove ${address}`);
+    const removeCommand = `echo -e "remove ${address}\\nquit" | bluetoothctl`;
+    const { stdout, stderr } = await execAsync(removeCommand);
 
-    if (stderr.includes('Failed') || stdout.includes('Failed')) {
+    // Check for success
+    if (stdout.includes('Device has been removed') || stdout.includes('not available')) {
+      logger.info(`Removed Bluetooth device: ${address}`);
+      return { success: true };
+    }
+
+    // Check for failure
+    if (stderr.includes('Failed') || stdout.includes('Failed to remove')) {
       return { success: false, error: 'Failed to remove device' };
     }
 
