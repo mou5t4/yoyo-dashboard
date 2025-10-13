@@ -32,24 +32,29 @@ export async function scanBluetoothDevices(): Promise<BluetoothDevice[]> {
     }
 
     // Get list of devices
-    const { stdout } = await execAsync('echo -e "devices\\nquit" | bluetoothctl');
+    const { stdout } = await execAsync('echo -e "devices\\nquit" | bluetoothctl 2>&1');
     const devices: BluetoothDevice[] = [];
-    const lines = stdout.trim().split('\n');
+
+    // Strip ANSI color codes
+    const cleanOutput = stdout.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+    const lines = cleanOutput.trim().split('\n');
 
     for (const line of lines) {
       // Format: "Device AA:BB:CC:DD:EE:FF Device Name"
-      const match = line.match(/Device\s+([0-9A-F:]+)\s+(.+)/i);
+      // Match lines that start with "Device"
+      const match = line.match(/^Device\s+([0-9A-F:]+)\s+(.+)/i);
       if (match) {
         const address = match[1];
-        const name = match[2];
+        const name = match[2].trim();
 
         // Check if paired
         let paired = false;
         let connected = false;
         try {
-          const { stdout: infoOut } = await execAsync(`echo -e "info ${address}\\nquit" | bluetoothctl`);
-          paired = infoOut.includes('Paired: yes');
-          connected = infoOut.includes('Connected: yes');
+          const { stdout: infoOut } = await execAsync(`echo -e "info ${address}\\nquit" | bluetoothctl 2>&1`);
+          const cleanInfo = infoOut.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+          paired = cleanInfo.includes('Paired: yes');
+          connected = cleanInfo.includes('Connected: yes');
         } catch {
           // Device info not available
         }
@@ -91,23 +96,28 @@ export async function scanBluetoothDevices(): Promise<BluetoothDevice[]> {
 export async function getPairedDevices(): Promise<BluetoothDevice[]> {
   try {
     // Use "devices Paired" command with echo piping
-    const { stdout } = await execAsync('echo -e "devices Paired\\nquit" | bluetoothctl');
+    const { stdout } = await execAsync('echo -e "devices Paired\\nquit" | bluetoothctl 2>&1');
     const devices: BluetoothDevice[] = [];
-    const lines = stdout.trim().split('\n');
+
+    // Strip ANSI color codes
+    const cleanOutput = stdout.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+    const lines = cleanOutput.trim().split('\n');
 
     for (const line of lines) {
       if (!line) continue;
 
-      const match = line.match(/Device\s+([0-9A-F:]+)\s+(.+)/i);
+      // Match lines that start with "Device"
+      const match = line.match(/^Device\s+([0-9A-F:]+)\s+(.+)/i);
       if (match) {
         const address = match[1];
-        const name = match[2];
+        const name = match[2].trim();
 
         // Check if connected
         let connected = false;
         try {
-          const { stdout: infoOut } = await execAsync(`echo -e "info ${address}\\nquit" | bluetoothctl`);
-          connected = infoOut.includes('Connected: yes');
+          const { stdout: infoOut } = await execAsync(`echo -e "info ${address}\\nquit" | bluetoothctl 2>&1`);
+          const cleanInfo = infoOut.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+          connected = cleanInfo.includes('Connected: yes');
         } catch {
           // Device info not available
         }
