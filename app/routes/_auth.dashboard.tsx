@@ -191,22 +191,30 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-20 flex flex-col space-y-2">
-              <Lock className="h-6 w-6" />
-              <span className="text-sm">Lock Device</span>
-            </Button>
-            <Button variant="outline" className="h-20 flex flex-col space-y-2">
-              <MapPin className="h-6 w-6" />
-              <span className="text-sm">Locate Now</span>
-            </Button>
-            <Button variant="outline" className="h-20 flex flex-col space-y-2">
-              <Wifi className="h-6 w-6" />
-              <span className="text-sm">WiFi Settings</span>
-            </Button>
-            <Button variant="outline" className="h-20 flex flex-col space-y-2">
-              <Music className="h-6 w-6" />
-              <span className="text-sm">Content</span>
-            </Button>
+            <a href="/settings" className="no-underline">
+              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
+                <Lock className="h-6 w-6" />
+                <span className="text-sm">Lock Device</span>
+              </Button>
+            </a>
+            <a href="/location" className="no-underline">
+              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
+                <MapPin className="h-6 w-6" />
+                <span className="text-sm">Locate Now</span>
+              </Button>
+            </a>
+            <a href="/wifi" className="no-underline">
+              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
+                <Wifi className="h-6 w-6" />
+                <span className="text-sm">WiFi Settings</span>
+              </Button>
+            </a>
+            <a href="/content" className="no-underline">
+              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
+                <Music className="h-6 w-6" />
+                <span className="text-sm">Content</span>
+              </Button>
+            </a>
           </div>
         </CardContent>
       </Card>

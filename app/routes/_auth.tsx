@@ -57,12 +57,13 @@ export default function AuthLayout() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
         <div className="flex items-center justify-between px-4 py-3">
           <h1 className="text-xl font-bold text-primary-500">{APP_NAME}</h1>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-md hover:bg-gray-100"
+            className="p-2 rounded-md hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
               <X className="h-6 w-6" />
@@ -73,32 +74,42 @@ export default function AuthLayout() {
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-white pt-16">
-          <nav className="flex flex-col p-4 space-y-2">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700"
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.name}</span>
-              </Link>
-            ))}
-            <Form method="post" action="/auth/logout" className="pt-4">
-              <button
-                type="submit"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-red-600 w-full"
-              >
-                <LogOut className="h-5 w-5" />
-                <span>Logout</span>
-              </button>
-            </Form>
-          </nav>
-        </div>
+        <>
+          {/* Backdrop */}
+          <div
+            className="lg:hidden fixed inset-0 z-40 bg-black/50"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Menu Panel */}
+          <div className="lg:hidden fixed inset-0 z-50 bg-white pt-16 pointer-events-none">
+            <div className="h-full overflow-y-auto pointer-events-auto">
+              <nav className="flex flex-col p-4 space-y-2">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 active:bg-gray-200 text-gray-700 transition-colors touch-manipulation"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+                <Form method="post" action="/auth/logout" className="pt-4">
+                  <button
+                    type="submit"
+                    className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 active:bg-gray-200 text-red-600 w-full transition-colors touch-manipulation"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span>Logout</span>
+                  </button>
+                </Form>
+              </nav>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Desktop Sidebar */}

@@ -1,22 +1,76 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
+import { useLoaderData, useFetcher, Form, useActionData } from "@remix-run/react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
+import { Alert, AlertDescription } from "~/components/ui/alert";
 import { scanBluetoothDevices, getPairedDevices, pairBluetoothDevice, connectBluetoothDevice, forgetBluetoothDevice } from "~/services/bluetooth.service";
-import { Bluetooth, RefreshCw, Headphones, Speaker, HelpCircle } from "lucide-react";
+import { Bluetooth, RefreshCw, Headphones, Speaker, HelpCircle, CheckCircle2, XCircle } from "lucide-react";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const pairedDevices = await getPairedDevices();
-  const availableDevices = await scanBluetoothDevices();
+  const url = new URL(request.url);
+  const scan = url.searchParams.get("scan");
 
-  return json({ pairedDevices, availableDevices });
+  // Always get paired devices (fast)
+  const pairedDevices = await getPairedDevices();
+
+  // Only scan for available devices if explicitly requested
+  if (scan === "true") {
+    const availableDevices = await scanBluetoothDevices();
+    return json({ pairedDevices, availableDevices });
+  }
+
+  return json({ pairedDevices, availableDevices: null });
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+  const address = formData.get("address") as string;
+
+  if (intent === "pair") {
+    const result = await pairBluetoothDevice(address);
+    if (result.success) {
+      return json({ success: true, message: "Device paired successfully" });
+    }
+    return json({ success: false, error: "Failed to pair device" }, { status: 400 });
+  }
+
+  if (intent === "connect") {
+    const result = await connectBluetoothDevice(address);
+    if (result.success) {
+      return json({ success: true, message: "Device connected successfully" });
+    }
+    return json({ success: false, error: "Failed to connect device" }, { status: 400 });
+  }
+
+  if (intent === "forget") {
+    const result = await forgetBluetoothDevice(address);
+    if (result.success) {
+      return json({ success: true, message: "Device forgotten successfully" });
+    }
+    return json({ success: false, error: "Failed to forget device" }, { status: 400 });
+  }
+
+  return json({ success: false, error: "Invalid action" }, { status: 400 });
 }
 
 export default function BluetoothPage() {
-  const { pairedDevices, availableDevices } = useLoaderData<typeof loader>();
-  const [scanning, setScanning] = useState(false);
+  const { pairedDevices, availableDevices: initialAvailable } = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+  const fetcher = useFetcher<typeof loader>();
+
+  // Auto-fetch available devices on mount if not already loaded
+  useEffect(() => {
+    if (initialAvailable === null && !fetcher.data && fetcher.state === "idle") {
+      fetcher.load("?scan=true");
+    }
+  }, []);
+
+  // Determine the current available devices to display
+  const availableDevices = fetcher.data?.availableDevices ?? initialAvailable ?? [];
+  const isScanning = fetcher.state === "loading" || (initialAvailable === null && !fetcher.data);
 
   const getDeviceIcon = (type: string) => {
     switch (type) {
@@ -35,6 +89,22 @@ export default function BluetoothPage() {
         <h1 className="text-3xl font-bold text-gray-900">Bluetooth</h1>
         <p className="text-gray-600 mt-1">Manage Bluetooth connections</p>
       </div>
+
+      {actionData?.success && (
+        <Alert variant="default" className="border-green-200 bg-green-50">
+          <CheckCircle2 className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">
+            {actionData.message}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {actionData?.error && (
+        <Alert variant="destructive">
+          <XCircle className="h-4 w-4" />
+          <AlertDescription>{actionData.error}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Paired Devices */}
       <Card>
@@ -66,11 +136,19 @@ export default function BluetoothPage() {
                     {device.connected ? (
                       <Badge variant="success">Connected</Badge>
                     ) : (
-                      <Button size="sm">Connect</Button>
+                      <Form method="post">
+                        <input type="hidden" name="intent" value="connect" />
+                        <input type="hidden" name="address" value={device.address} />
+                        <Button type="submit" size="sm">Connect</Button>
+                      </Form>
                     )}
-                    <Button variant="ghost" size="sm" className="text-red-600">
-                      Forget
-                    </Button>
+                    <Form method="post">
+                      <input type="hidden" name="intent" value="forget" />
+                      <input type="hidden" name="address" value={device.address} />
+                      <Button type="submit" variant="ghost" size="sm" className="text-red-600">
+                        Forget
+                      </Button>
+                    </Form>
                   </div>
                 </div>
               ))}
@@ -91,18 +169,24 @@ export default function BluetoothPage() {
               variant="outline"
               size="sm"
               onClick={() => {
-                setScanning(true);
-                window.location.reload();
+                fetcher.load("?scan=true");
               }}
-              disabled={scanning}
+              disabled={isScanning}
+              className="touch-manipulation"
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${scanning ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-4 w-4 mr-2 ${isScanning ? 'animate-spin' : ''}`} />
               Scan
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          {availableDevices.length === 0 ? (
+          {isScanning ? (
+            <div className="text-center py-8 text-gray-500">
+              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin" />
+              <p>Scanning for devices...</p>
+              <p className="text-sm">This may take a moment</p>
+            </div>
+          ) : availableDevices.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Bluetooth className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>No devices found</p>
@@ -124,7 +208,11 @@ export default function BluetoothPage() {
                         <p className="text-sm text-gray-500">{device.address}</p>
                       </div>
                     </div>
-                    <Button size="sm">Pair</Button>
+                    <Form method="post">
+                      <input type="hidden" name="intent" value="pair" />
+                      <input type="hidden" name="address" value={device.address} />
+                      <Button type="submit" size="sm">Pair</Button>
+                    </Form>
                   </div>
                 ))}
             </div>

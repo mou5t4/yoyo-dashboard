@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev --manual",
+    "dev": "remix vite:dev",
     "start": "remix-serve ./build/index.js",
     "typecheck": "tsc",
     "db:generate": "prisma generate",
