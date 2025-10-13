@@ -23,15 +23,16 @@ export async function scanBluetoothDevices(): Promise<BluetoothDevice[]> {
   try {
     // Start bluetooth scan
     try {
-      await execAsync('bluetoothctl power on');
-      await execAsync('timeout 10 bluetoothctl --timeout 10 scan on');
+      await execAsync('echo -e "power on\\nquit" | bluetoothctl');
+      // Start scan with timeout (scan will run in background)
+      await execAsync('echo -e "scan on\\nquit" | timeout 10 bluetoothctl');
     } catch (scanError) {
       // Scan timeout is expected
       logger.debug('Bluetooth scan timeout (expected)');
     }
 
     // Get list of devices
-    const { stdout } = await execAsync('bluetoothctl devices');
+    const { stdout } = await execAsync('echo -e "devices\\nquit" | bluetoothctl');
     const devices: BluetoothDevice[] = [];
     const lines = stdout.trim().split('\n');
 
@@ -46,7 +47,7 @@ export async function scanBluetoothDevices(): Promise<BluetoothDevice[]> {
         let paired = false;
         let connected = false;
         try {
-          const { stdout: infoOut } = await execAsync(`bluetoothctl info ${address}`);
+          const { stdout: infoOut } = await execAsync(`echo -e "info ${address}\\nquit" | bluetoothctl`);
           paired = infoOut.includes('Paired: yes');
           connected = infoOut.includes('Connected: yes');
         } catch {
@@ -89,7 +90,8 @@ export async function scanBluetoothDevices(): Promise<BluetoothDevice[]> {
 
 export async function getPairedDevices(): Promise<BluetoothDevice[]> {
   try {
-    const { stdout } = await execAsync('bluetoothctl paired-devices');
+    // Use "devices Paired" command with echo piping
+    const { stdout } = await execAsync('echo -e "devices Paired\\nquit" | bluetoothctl');
     const devices: BluetoothDevice[] = [];
     const lines = stdout.trim().split('\n');
 
@@ -104,7 +106,7 @@ export async function getPairedDevices(): Promise<BluetoothDevice[]> {
         // Check if connected
         let connected = false;
         try {
-          const { stdout: infoOut } = await execAsync(`bluetoothctl info ${address}`);
+          const { stdout: infoOut } = await execAsync(`echo -e "info ${address}\\nquit" | bluetoothctl`);
           connected = infoOut.includes('Connected: yes');
         } catch {
           // Device info not available
