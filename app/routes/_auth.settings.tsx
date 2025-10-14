@@ -108,10 +108,10 @@ export default function Settings() {
   const actionData = useActionData<typeof action>();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-1">Manage your device configuration</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">Manage your device configuration</p>
       </div>
 
       {actionData?.success && (
@@ -140,9 +140,9 @@ export default function Settings() {
           <Form method="post" className="space-y-6">
             <input type="hidden" name="intent" value="update-general" />
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="deviceName">Device Name</Label>
+                <Label htmlFor="deviceName" className="text-sm font-medium">Device Name</Label>
                 <Input
                   id="deviceName"
                   name="deviceName"
@@ -152,7 +152,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="childName">Child's Name (Optional)</Label>
+                <Label htmlFor="childName" className="text-sm font-medium">Child's Name (Optional)</Label>
                 <Input
                   id="childName"
                   name="childName"
@@ -161,7 +161,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="maxVolume">Maximum Volume (%)</Label>
+                <Label htmlFor="maxVolume" className="text-sm font-medium">Maximum Volume (%)</Label>
                 <Input
                   id="maxVolume"
                   name="maxVolume"
@@ -174,7 +174,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dailyUsageLimit">Daily Usage Limit (minutes)</Label>
+                <Label htmlFor="dailyUsageLimit" className="text-sm font-medium">Daily Usage Limit (minutes)</Label>
                 <Input
                   id="dailyUsageLimit"
                   name="dailyUsageLimit"
@@ -186,7 +186,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bedtimeStart">Bedtime Start (HH:mm)</Label>
+                <Label htmlFor="bedtimeStart" className="text-sm font-medium">Bedtime Start (HH:mm)</Label>
                 <Input
                   id="bedtimeStart"
                   name="bedtimeStart"
@@ -196,7 +196,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bedtimeEnd">Bedtime End (HH:mm)</Label>
+                <Label htmlFor="bedtimeEnd" className="text-sm font-medium">Bedtime End (HH:mm)</Label>
                 <Input
                   id="bedtimeEnd"
                   name="bedtimeEnd"
@@ -207,34 +207,36 @@ export default function Settings() {
             </div>
 
             <div className="space-y-4 pt-4 border-t">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Content Filter</Label>
-                  <p className="text-sm text-gray-500">
+              <div className="flex items-center justify-between gap-4">
+                <div className="space-y-0.5 flex-1 min-w-0">
+                  <Label className="text-sm font-medium">Content Filter</Label>
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Enable age-appropriate content filtering
                   </p>
                 </div>
                 <Switch
                   name="contentFilterEnabled"
                   defaultChecked={settings.contentFilterEnabled}
+                  className="flex-shrink-0"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Block Explicit Content</Label>
-                  <p className="text-sm text-gray-500">
+              <div className="flex items-center justify-between gap-4">
+                <div className="space-y-0.5 flex-1 min-w-0">
+                  <Label className="text-sm font-medium">Block Explicit Content</Label>
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Block content marked as explicit
                   </p>
                 </div>
                 <Switch
                   name="explicitContentBlocked"
                   defaultChecked={settings.explicitContentBlocked}
+                  className="flex-shrink-0"
                 />
               </div>
             </div>
 
-            <Button type="submit" className="w-full md:w-auto">
+            <Button type="submit" size="lg" className="w-full sm:w-auto">
               Save Settings
             </Button>
           </Form>
@@ -252,7 +254,7 @@ export default function Settings() {
             <input type="hidden" name="intent" value="change-password" />
 
             <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
+              <Label htmlFor="currentPassword" className="text-sm font-medium">Current Password</Label>
               <Input
                 id="currentPassword"
                 name="currentPassword"
@@ -262,7 +264,7 @@ export default function Settings() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">New Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium">New Password</Label>
               <Input
                 id="password"
                 name="password"
@@ -274,7 +276,7 @@ export default function Settings() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm New Password</Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -285,7 +287,7 @@ export default function Settings() {
               />
             </div>
 
-            <Button type="submit" variant="secondary">
+            <Button type="submit" variant="secondary" size="lg" className="w-full sm:w-auto">
               Change Password
             </Button>
           </Form>

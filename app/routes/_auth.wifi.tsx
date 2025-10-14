@@ -119,10 +119,10 @@ export default function WiFiPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">WiFi Configuration</h1>
-        <p className="text-gray-600 mt-1">Connect to a wireless network</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">WiFi Configuration</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">Connect to a wireless network</p>
       </div>
 
       {actionData?.success && (
@@ -199,12 +199,12 @@ export default function WiFiPage() {
               <p className="text-sm">Click scan to search for networks</p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 sm:space-y-3">
               {networks.map((network) => (
                 <div
                   key={network.ssid}
-                  className={`border rounded-lg p-4 cursor-pointer hover:border-primary-500 active:bg-gray-100 transition-colors touch-manipulation ${
-                    selectedNetwork === network.ssid ? 'border-primary-500 bg-primary-50' : ''
+                  className={`border-2 rounded-xl p-3 sm:p-4 cursor-pointer hover:border-primary-500 active:bg-gray-50 transition-all touch-manipulation ${
+                    selectedNetwork === network.ssid ? 'border-primary-500 bg-primary-50 shadow-md' : 'border-gray-200'
                   }`}
                   onClick={() => setSelectedNetwork(network.ssid)}
                   role="button"
@@ -215,24 +215,24 @@ export default function WiFiPage() {
                     }
                   }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Wifi className="h-5 w-5" />
-                      <div>
-                        <p className="font-medium">{network.ssid}</p>
-                        <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
+                      <Wifi className={`h-5 w-5 flex-shrink-0 ${selectedNetwork === network.ssid ? 'text-primary-600' : 'text-gray-600'}`} />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm sm:text-base truncate">{network.ssid}</p>
+                        <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500">
                           {getSecurityIcon(network.security)}
-                          <span>{network.security.toUpperCase()}</span>
+                          <span className="uppercase">{network.security}</span>
                           <span>•</span>
                           <span>{network.frequency}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-0.5 flex-shrink-0">
                       {[...Array(4)].map((_, i) => (
                         <div
                           key={i}
-                          className={`h-3 w-1 rounded ${
+                          className={`h-4 w-1.5 rounded-sm ${
                             i < getSignalBars(network.signal)
                               ? 'bg-primary-500'
                               : 'bg-gray-300'
@@ -250,7 +250,7 @@ export default function WiFiPage() {
 
                       {network.security !== 'open' && (
                         <div className="space-y-2">
-                          <Label htmlFor="password">Password</Label>
+                          <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                           <Input
                             id="password"
                             name="password"
@@ -266,22 +266,23 @@ export default function WiFiPage() {
                               id="showPassword"
                               checked={showPassword}
                               onChange={(e) => setShowPassword(e.target.checked)}
-                              className="rounded"
+                              className="rounded h-4 w-4"
                             />
-                            <Label htmlFor="showPassword" className="font-normal cursor-pointer">
+                            <Label htmlFor="showPassword" className="text-sm font-normal cursor-pointer">
                               Show password
                             </Label>
                           </div>
                         </div>
                       )}
 
-                      <div className="flex space-x-2">
-                        <Button type="submit" className="flex-1 touch-manipulation">
+                      <div className="flex gap-2 sm:gap-3">
+                        <Button type="submit" size="lg" className="flex-1 touch-manipulation">
                           Connect
                         </Button>
                         <Button
                           type="button"
                           variant="outline"
+                          size="lg"
                           onClick={() => {
                             setSelectedNetwork(null);
                             setPassword("");

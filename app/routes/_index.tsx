@@ -143,13 +143,13 @@ export default function Index() {
   if (isFirstRun && !licenseAccepted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
-        <Card className="max-w-2xl w-full">
+        <Card className="max-w-2xl w-full shadow-xl">
           <CardHeader>
-            <CardTitle className="text-3xl">Welcome to {APP_NAME}</CardTitle>
-            <CardDescription>Please read and accept the license agreement to continue</CardDescription>
+            <CardTitle className="text-2xl sm:text-3xl">Welcome to {APP_NAME}</CardTitle>
+            <CardDescription className="text-sm">Please read and accept the license agreement to continue</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="prose max-w-none mb-6 max-h-96 overflow-y-auto bg-gray-50 p-4 rounded-lg text-sm">
+            <div className="prose max-w-none mb-6 max-h-96 overflow-y-auto bg-gray-50 p-3 sm:p-4 rounded-lg text-xs sm:text-sm">
               <h3 className="font-semibold">YoyoPod License Agreement</h3>
               <p><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
               
@@ -207,10 +207,10 @@ export default function Index() {
   if (isFirstRun && licenseAccepted && !setupCompleted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full">
+        <Card className="max-w-md w-full shadow-xl">
           <CardHeader>
-            <CardTitle className="text-2xl">Set Your Password</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-xl sm:text-2xl">Set Your Password</CardTitle>
+            <CardDescription className="text-sm">
               Create a secure password for your {APP_NAME} dashboard
             </CardDescription>
           </CardHeader>
@@ -284,13 +284,13 @@ export default function Index() {
   // Regular login
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
-      <Card className="max-w-md w-full">
+      <Card className="max-w-md w-full shadow-xl">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center">
-            <span className="text-2xl text-white font-bold">Y</span>
+          <div className="mx-auto mb-4 w-16 h-16 sm:w-20 sm:h-20 bg-primary-500 rounded-full flex items-center justify-center shadow-lg">
+            <span className="text-2xl sm:text-3xl text-white font-bold">Y</span>
           </div>
-          <CardTitle className="text-3xl">{APP_NAME}</CardTitle>
-          <CardDescription>Parent Dashboard</CardDescription>
+          <CardTitle className="text-2xl sm:text-3xl">{APP_NAME}</CardTitle>
+          <CardDescription className="text-sm">Parent Dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           {actionData?.error && (

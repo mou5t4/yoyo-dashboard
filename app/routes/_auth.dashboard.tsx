@@ -1,5 +1,5 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useRevalidator } from "@remix-run/react";
+import { useLoaderData, useRevalidator, Link } from "@remix-run/react";
 import { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
@@ -58,10 +58,10 @@ export default function Dashboard() {
   const wifiSignal = getSignalStrength(deviceStatus.signal.wifi);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">
           Monitor your {settings?.deviceName || "YoyoPod"} device
         </p>
       </div>
@@ -74,58 +74,64 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Battery */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Battery className={`h-5 w-5 ${deviceStatus.charging ? 'text-green-500' : 'text-gray-500'}`} />
-              <div>
-                <p className="text-sm font-medium">Battery</p>
-                <p className="text-xs text-gray-500">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <div className="flex-shrink-0">
+                <Battery className={`h-5 w-5 sm:h-6 sm:w-6 ${deviceStatus.charging ? 'text-green-500' : 'text-gray-500'}`} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm sm:text-base font-medium">Battery</p>
+                <p className="text-xs text-gray-500 truncate">
                   {deviceStatus.charging ? "Charging" : "Discharging"}
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold">{deviceStatus.battery}%</p>
-              <Badge variant={batteryLevel === 'critical' ? 'destructive' : 'default'}>
+            <div className="text-right flex-shrink-0">
+              <p className="text-xl sm:text-2xl font-bold">{deviceStatus.battery}%</p>
+              <Badge variant={batteryLevel === 'critical' ? 'destructive' : 'default'} className="mt-1">
                 {batteryLevel}
               </Badge>
             </div>
           </div>
 
-          <Progress value={deviceStatus.battery} className="h-2" />
+          <Progress value={deviceStatus.battery} className="h-2.5" />
 
           {/* WiFi Signal */}
-          <div className="flex items-center justify-between pt-4 border-t">
-            <div className="flex items-center space-x-3">
-              <Wifi className="h-5 w-5 text-primary-500" />
-              <div>
-                <p className="text-sm font-medium">WiFi Signal</p>
-                <p className="text-xs text-gray-500">
+          <div className="flex items-center justify-between pt-4 border-t gap-4">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <div className="flex-shrink-0">
+                <Wifi className="h-5 w-5 sm:h-6 sm:w-6 text-primary-500" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm sm:text-base font-medium">WiFi Signal</p>
+                <p className="text-xs text-gray-500 truncate">
                   {settings?.currentWifiSSID || "Not connected"}
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold">{deviceStatus.signal.wifi}%</p>
-              <Badge variant={wifiSignal === 'poor' ? 'warning' : 'success'}>
+            <div className="text-right flex-shrink-0">
+              <p className="text-xl sm:text-2xl font-bold">{deviceStatus.signal.wifi}%</p>
+              <Badge variant={wifiSignal === 'poor' ? 'warning' : 'success'} className="mt-1">
                 {wifiSignal}
               </Badge>
             </div>
           </div>
 
           {/* Storage */}
-          <div className="flex items-center justify-between pt-4 border-t">
-            <div className="flex items-center space-x-3">
-              <HardDrive className="h-5 w-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium">Storage</p>
-                <p className="text-xs text-gray-500">
+          <div className="flex items-center justify-between pt-4 border-t gap-4">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <div className="flex-shrink-0">
+                <HardDrive className="h-5 w-5 sm:h-6 sm:w-6 text-gray-500" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm sm:text-base font-medium">Storage</p>
+                <p className="text-xs text-gray-500 truncate">
                   {formatBytes(deviceStatus.storage.used)} / {formatBytes(deviceStatus.storage.total)}
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold">
+            <div className="text-right flex-shrink-0">
+              <p className="text-xl sm:text-2xl font-bold">
                 {Math.round((deviceStatus.storage.used / deviceStatus.storage.total) * 100)}%
               </p>
             </div>
@@ -190,31 +196,31 @@ export default function Dashboard() {
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <a href="/settings" className="no-underline">
-              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
-                <Lock className="h-6 w-6" />
-                <span className="text-sm">Lock Device</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <Link to="/settings" className="no-underline">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+                <Lock className="h-6 w-6 sm:h-5 sm:w-5" />
+                <span className="text-xs sm:text-sm font-medium">Lock Device</span>
               </Button>
-            </a>
-            <a href="/location" className="no-underline">
-              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
-                <MapPin className="h-6 w-6" />
-                <span className="text-sm">Locate Now</span>
+            </Link>
+            <Link to="/location" className="no-underline">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+                <MapPin className="h-6 w-6 sm:h-5 sm:w-5" />
+                <span className="text-xs sm:text-sm font-medium">Locate Now</span>
               </Button>
-            </a>
-            <a href="/wifi" className="no-underline">
-              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
-                <Wifi className="h-6 w-6" />
-                <span className="text-sm">WiFi Settings</span>
+            </Link>
+            <Link to="/wifi" className="no-underline">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+                <Wifi className="h-6 w-6 sm:h-5 sm:w-5" />
+                <span className="text-xs sm:text-sm font-medium">WiFi Settings</span>
               </Button>
-            </a>
-            <a href="/content" className="no-underline">
-              <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full touch-manipulation">
-                <Music className="h-6 w-6" />
-                <span className="text-sm">Content</span>
+            </Link>
+            <Link to="/content" className="no-underline">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+                <Music className="h-6 w-6 sm:h-5 sm:w-5" />
+                <span className="text-xs sm:text-sm font-medium">Content</span>
               </Button>
-            </a>
+            </Link>
           </div>
         </CardContent>
       </Card>

@@ -43,13 +43,13 @@ export default function Reports() {
     : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Activity Reports</h1>
-          <p className="text-gray-600 mt-1">Track usage and activity patterns</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Activity Reports</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Track usage and activity patterns</p>
         </div>
-        <Button variant="outline">
+        <Button variant="outline" size="lg" className="w-full sm:w-auto">
           <Download className="h-4 w-4 mr-2" />
           Export Report
         </Button>
@@ -67,24 +67,24 @@ export default function Reports() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Progress value={todayPercentage} className="h-3" />
+            <Progress value={todayPercentage} className="h-2.5 sm:h-3" />
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-primary-500">{stats.today.musicListened}</p>
-                <p className="text-sm text-gray-600">Minutes Music</p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
+                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.musicListened}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Minutes Music</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-primary-500">{stats.today.podcastsListened}</p>
-                <p className="text-sm text-gray-600">Minutes Podcasts</p>
+              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
+                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.podcastsListened}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Minutes Podcasts</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-primary-500">{stats.today.calls}</p>
-                <p className="text-sm text-gray-600">Calls Made</p>
+              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
+                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.calls}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Calls Made</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-primary-500">{stats.today.aiInteractions}</p>
-                <p className="text-sm text-gray-600">AI Chats</p>
+              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
+                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.aiInteractions}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">AI Chats</p>
               </div>
             </div>
           </CardContent>
@@ -99,14 +99,14 @@ export default function Reports() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <p className="text-sm text-gray-600 mb-2">Total Usage</p>
-                <p className="text-3xl font-bold">{formatDuration(stats.week.totalUsage * 60)}</p>
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-xs sm:text-sm text-gray-600 mb-2">Total Usage</p>
+                <p className="text-2xl sm:text-3xl font-bold">{formatDuration(stats.week.totalUsage * 60)}</p>
               </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-2">Daily Average</p>
-                <p className="text-3xl font-bold">{formatDuration(stats.week.dailyAverage * 60)}</p>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-xs sm:text-sm text-gray-600 mb-2">Daily Average</p>
+                <p className="text-2xl sm:text-3xl font-bold">{formatDuration(stats.week.dailyAverage * 60)}</p>
               </div>
             </div>
           </CardContent>
@@ -122,21 +122,21 @@ export default function Reports() {
             <CardDescription>Top content this week</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {stats.week.topContent.map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary-100 text-primary-600 font-semibold">
+                <div key={index} className="flex items-center justify-between gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center space-x-3 min-w-0 flex-1">
+                    <div className="flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary-100 text-primary-600 font-semibold text-sm sm:text-base flex-shrink-0">
                       {index + 1}
                     </div>
-                    <div>
-                      <p className="font-medium">{item.name}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm sm:text-base truncate">{item.name}</p>
                       <Badge variant="outline" className="text-xs capitalize mt-1">
                         {item.type}
                       </Badge>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600 font-medium flex-shrink-0">
                     {formatDuration(item.duration * 60)}
                   </p>
                 </div>

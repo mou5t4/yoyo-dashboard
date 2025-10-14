@@ -31,10 +31,10 @@ export default function Content() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Content Management</h1>
-        <p className="text-gray-600 mt-1">Manage playlists, podcasts, and content filters</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Content Management</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">Manage playlists, podcasts, and content filters</p>
       </div>
 
       {/* Current Playback */}
@@ -75,18 +75,20 @@ export default function Content() {
               <p className="text-sm">Content will appear here once synced</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {contentLibrary.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between gap-3 p-3 sm:p-4 border-2 rounded-xl hover:border-primary-300 transition-all"
                 >
-                  <div className="flex items-center space-x-3">
-                    {getContentIcon(item.type)}
-                    <div>
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-sm text-gray-600">{item.creator}</p>
-                      <div className="flex items-center space-x-2 mt-1">
+                  <div className="flex items-center space-x-3 min-w-0 flex-1">
+                    <div className="flex-shrink-0">
+                      {getContentIcon(item.type)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm sm:text-base truncate">{item.title}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 truncate">{item.creator}</p>
+                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                         <Badge variant="outline" className="text-xs capitalize">
                           {item.type}
                         </Badge>
@@ -99,7 +101,7 @@ export default function Content() {
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 flex-shrink-0">
                     {item.enabled ? (
                       <CheckCircle2 className="h-5 w-5 text-green-500" />
                     ) : null}
@@ -119,27 +121,27 @@ export default function Content() {
           <CardDescription>Control what content is accessible</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Block Explicit Content</p>
-              <p className="text-sm text-gray-500">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-sm sm:text-base">Block Explicit Content</p>
+              <p className="text-xs sm:text-sm text-gray-500">
                 Prevent access to content marked as explicit
               </p>
             </div>
-            <Switch defaultChecked />
+            <Switch defaultChecked className="flex-shrink-0" />
           </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Age-Appropriate Filter</p>
-              <p className="text-sm text-gray-500">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-sm sm:text-base">Age-Appropriate Filter</p>
+              <p className="text-xs sm:text-sm text-gray-500">
                 Only show content suitable for children
               </p>
             </div>
-            <Switch defaultChecked />
+            <Switch defaultChecked className="flex-shrink-0" />
           </div>
 
-          <Button className="w-full">Save Filter Settings</Button>
+          <Button size="lg" className="w-full">Save Filter Settings</Button>
         </CardContent>
       </Card>
     </div>
