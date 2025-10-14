@@ -123,20 +123,21 @@ export async function connectToWiFi(
 
 export async function getCurrentWiFi(): Promise<{ ssid: string; signal: number } | null> {
   try {
-    // Get current connection
-    const { stdout } = await execAsync('nmcli -t -f NAME,DEVICE connection show --active | grep -E "wlan|wifi"');
+    // Get currently connected WiFi network (SSID, not connection name)
+    const { stdout } = await execAsync('nmcli -t -f ACTIVE,SSID,SIGNAL device wifi list | grep "^yes:"');
 
     if (!stdout.trim()) {
       return null;
     }
 
+    // Parse: yes:SSID:SIGNAL
     const parts = stdout.trim().split(':');
-    const ssid = parts[0];
+    if (parts.length < 3) {
+      return null;
+    }
 
-    // Get signal strength for current network
-    const { stdout: signalOutput } = await execAsync(`nmcli -t -f SSID,SIGNAL device wifi list | grep "^${ssid}:"`);
-    const signalParts = signalOutput.trim().split(':');
-    const signal = parseInt(signalParts[1]) || 0;
+    const ssid = parts[1];
+    const signal = parseInt(parts[2]) || 0;
 
     return { ssid, signal };
   } catch (error) {
