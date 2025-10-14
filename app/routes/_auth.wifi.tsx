@@ -1,5 +1,5 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, useActionData, useLoaderData, useFetcher } from "@remix-run/react";
+import { Form, useActionData, useLoaderData, useFetcher, useRouteError, isRouteErrorResponse } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -88,7 +88,10 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function WiFiPage() {
-  const { networks: initialNetworks, currentWiFi } = useLoaderData<typeof loader>();
+  // Safely get loader data with error handling
+  const loaderData = useLoaderData<typeof loader>();
+  const { networks: initialNetworks, currentWiFi } = loaderData || { networks: null, currentWiFi: null };
+  
   const actionData = useActionData<typeof action>();
   const fetcher = useFetcher<typeof loader>();
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
@@ -300,6 +303,53 @@ export default function WiFiPage() {
           )}
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+// Error boundary for WiFi page
+export function ErrorBoundary() {
+  const error = useRouteError();
+  
+  let errorMessage: string;
+  let errorStatus: number;
+
+  if (isRouteErrorResponse(error)) {
+    errorStatus = error.status;
+    errorMessage = error.statusText;
+  } else if (error instanceof Error) {
+    errorStatus = 500;
+    errorMessage = error.message;
+  } else {
+    errorStatus = 500;
+    errorMessage = "An unexpected error occurred";
+  }
+
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">WiFi Configuration</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">Connect to a wireless network</p>
+      </div>
+
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6">
+        <div className="flex items-center">
+          <XCircle className="h-5 w-5 text-red-600 mr-3" />
+          <div>
+            <h3 className="text-lg font-medium text-red-800">Error {errorStatus}</h3>
+            <p className="text-sm text-red-700 mt-1">{errorMessage}</p>
+            <div className="mt-4">
+              <Button
+                onClick={() => window.location.reload()}
+                variant="outline"
+                className="border-red-300 text-red-700 hover:bg-red-100"
+              >
+                Refresh Page
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

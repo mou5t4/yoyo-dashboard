@@ -14,6 +14,8 @@ const sessionStorage = createCookieSessionStorage({
     sameSite: 'lax',
     secrets: [process.env.SESSION_SECRET],
     secure: process.env.NODE_ENV === 'production',
+    // Ensure cookies work on mobile browsers
+    domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
   },
 });
 
