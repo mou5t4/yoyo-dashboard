@@ -1,0 +1,32 @@
+{
+  "contacts": {
+    "title": "Contactos Telefónicos",
+    "subtitle": "Personas que tu hijo puede llamar",
+    "addContact": "Agregar Contacto",
+    "editContact": "Editar Contacto",
+    "deleteContact": "Quitar Contacto",
+    "noContacts": "Sin contactos aún",
+    "name": "Nombre",
+    "phoneNumber": "Número de Teléfono",
+    "relationship": "Relación",
+    "quickDial": "Botón de Marcado Rápido",
+    "isPrimary": "Contacto Principal",
+    "canCall": "Puede llamar a esta persona",
+    "canReceive": "Puede recibir llamadas de esta persona",
+    "relationships": {
+      "parent": "Padre/Madre",
+      "grandparent": "Abuelo/Abuela",
+      "sibling": "Hermano/Hermana",
+      "family": "Familiar",
+      "friend": "Amigo",
+      "other": "Otro"
+    },
+    "contactSaved": "¡Contacto guardado!",
+    "contactDeleted": "Contacto eliminado",
+    "deleteConfirm": "¿Quitar este contacto?",
+    "callHistory": "Llamadas Recientes",
+    "incoming": "Recibidas",
+    "outgoing": "Realizadas",
+    "missed": "Perdidas"
+  }
+}

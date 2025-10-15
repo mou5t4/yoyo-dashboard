@@ -1,0 +1,32 @@
+{
+  "contacts": {
+    "title": "جهات الاتصال",
+    "subtitle": "الأشخاص الذين يمكن لطفلك الاتصال بهم",
+    "addContact": "إضافة جهة اتصال",
+    "editContact": "تعديل جهة الاتصال",
+    "deleteContact": "إزالة جهة الاتصال",
+    "noContacts": "لا توجد جهات اتصال بعد",
+    "name": "الاسم",
+    "phoneNumber": "رقم الهاتف",
+    "relationship": "العلاقة",
+    "quickDial": "زر الاتصال السريع",
+    "isPrimary": "جهة الاتصال الرئيسية",
+    "canCall": "يمكنه الاتصال بهذا الشخص",
+    "canReceive": "يمكنه استقبال مكالمات من هذا الشخص",
+    "relationships": {
+      "parent": "والد/والدة",
+      "grandparent": "جد/جدة",
+      "sibling": "أخ/أخت",
+      "family": "أحد أفراد العائلة",
+      "friend": "صديق",
+      "other": "آخر"
+    },
+    "contactSaved": "تم حفظ جهة الاتصال!",
+    "contactDeleted": "تم إزالة جهة الاتصال",
+    "deleteConfirm": "إزالة جهة الاتصال هذه؟",
+    "callHistory": "المكالمات الأخيرة",
+    "incoming": "واردة",
+    "outgoing": "صادرة",
+    "missed": "فائتة"
+  }
+}

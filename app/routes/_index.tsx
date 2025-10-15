@@ -1,6 +1,7 @@
 import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
@@ -138,6 +139,7 @@ export default function Index() {
   const { isFirstRun, licenseAccepted, setupCompleted } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   // First run: License agreement
   if (isFirstRun && !licenseAccepted) {
@@ -145,56 +147,37 @@ export default function Index() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
         <Card className="max-w-2xl w-full shadow-xl">
           <CardHeader>
-            <CardTitle className="text-2xl sm:text-3xl">Welcome to {APP_NAME}</CardTitle>
-            <CardDescription className="text-sm">Please read and accept the license agreement to continue</CardDescription>
+            <CardTitle className="text-2xl sm:text-3xl">{t("license.title", { appName: APP_NAME })}</CardTitle>
+            <CardDescription className="text-sm">{t("license.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="prose max-w-none mb-6 max-h-96 overflow-y-auto bg-gray-50 p-3 sm:p-4 rounded-lg text-xs sm:text-sm">
-              <h3 className="font-semibold">YoyoPod License Agreement</h3>
-              <p><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
+              <h3 className="font-semibold">{t("license.heading")}</h3>
+              <p><strong>{t("license.lastUpdated")}:</strong> {new Date().toLocaleDateString()}</p>
               
-              <h4 className="font-semibold mt-4">1. Data Collection and Privacy</h4>
-              <p>
-                YoyoPod collects and stores data LOCALLY on this device only. No data is transmitted
-                to cloud services or third parties. All information remains on your device.
-              </p>
+              <h4 className="font-semibold mt-4">{t("license.privacy.title")}</h4>
+              <p>{t("license.privacy.content")}</p>
 
-              <h4 className="font-semibold mt-4">2. COPPA Compliance</h4>
-              <p>
-                This device is designed for use by children. We comply with the Children's Online
-                Privacy Protection Act (COPPA). No personal information about children is collected
-                or shared without parental consent.
-              </p>
+              <h4 className="font-semibold mt-4">{t("license.coppa.title")}</h4>
+              <p>{t("license.coppa.content")}</p>
 
-              <h4 className="font-semibold mt-4">3. GDPR Compliance</h4>
-              <p>
-                For users in the European Union, we comply with GDPR regulations. You have the right
-                to access, modify, or delete any data stored on this device at any time.
-              </p>
+              <h4 className="font-semibold mt-4">{t("license.gdpr.title")}</h4>
+              <p>{t("license.gdpr.content")}</p>
 
-              <h4 className="font-semibold mt-4">4. Liability Limitations</h4>
-              <p>
-                YoyoPod is provided "as is" without warranties of any kind. We are not liable for
-                any damages arising from the use of this device.
-              </p>
+              <h4 className="font-semibold mt-4">{t("license.liability.title")}</h4>
+              <p>{t("license.liability.content")}</p>
 
-              <h4 className="font-semibold mt-4">5. AI Features (if applicable)</h4>
-              <p>
-                If your device includes AI features, conversations may be logged locally for parental
-                review. You can disable this feature in settings.
-              </p>
+              <h4 className="font-semibold mt-4">{t("license.ai.title")}</h4>
+              <p>{t("license.ai.content")}</p>
 
-              <h4 className="font-semibold mt-4">6. Terms of Use</h4>
-              <p>
-                By using this device, you agree to supervise your child's usage and configure
-                appropriate parental controls.
-              </p>
+              <h4 className="font-semibold mt-4">{t("license.terms.title")}</h4>
+              <p>{t("license.terms.content")}</p>
             </div>
 
             <Form method="post" className="space-y-4">
               <input type="hidden" name="intent" value="accept-license" />
               <Button type="submit" className="w-full" size="lg">
-                I Accept the License Agreement
+                {t("license.accept")}
               </Button>
             </Form>
           </CardContent>
@@ -209,9 +192,9 @@ export default function Index() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
         <Card className="max-w-md w-full shadow-xl">
           <CardHeader>
-            <CardTitle className="text-xl sm:text-2xl">Set Your Password</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl">{t("setup.setPassword")}</CardTitle>
             <CardDescription className="text-sm">
-              Create a secure password for your {APP_NAME} dashboard
+              {t("setup.setPasswordDescription", { appName: APP_NAME })}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -226,26 +209,26 @@ export default function Index() {
               <input type="hidden" name="intent" value="set-password" />
               
               <div className="space-y-2">
-                <Label htmlFor="password">New Password</Label>
+                <Label htmlFor="password">{t("setup.newPassword")}</Label>
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
                   minLength={8}
-                  placeholder="Enter your password"
+                  placeholder={t("setup.enterPassword")}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t("setup.confirmPassword")}</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type={showPassword ? "text" : "password"}
                   required
                   minLength={8}
-                  placeholder="Confirm your password"
+                  placeholder={t("setup.confirmYourPassword")}
                 />
               </div>
 
@@ -258,21 +241,21 @@ export default function Index() {
                   className="rounded"
                 />
                 <Label htmlFor="showPassword" className="font-normal cursor-pointer">
-                  Show password
+                  {t("auth.showPassword")}
                 </Label>
               </div>
 
               <div className="text-sm text-gray-600 space-y-1">
-                <p>Password must:</p>
+                <p>{t("setup.passwordRequirements")}</p>
                 <ul className="list-disc list-inside space-y-1">
-                  <li>Be at least 8 characters long</li>
-                  <li>Contain uppercase and lowercase letters</li>
-                  <li>Contain at least one number</li>
+                  <li>{t("setup.passwordLength")}</li>
+                  <li>{t("setup.passwordCase")}</li>
+                  <li>{t("setup.passwordNumber")}</li>
                 </ul>
               </div>
 
               <Button type="submit" className="w-full" size="lg">
-                Complete Setup
+                {t("setup.completeSetup")}
               </Button>
             </Form>
           </CardContent>
@@ -290,7 +273,7 @@ export default function Index() {
             <span className="text-2xl sm:text-3xl text-white font-bold">Y</span>
           </div>
           <CardTitle className="text-2xl sm:text-3xl">{APP_NAME}</CardTitle>
-          <CardDescription className="text-sm">Parent Dashboard</CardDescription>
+          <CardDescription className="text-sm">{t("app.parentDashboard")}</CardDescription>
         </CardHeader>
         <CardContent>
           {actionData?.error && (
@@ -304,7 +287,7 @@ export default function Index() {
             <input type="hidden" name="intent" value="login" />
             
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">{t("auth.username")}</Label>
               <Input
                 id="username"
                 name="username"
@@ -316,13 +299,13 @@ export default function Index() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.password")}</Label>
               <Input
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
                 required
-                placeholder="Enter your password"
+                placeholder={t("setup.enterPassword")}
               />
             </div>
 
@@ -335,17 +318,17 @@ export default function Index() {
                 className="rounded"
               />
               <Label htmlFor="showPassword" className="font-normal cursor-pointer">
-                Show password
+                {t("auth.showPassword")}
               </Label>
             </div>
 
             <Button type="submit" className="w-full" size="lg">
-              Sign In
+              {t("auth.signIn")}
             </Button>
           </Form>
 
           <div className="mt-4 text-center text-sm text-gray-600">
-            <p>Default password: <code className="bg-gray-100 px-2 py-1 rounded">{DEFAULT_PASSWORD}</code></p>
+            <p>{t("auth.defaultPassword")}: <code className="bg-gray-100 px-2 py-1 rounded">{DEFAULT_PASSWORD}</code></p>
           </div>
         </CardContent>
       </Card>

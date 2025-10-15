@@ -1,6 +1,7 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
@@ -74,6 +75,7 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ error: "Invalid action", success: false }, { status: 400 });
 }
 
+
 export default function AudioPage() {
   const { devices, settings } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
@@ -81,12 +83,13 @@ export default function AudioPage() {
   const [inputVolume, setInputVolume] = useState(settings.inputVolume);
   const [outputMuted, setOutputMuted] = useState(settings.outputMuted);
   const [inputMuted, setInputMuted] = useState(settings.inputMuted);
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Audio Settings</h1>
-        <p className="text-gray-600 mt-1">Configure audio input and output</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t("audio.title")}</h1>
+        <p className="text-gray-600 mt-1">{t("audio.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -110,17 +113,17 @@ export default function AudioPage() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Speaker className="h-5 w-5" />
-            <span>Audio Output (Playback)</span>
+            <span>{t("audio.audioOutput")}</span>
           </CardTitle>
-          <CardDescription>Control speaker volume and test playback</CardDescription>
+          <CardDescription>{t("audio.audioOutputDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Output Devices */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">Available Output Devices</Label>
+            <Label className="text-sm font-medium mb-2 block">{t("audio.availableOutputDevices")}</Label>
             <div className="space-y-2">
               {devices.playback.length === 0 ? (
-                <p className="text-sm text-gray-500">No output devices found</p>
+                <p className="text-sm text-gray-500">{t("audio.noInputDevices")}</p>
               ) : (
                 devices.playback.map((device) => (
                   <div
@@ -134,7 +137,7 @@ export default function AudioPage() {
                     </div>
                     {device.isDefault && (
                       <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
-                        Default
+                        {t("common.select")}
                       </span>
                     )}
                   </div>
@@ -146,7 +149,7 @@ export default function AudioPage() {
           {/* Volume Control */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">Output Volume</Label>
+              <Label className="text-sm font-medium">{t("audio.outputVolume")}</Label>
               <span className="text-2xl font-bold text-primary-600">{outputVolume}%</span>
             </div>
 
@@ -176,7 +179,7 @@ export default function AudioPage() {
                   onClick={() => setOutputMuted(!outputMuted)}
                 >
                   {outputMuted ? <VolumeX className="h-4 w-4 mr-2" /> : <Volume2 className="h-4 w-4 mr-2" />}
-                  {outputMuted ? 'Unmute' : 'Mute'}
+                  {outputMuted ? t("audio.unmute") : t("audio.mute")}
                 </Button>
               </Form>
 
@@ -184,7 +187,7 @@ export default function AudioPage() {
                 <input type="hidden" name="intent" value="test-output" />
                 <Button type="submit" variant="outline" className="w-full touch-manipulation">
                   <Play className="h-4 w-4 mr-2" />
-                  Test Sound
+                  {t("audio.testSound")}
                 </Button>
               </Form>
             </div>
@@ -197,17 +200,17 @@ export default function AudioPage() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Mic className="h-5 w-5" />
-            <span>Audio Input (Microphone)</span>
+            <span>{t("audio.audioInput")}</span>
           </CardTitle>
-          <CardDescription>Control microphone volume and test recording</CardDescription>
+          <CardDescription>{t("audio.audioInputDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Input Devices */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">Available Input Devices</Label>
+            <Label className="text-sm font-medium mb-2 block">{t("audio.availableInputDevices")}</Label>
             <div className="space-y-2">
               {devices.capture.length === 0 ? (
-                <p className="text-sm text-gray-500">No input devices found</p>
+                <p className="text-sm text-gray-500">{t("audio.noInputDevices")}</p>
               ) : (
                 devices.capture.map((device) => (
                   <div
@@ -221,7 +224,7 @@ export default function AudioPage() {
                     </div>
                     {device.isDefault && (
                       <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
-                        Default
+                        {t("common.select")}
                       </span>
                     )}
                   </div>
@@ -233,7 +236,7 @@ export default function AudioPage() {
           {/* Volume Control */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">Input Volume</Label>
+              <Label className="text-sm font-medium">{t("audio.inputVolume")}</Label>
               <span className="text-2xl font-bold text-primary-600">{inputVolume}%</span>
             </div>
 
@@ -263,7 +266,7 @@ export default function AudioPage() {
                   onClick={() => setInputMuted(!inputMuted)}
                 >
                   {inputMuted ? <MicOff className="h-4 w-4 mr-2" /> : <Mic className="h-4 w-4 mr-2" />}
-                  {inputMuted ? 'Unmute' : 'Mute'}
+                  {inputMuted ? t("audio.unmute") : t("audio.mute")}
                 </Button>
               </Form>
 
@@ -271,7 +274,7 @@ export default function AudioPage() {
                 <input type="hidden" name="intent" value="test-input" />
                 <Button type="submit" variant="outline" className="w-full touch-manipulation">
                   <Radio className="h-4 w-4 mr-2" />
-                  Test Recording
+                  {t("audio.testRecording")}
                 </Button>
               </Form>
             </div>
@@ -282,24 +285,24 @@ export default function AudioPage() {
       {/* Audio Information */}
       <Card>
         <CardHeader>
-          <CardTitle>Audio System Information</CardTitle>
+          <CardTitle>{t("audio.audioSystemInfo")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-600">Output Devices:</span>
+              <span className="text-gray-600">{t("audio.outputDevices")}:</span>
               <span className="font-medium">{devices.playback.length}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Input Devices:</span>
+              <span className="text-gray-600">{t("audio.inputDevices")}:</span>
               <span className="font-medium">{devices.capture.length}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Current Output:</span>
+              <span className="text-gray-600">{t("audio.currentOutput")}:</span>
               <span className="font-medium">{settings.outputDevice}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Current Input:</span>
+              <span className="text-gray-600">{t("audio.currentInput")}:</span>
               <span className="font-medium">{settings.inputDevice}</span>
             </div>
           </div>

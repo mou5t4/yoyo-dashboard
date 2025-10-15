@@ -1,5 +1,6 @@
 import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,6 +14,10 @@ import { getUserId, logAuditEvent } from "~/lib/auth.server";
 import { aiSettingsSchema } from "~/lib/validation";
 import { Bot, MessageSquare, Shield, CheckCircle2, AlertCircle } from "lucide-react";
 import { formatDate, formatTime, formatDuration } from "~/lib/utils";
+
+export let handle = {
+  i18n: "common",
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -73,9 +78,11 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ success: true, message: "AI settings updated successfully" });
 }
 
+
 export default function AISettings() {
   const { settings, conversations } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
+  const { t } = useTranslation();
 
   const topicFilters = settings?.aiTopicFilters 
     ? JSON.parse(settings.aiTopicFilters) 
@@ -84,8 +91,8 @@ export default function AISettings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">AI Assistant Settings</h1>
-        <p className="text-gray-600 mt-1">Configure AI guardrails and monitoring</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t("ai.title")}</h1>
+        <p className="text-gray-600 mt-1">{t("ai.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -109,17 +116,17 @@ export default function AISettings() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Bot className="h-5 w-5" />
-            <span>AI Configuration</span>
+            <span>{t("ai.title")}</span>
           </CardTitle>
-          <CardDescription>Control AI assistant behavior and limits</CardDescription>
+          <CardDescription>{t("ai.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Enable AI Assistant</Label>
+                <Label>{t("ai.enabled")}</Label>
                 <p className="text-sm text-gray-500">
-                  Allow your child to interact with the AI assistant
+                  {t("ai.enabled")}
                 </p>
               </div>
               <Switch
@@ -129,38 +136,38 @@ export default function AISettings() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="aiDailyLimit">Daily Usage Limit (minutes)</Label>
+              <Label htmlFor="aiDailyLimit">{t("ai.dailyLimit")}</Label>
               <Input
                 id="aiDailyLimit"
                 name="aiDailyLimit"
                 type="number"
                 min="0"
                 defaultValue={settings?.aiDailyLimit || ""}
-                placeholder="No limit"
+                placeholder={t("common.noLimit")}
               />
               <p className="text-sm text-gray-500">
-                Maximum minutes per day for AI interactions
+                {t("ai.dailyLimitDesc")}
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="aiTopicFilters">Blocked Topics</Label>
+              <Label htmlFor="aiTopicFilters">{t("ai.topicFilters")}</Label>
               <Input
                 id="aiTopicFilters"
                 name="aiTopicFilters"
-                placeholder="violence, politics, etc. (comma-separated)"
+                placeholder={t("ai.topicFiltersDesc")}
                 defaultValue={topicFilters.join(', ')}
               />
               <p className="text-sm text-gray-500">
-                Topics the AI should avoid discussing
+                {t("ai.topicFiltersDesc")}
               </p>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Conversation Logging</Label>
+                <Label>{t("ai.conversationLogging")}</Label>
                 <p className="text-sm text-gray-500">
-                  Save conversation transcripts for parental review
+                  {t("ai.conversationLoggingDesc")}
                 </p>
               </div>
               <Switch
@@ -170,7 +177,7 @@ export default function AISettings() {
             </div>
 
             <Button type="submit" className="w-full">
-              Save AI Settings
+              {t("common.save")}
             </Button>
           </Form>
         </CardContent>
@@ -211,15 +218,15 @@ export default function AISettings() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <MessageSquare className="h-5 w-5" />
-            <span>Recent Conversations</span>
+            <span>{t("ai.recentConversations")}</span>
           </CardTitle>
-          <CardDescription>Last 10 AI interactions</CardDescription>
+          <CardDescription>{t("ai.recentConversations")}</CardDescription>
         </CardHeader>
         <CardContent>
           {conversations.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No conversations yet</p>
+              <p>{t("ai.noConversations")}</p>
             </div>
           ) : (
             <div className="space-y-3">

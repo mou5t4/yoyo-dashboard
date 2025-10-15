@@ -1,5 +1,6 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -35,8 +36,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({ stats: mockStats });
 }
 
+
 export default function Reports() {
   const { stats } = useLoaderData<typeof loader>();
+  const { t } = useTranslation();
 
   const todayPercentage = stats.limits.dailyLimit 
     ? (stats.today.totalUsage / stats.limits.dailyLimit) * 100
@@ -46,12 +49,12 @@ export default function Reports() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Activity Reports</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">Track usage and activity patterns</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("reports.title")}</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">{t("reports.subtitle")}</p>
         </div>
         <Button variant="outline" size="lg" className="w-full sm:w-auto">
           <Download className="h-4 w-4 mr-2" />
-          Export Report
+          {t("reports.export")}
         </Button>
       </div>
 

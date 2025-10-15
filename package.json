@@ -16,7 +16,11 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "test": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "i18n:validate": "tsx scripts/validate-translations.ts",
+    "i18n:split": "tsx scripts/split-namespaces.ts",
+    "i18n:merge": "tsx scripts/merge-namespaces.ts",
+    "i18n:coverage": "tsx scripts/translation-coverage.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",
@@ -26,12 +30,19 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "date-fns": "^4.1.0",
+    "i18next": "^23.16.8",
+    "i18next-fs-backend": "^2.6.0",
+    "i18next-http-backend": "^3.0.2",
+    "isbot": "^5.1.31",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.294.0",
     "qrcode": "^1.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^13.5.0",
     "react-leaflet": "^4.2.1",
+    "remix-i18next": "^6.4.1",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
     "winston": "^3.11.0",
@@ -62,4 +73,3 @@
     "seed": "tsx prisma/seed.ts"
   }
 }
-

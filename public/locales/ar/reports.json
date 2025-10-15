@@ -1,0 +1,31 @@
+{
+  "reports": {
+    "title": "النشاط",
+    "subtitle": "شاهد ما فعله طفلك",
+    "dateRange": "الفترة الزمنية",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "thisWeek": "هذا الأسبوع",
+    "lastWeek": "الأسبوع الماضي",
+    "thisMonth": "هذا الشهر",
+    "custom": "نطاق مخصص",
+    "from": "من",
+    "to": "إلى",
+    "overview": "نظرة عامة",
+    "totalUsage": "إجمالي الوقت المستخدم",
+    "contentListened": "المحتوى المُستمع إليه",
+    "callsMade": "المكالمات المُجراة",
+    "mostListened": "الأكثر استماعاً",
+    "usageByDay": "التفصيل اليومي",
+    "usageByType": "حسب النوع",
+    "music": "موسيقى",
+    "podcasts": "قصص",
+    "audiobooks": "كتب صوتية",
+    "ai": "مساعد صوتي",
+    "callHistory": "سجل المكالمات",
+    "locationHistory": "سجل المواقع",
+    "noData": "لا يوجد نشاط لعرضه لهذه الفترة",
+    "export": "تصدير التقرير",
+    "exportSuccess": "تم تصدير التقرير!"
+  }
+}

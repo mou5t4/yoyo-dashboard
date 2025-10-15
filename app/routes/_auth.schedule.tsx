@@ -1,6 +1,7 @@
 import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,6 +14,10 @@ import { getUserId, logAuditEvent } from "~/lib/auth.server";
 import { scheduleSchema } from "~/lib/validation";
 import { DAYS_OF_WEEK } from "~/lib/constants";
 import { Calendar, Plus, Trash2, CheckCircle2, AlertCircle, Clock } from "lucide-react";
+
+export let handle = {
+  i18n: "common",
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const schedules = await prisma.contentSchedule.findMany({
@@ -77,21 +82,23 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ error: "Invalid action", success: false }, { status: 400 });
 }
 
+
 export default function Schedule() {
   const { schedules } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [showAddForm, setShowAddForm] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Usage Schedules</h1>
-          <p className="text-gray-600 mt-1">Set time-based content restrictions</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t("schedule.title")}</h1>
+          <p className="text-gray-600 mt-1">{t("schedule.subtitle")}</p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Schedule
+          {t("schedule.addSchedule")}
         </Button>
       </div>
 
@@ -115,26 +122,26 @@ export default function Schedule() {
       {showAddForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Create New Schedule</CardTitle>
-            <CardDescription>Define when content types are available</CardDescription>
+            <CardTitle>{t("schedule.addSchedule")}</CardTitle>
+            <CardDescription>{t("schedule.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Form method="post" className="space-y-4">
               <input type="hidden" name="intent" value="create" />
 
               <div className="space-y-2">
-                <Label htmlFor="name">Schedule Name *</Label>
+                <Label htmlFor="name">{t("schedule.scheduleName")} *</Label>
                 <Input
                   id="name"
                   name="name"
-                  placeholder="e.g., School Hours"
+                  placeholder={t("schedule.scheduleName")}
                   required
                 />
               </div>
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="dayOfWeek">Day of Week *</Label>
+                  <Label htmlFor="dayOfWeek">{t("schedule.dayOfWeek")} *</Label>
                   <select
                     id="dayOfWeek"
                     name="dayOfWeek"
@@ -150,7 +157,7 @@ export default function Schedule() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="startTime">Start Time *</Label>
+                  <Label htmlFor="startTime">{t("schedule.startTime")} *</Label>
                   <Input
                     id="startTime"
                     name="startTime"
@@ -160,7 +167,7 @@ export default function Schedule() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="endTime">End Time *</Label>
+                  <Label htmlFor="endTime">{t("schedule.endTime")} *</Label>
                   <Input
                     id="endTime"
                     name="endTime"
@@ -182,7 +189,7 @@ export default function Schedule() {
                     className="rounded"
                   />
                   <Label htmlFor="allowMusic" className="font-normal cursor-pointer">
-                    Allow Music
+                    {t("schedule.allowMusic")}
                   </Label>
                 </div>
 
@@ -195,7 +202,7 @@ export default function Schedule() {
                     className="rounded"
                   />
                   <Label htmlFor="allowPodcasts" className="font-normal cursor-pointer">
-                    Allow Podcasts
+                    {t("schedule.allowPodcasts")}
                   </Label>
                 </div>
 
@@ -207,21 +214,21 @@ export default function Schedule() {
                     className="rounded"
                   />
                   <Label htmlFor="allowAI" className="font-normal cursor-pointer">
-                    Allow AI Assistant
+                    {t("schedule.allowAI")}
                   </Label>
                 </div>
               </div>
 
               <div className="flex space-x-2">
                 <Button type="submit" className="flex-1">
-                  Create Schedule
+                  {t("schedule.addSchedule")}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setShowAddForm(false)}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
               </div>
             </Form>

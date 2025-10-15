@@ -211,3 +211,171 @@ a[role="button"],
   animation: fadeIn 0.2s ease-in;
 }
 
+/* RTL Support for Arabic and Persian */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+/* Flip margins and paddings for RTL */
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .mr-3 {
+  margin-right: 0;
+  margin-left: 0.75rem;
+}
+
+[dir="rtl"] .ml-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .ml-3 {
+  margin-left: 0;
+  margin-right: 0.75rem;
+}
+
+[dir="rtl"] .pl-4 {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+[dir="rtl"] .pr-4 {
+  padding-right: 0;
+  padding-left: 1rem;
+}
+
+/* RTL padding rules for sm:px-6 */
+[dir="rtl"] .sm\:pl-6 {
+  padding-left: 0;
+  padding-right: 1.5rem;
+}
+
+[dir="rtl"] .sm\:pr-6 {
+  padding-right: 0;
+  padding-left: 1.5rem;
+}
+
+/* RTL padding rules for lg:px-8 */
+[dir="rtl"] .lg\:pl-8 {
+  padding-left: 0;
+  padding-right: 2rem;
+}
+
+[dir="rtl"] .lg\:pr-8 {
+  padding-right: 0;
+  padding-left: 2rem;
+}
+
+/* Only apply RTL padding to authenticated layout main content */
+[dir="rtl"] main.lg\:pl-64 {
+  padding-left: 0 !important;
+  padding-right: 16rem !important;
+}
+
+[dir="rtl"] .lg\:pr-64 {
+  padding-right: 0 !important;
+  padding-left: 16rem !important;
+}
+
+/* Flip text alignment for RTL */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* Flip float for RTL */
+[dir="rtl"] .float-left {
+  float: right;
+}
+
+[dir="rtl"] .float-right {
+  float: left;
+}
+
+/* Flip border radius for RTL */
+[dir="rtl"] .rounded-l {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+
+[dir="rtl"] .rounded-r {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+
+/* Flip sidebar position for RTL */
+[dir="rtl"] aside {
+  right: 0;
+  left: auto;
+}
+
+/* RTL-specific slide animations */
+@keyframes slideInRTL {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRTL {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Flip mobile menu slide animation for RTL */
+@media (max-width: 1023px) {
+  [dir="rtl"] aside,
+  [dir="rtl"] .animate-slide-in {
+    right: 0;
+    left: auto;
+    animation: slideInRTL 0.3s ease-out;
+  }
+  
+  [dir="rtl"] .animate-slide-out {
+    animation: slideOutRTL 0.3s ease-out;
+  }
+  
+  /* Fix mobile menu panel positioning for RTL - only target mobile menu */
+  [dir="rtl"] .lg\:hidden.fixed.top-0.left-0.bottom-0 {
+    right: 0 !important;
+    left: auto !important;
+  }
+}
+
+/* Ensure proper icon spacing in RTL */
+[dir="rtl"] .space-x-2 > * + * {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .space-x-3 > * + * {
+  margin-left: 0;
+  margin-right: 0.75rem;
+}
+
+[dir="rtl"] .space-x-4 > * + * {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+/* Flip transform for RTL icons that need to be mirrored */
+[dir="rtl"] .rtl-mirror {
+  transform: scaleX(-1);
+}
+

@@ -1,6 +1,7 @@
 import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,6 +14,10 @@ import { prisma } from "~/lib/db.server";
 import { generalSettingsSchema, passwordChangeSchema, systemSettingsSchema } from "~/lib/validation";
 import { CheckCircle2, AlertCircle, Settings as SettingsIcon, Clock, Lock, AlertTriangle, Shield } from "lucide-react";
 import { getSystemTimeInfo, getAvailableTimezones, setSystemDateTime, setSystemTimezone } from "~/services/system.service.server";
+
+export let handle = {
+  i18n: "common",
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -173,10 +178,12 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ error: "Invalid action", success: false }, { status: 400 });
 }
 
+
 export default function Settings() {
   const { settings, systemTimeInfo, availableTimezones } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { t } = useTranslation();
 
   // Update current time display every second
   useEffect(() => {
@@ -203,8 +210,8 @@ export default function Settings() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Manage your device configuration</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("settings.title")}</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{t("settings.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -228,25 +235,25 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-blue-600" />
-            System Settings
+            {t("settings.systemSettings")}
           </CardTitle>
-          <CardDescription>Configure system time, date, and timezone</CardDescription>
+          <CardDescription>{t("settings.systemSettingsDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           {/* Current Time Display */}
           <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
-                <p className="text-sm font-medium text-blue-900 mb-1">Current System Time</p>
+                <p className="text-sm font-medium text-blue-900 mb-1">{t("settings.currentTime")}</p>
                 <p className="text-xl sm:text-2xl font-bold text-blue-950" suppressHydrationWarning>
                   {formatDateTime(currentTime)}
                 </p>
                 <p className="text-xs text-blue-700 mt-1">
-                  Timezone: {settings.timezone || systemTimeInfo.timezone}
+                  {t("settings.timezone")}: {settings.timezone || systemTimeInfo.timezone}
                   {systemTimeInfo.ntpSynchronized && (
                     <span className="ml-2 inline-flex items-center">
                       <CheckCircle2 className="h-3 w-3 mr-1" />
-                      NTP Synced
+                      {t("settings.ntpSynced")}
                     </span>
                   )}
                 </p>
@@ -259,18 +266,18 @@ export default function Settings() {
 
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="datetime" className="text-sm font-medium">Set Date & Time</Label>
+                <Label htmlFor="datetime" className="text-sm font-medium">{t("settings.setDateTime")}</Label>
                 <Input
                   id="datetime"
                   name="datetime"
                   type="datetime-local"
                   step="1"
                 />
-                <p className="text-xs text-gray-500">Leave empty to keep current time</p>
+                <p className="text-xs text-gray-500">{t("settings.leaveEmptyKeepCurrent")}</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="timezone" className="text-sm font-medium">Timezone</Label>
+                <Label htmlFor="timezone" className="text-sm font-medium">{t("settings.timezone")}</Label>
                 <Select
                   id="timezone"
                   name="timezone"
@@ -288,7 +295,7 @@ export default function Settings() {
 
             <Button type="submit" size="lg" className="w-full sm:w-auto">
               <Clock className="h-4 w-4 mr-2" />
-              Update System Settings
+              {t("settings.updateSystemSettings")}
             </Button>
           </Form>
         </CardContent>
@@ -299,9 +306,9 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <SettingsIcon className="h-5 w-5 text-gray-600" />
-            General Settings
+            {t("settings.general")}
           </CardTitle>
-          <CardDescription>Basic device configuration</CardDescription>
+          <CardDescription>{t("settings.generalDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-6">
@@ -309,7 +316,7 @@ export default function Settings() {
 
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="deviceName" className="text-sm font-medium">Device Name</Label>
+                <Label htmlFor="deviceName" className="text-sm font-medium">{t("settings.deviceName")}</Label>
                 <Input
                   id="deviceName"
                   name="deviceName"
@@ -319,7 +326,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="childName" className="text-sm font-medium">Child's Name (Optional)</Label>
+                <Label htmlFor="childName" className="text-sm font-medium">{t("settings.childName")}</Label>
                 <Input
                   id="childName"
                   name="childName"
@@ -328,7 +335,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="maxVolume" className="text-sm font-medium">Maximum Volume (%)</Label>
+                <Label htmlFor="maxVolume" className="text-sm font-medium">{t("settings.maxVolume")}</Label>
                 <Input
                   id="maxVolume"
                   name="maxVolume"
@@ -341,19 +348,19 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dailyUsageLimit" className="text-sm font-medium">Daily Usage Limit (minutes)</Label>
+                <Label htmlFor="dailyUsageLimit" className="text-sm font-medium">{t("settings.dailyUsageLimit")}</Label>
                 <Input
                   id="dailyUsageLimit"
                   name="dailyUsageLimit"
                   type="number"
                   min="0"
                   defaultValue={settings.dailyUsageLimit || ""}
-                  placeholder="No limit"
+                  placeholder={t("common.noLimit")}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bedtimeStart" className="text-sm font-medium">Bedtime Start (HH:mm)</Label>
+                <Label htmlFor="bedtimeStart" className="text-sm font-medium">{t("settings.bedtimeStart")}</Label>
                 <Input
                   id="bedtimeStart"
                   name="bedtimeStart"
@@ -363,7 +370,7 @@ export default function Settings() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bedtimeEnd" className="text-sm font-medium">Bedtime End (HH:mm)</Label>
+                <Label htmlFor="bedtimeEnd" className="text-sm font-medium">{t("settings.bedtimeEnd")}</Label>
                 <Input
                   id="bedtimeEnd"
                   name="bedtimeEnd"
@@ -376,9 +383,9 @@ export default function Settings() {
             <div className="space-y-4 pt-4 border-t">
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-0.5 flex-1 min-w-0">
-                  <Label className="text-sm font-medium">Content Filter</Label>
+                  <Label className="text-sm font-medium">{t("settings.contentFilter")}</Label>
                   <p className="text-xs sm:text-sm text-gray-500">
-                    Enable age-appropriate content filtering
+                    {t("settings.contentFilterDesc")}
                   </p>
                 </div>
                 <Switch
@@ -390,9 +397,9 @@ export default function Settings() {
 
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-0.5 flex-1 min-w-0">
-                  <Label className="text-sm font-medium">Block Explicit Content</Label>
+                  <Label className="text-sm font-medium">{t("settings.explicitContent")}</Label>
                   <p className="text-xs sm:text-sm text-gray-500">
-                    Block content marked as explicit
+                    {t("settings.explicitContentDesc")}
                   </p>
                 </div>
                 <Switch
@@ -404,7 +411,7 @@ export default function Settings() {
             </div>
 
             <Button type="submit" size="lg" className="w-full sm:w-auto">
-              Save Settings
+              {t("common.save")}
             </Button>
           </Form>
         </CardContent>
@@ -415,50 +422,50 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-gray-600" />
-            Change Password
+            {t("settings.changePassword")}
           </CardTitle>
-          <CardDescription>Update your dashboard password</CardDescription>
+          <CardDescription>{t("settings.securityDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-4">
             <input type="hidden" name="intent" value="change-password" />
 
             <div className="space-y-2">
-              <Label htmlFor="currentPassword" className="text-sm font-medium">Current Password</Label>
+              <Label htmlFor="currentPassword" className="text-sm font-medium">{t("settings.currentPassword")}</Label>
               <Input
                 id="currentPassword"
                 name="currentPassword"
                 type="password"
-                placeholder="Enter current password"
+                placeholder={t("settings.currentPassword")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">New Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium">{t("settings.newPassword")}</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 required
                 minLength={8}
-                placeholder="Enter new password"
+                placeholder={t("settings.newPassword")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword" className="text-sm font-medium">{t("settings.confirmPassword")}</Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
                 required
                 minLength={8}
-                placeholder="Confirm new password"
+                placeholder={t("settings.confirmPassword")}
               />
             </div>
 
             <Button type="submit" variant="secondary" size="lg" className="w-full sm:w-auto">
-              Change Password
+              {t("settings.changePasswordButton")}
             </Button>
           </Form>
         </CardContent>
@@ -469,22 +476,22 @@ export default function Settings() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-red-600">
             <AlertTriangle className="h-5 w-5" />
-            Danger Zone
+            {t("settings.advanced")}
           </CardTitle>
-          <CardDescription>Irreversible actions</CardDescription>
+          <CardDescription>{t("settings.advancedDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post">
             <input type="hidden" name="intent" value="factory-reset" />
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">Factory Reset</p>
+                <p className="font-medium">{t("settings.resetDevice")}</p>
                 <p className="text-sm text-gray-500">
-                  Reset device to factory defaults. All data will be lost.
+                  {t("settings.resetDeviceDesc")}
                 </p>
               </div>
               <Button type="submit" variant="destructive">
-                Reset Device
+                {t("settings.resetDevice")}
               </Button>
             </div>
           </Form>

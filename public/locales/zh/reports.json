@@ -1,0 +1,31 @@
+{
+  "reports": {
+    "title": "活动记录",
+    "subtitle": "查看您孩子的活动",
+    "dateRange": "时间段",
+    "today": "今天",
+    "yesterday": "昨天",
+    "thisWeek": "本周",
+    "lastWeek": "上周",
+    "thisMonth": "本月",
+    "custom": "自定义范围",
+    "from": "从",
+    "to": "到",
+    "overview": "概览",
+    "totalUsage": "总使用时间",
+    "contentListened": "已听内容",
+    "callsMade": "拨打通话",
+    "mostListened": "最常听",
+    "usageByDay": "每日明细",
+    "usageByType": "按类型",
+    "music": "音乐",
+    "podcasts": "故事",
+    "audiobooks": "有声读物",
+    "ai": "语音助手",
+    "callHistory": "通话记录",
+    "locationHistory": "位置记录",
+    "noData": "此时间段无活动数据",
+    "export": "导出报告",
+    "exportSuccess": "报告已导出！"
+  }
+}

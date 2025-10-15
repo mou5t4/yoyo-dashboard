@@ -6,11 +6,19 @@ import {
   ScrollRestoration,
   useRouteError,
   isRouteErrorResponse,
+  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useTranslation } from "react-i18next";
+import { useChangeLanguage } from "remix-i18next/react";
 
 import styles from "./styles/global.css?url";
 import { APP_NAME } from "./lib/constants";
+import { i18nServer } from "./i18n.server";
+import { isRTL, defaultLanguage } from "./i18n";
+import { getUserId } from "./lib/session.server";
+import { prisma } from "./lib/db.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
@@ -18,9 +26,40 @@ export const links: LinksFunction = () => [
   { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
 ];
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const userId = await getUserId(request);
+  let locale = defaultLanguage;
+
+  if (userId) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { settings: true },
+    });
+    
+    if (user?.settings?.language) {
+      locale = user.settings.language;
+    }
+  }
+
+  return json({
+    locale,
+    dir: isRTL(locale) ? 'rtl' : 'ltr',
+  });
+}
+
+export let handle = {
+  i18n: "common",
+};
+
 export default function App() {
+  const { locale, dir } = useLoaderData<typeof loader>();
+  const { i18n } = useTranslation();
+  
+  // This hook handles language changes and keeps client/server in sync
+  useChangeLanguage(locale);
+
   return (
-    <html lang="en">
+    <html lang={locale} dir={dir}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -57,7 +96,7 @@ export function ErrorBoundary() {
   }
 
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -1,0 +1,32 @@
+{
+  "contacts": {
+    "title": "Phone Contacts",
+    "subtitle": "People your child can call",
+    "addContact": "Add Contact",
+    "editContact": "Edit Contact",
+    "deleteContact": "Remove Contact",
+    "noContacts": "No contacts yet",
+    "name": "Name",
+    "phoneNumber": "Phone Number",
+    "relationship": "Relationship",
+    "quickDial": "Quick Dial Button",
+    "isPrimary": "Main Contact",
+    "canCall": "Can call this person",
+    "canReceive": "Can receive calls from this person",
+    "relationships": {
+      "parent": "Parent",
+      "grandparent": "Grandparent",
+      "sibling": "Brother/Sister",
+      "family": "Family Member",
+      "friend": "Friend",
+      "other": "Other"
+    },
+    "contactSaved": "Contact saved!",
+    "contactDeleted": "Contact removed",
+    "deleteConfirm": "Remove this contact?",
+    "callHistory": "Recent Calls",
+    "incoming": "Received",
+    "outgoing": "Made",
+    "missed": "Missed"
+  }
+}

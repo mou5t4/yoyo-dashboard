@@ -1,0 +1,34 @@
+{
+  "schedule": {
+    "title": "Tempo Schermo",
+    "subtitle": "Quando il dispositivo è disponibile",
+    "addSchedule": "Aggiungi Blocco Orario",
+    "editSchedule": "Modifica Programma",
+    "deleteSchedule": "Rimuovi Programma",
+    "noSchedules": "Nessun programma impostato",
+    "scheduleName": "Nome",
+    "dayOfWeek": "Giorno",
+    "startTime": "Ora Inizio",
+    "endTime": "Ora Fine",
+    "allowMusic": "Consenti Musica",
+    "allowPodcasts": "Consenti Storie",
+    "allowAI": "Consenti Assistente Vocale",
+    "enabled": "Attivo",
+    "days": {
+      "0": "Domenica",
+      "1": "Lunedì",
+      "2": "Martedì",
+      "3": "Mercoledì",
+      "4": "Giovedì",
+      "5": "Venerdì",
+      "6": "Sabato"
+    },
+    "scheduleSaved": "Programma salvato!",
+    "scheduleDeleted": "Programma rimosso",
+    "deleteConfirm": "Rimuovere questo programma?",
+    "bedtime": "Modalità Ora di Andare a Letto",
+    "bedtimeStart": "Inizio Ora di Andare a Letto",
+    "bedtimeEnd": "Fine Ora di Andare a Letto",
+    "bedtimeDesc": "Il dispositivo si blocca automaticamente durante l'ora di andare a letto"
+  }
+}

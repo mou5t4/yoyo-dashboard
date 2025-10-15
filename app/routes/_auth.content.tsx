@@ -1,5 +1,6 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -14,8 +15,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({ contentLibrary, currentPlayback });
 }
 
+
 export default function Content() {
   const { contentLibrary, currentPlayback } = useLoaderData<typeof loader>();
+  const { t } = useTranslation();
 
   const getContentIcon = (type: string) => {
     switch (type) {
@@ -33,8 +36,8 @@ export default function Content() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Content Management</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Manage playlists, podcasts, and content filters</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("content.title")}</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{t("content.subtitle")}</p>
       </div>
 
       {/* Current Playback */}
@@ -43,7 +46,7 @@ export default function Content() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Play className="h-5 w-5" />
-              <span>Now Playing</span>
+              <span>{t("content.currentlyPlaying")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -64,15 +67,15 @@ export default function Content() {
       {/* Content Library */}
       <Card>
         <CardHeader>
-          <CardTitle>Content Library</CardTitle>
-          <CardDescription>Available playlists, podcasts, and albums</CardDescription>
+          <CardTitle>{t("content.contentLibrary")}</CardTitle>
+          <CardDescription>{t("content.availableContent")}</CardDescription>
         </CardHeader>
         <CardContent>
           {contentLibrary.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <Music className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No content available</p>
-              <p className="text-sm">Content will appear here once synced</p>
+              <p>{t("content.noContentAvailable")}</p>
+              <p className="text-sm">{t("content.contentWillAppear")}</p>
             </div>
           ) : (
             <div className="space-y-2 sm:space-y-3">
@@ -94,7 +97,7 @@ export default function Content() {
                         </Badge>
                         {item.explicit && (
                           <Badge variant="warning" className="text-xs">
-                            Explicit
+                            {t("content.explicit")}
                           </Badge>
                         )}
                       </div>
@@ -117,15 +120,15 @@ export default function Content() {
       {/* Content Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Content Filters</CardTitle>
-          <CardDescription>Control what content is accessible</CardDescription>
+          <CardTitle>{t("content.contentFilters")}</CardTitle>
+          <CardDescription>{t("content.controlWhatContent")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm sm:text-base">Block Explicit Content</p>
+              <p className="font-medium text-sm sm:text-base">{t("content.explicitContent")}</p>
               <p className="text-xs sm:text-sm text-gray-500">
-                Prevent access to content marked as explicit
+                {t("content.preventAccess")}
               </p>
             </div>
             <Switch defaultChecked className="flex-shrink-0" />
@@ -133,15 +136,15 @@ export default function Content() {
 
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm sm:text-base">Age-Appropriate Filter</p>
+              <p className="font-medium text-sm sm:text-base">{t("content.ageAppropriateFilter")}</p>
               <p className="text-xs sm:text-sm text-gray-500">
-                Only show content suitable for children
+                {t("content.onlyShowContent")}
               </p>
             </div>
             <Switch defaultChecked className="flex-shrink-0" />
           </div>
 
-          <Button size="lg" className="w-full">Save Filter Settings</Button>
+          <Button size="lg" className="w-full">{t("content.saveFilterSettings")}</Button>
         </CardContent>
       </Card>
     </div>

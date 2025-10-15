@@ -1,6 +1,7 @@
 import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useFetcher, Form, useActionData } from "@remix-run/react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -56,10 +57,12 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ success: false, error: "Invalid action" }, { status: 400 });
 }
 
+
 export default function BluetoothPage() {
   const { pairedDevices, availableDevices: initialAvailable } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const fetcher = useFetcher<typeof loader>();
+  const { t } = useTranslation();
 
   // Auto-fetch available devices on mount if not already loaded
   useEffect(() => {
@@ -86,8 +89,8 @@ export default function BluetoothPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Bluetooth</h1>
-        <p className="text-gray-600 mt-1">Manage Bluetooth connections</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t("bluetooth.title")}</h1>
+        <p className="text-gray-600 mt-1">{t("bluetooth.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -109,14 +112,14 @@ export default function BluetoothPage() {
       {/* Paired Devices */}
       <Card>
         <CardHeader>
-          <CardTitle>Paired Devices</CardTitle>
-          <CardDescription>Devices that are already paired</CardDescription>
+          <CardTitle>{t("bluetooth.pairedDevices")}</CardTitle>
+          <CardDescription>{t("bluetooth.pairedDevices")}</CardDescription>
         </CardHeader>
         <CardContent>
           {pairedDevices.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Bluetooth className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No paired devices</p>
+              <p>{t("bluetooth.noDevices")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -134,19 +137,19 @@ export default function BluetoothPage() {
                   </div>
                   <div className="flex items-center space-x-2">
                     {device.connected ? (
-                      <Badge variant="success">Connected</Badge>
+                      <Badge variant="success">{t("bluetooth.connected")}</Badge>
                     ) : (
                       <Form method="post">
                         <input type="hidden" name="intent" value="connect" />
                         <input type="hidden" name="address" value={device.address} />
-                        <Button type="submit" size="sm">Connect</Button>
+                        <Button type="submit" size="sm">{t("bluetooth.connect")}</Button>
                       </Form>
                     )}
                     <Form method="post">
                       <input type="hidden" name="intent" value="forget" />
                       <input type="hidden" name="address" value={device.address} />
                       <Button type="submit" variant="ghost" size="sm" className="text-red-600">
-                        Forget
+                        {t("bluetooth.unpair")}
                       </Button>
                     </Form>
                   </div>
@@ -162,8 +165,8 @@ export default function BluetoothPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Available Devices</CardTitle>
-              <CardDescription>Nearby Bluetooth devices</CardDescription>
+              <CardTitle>{t("bluetooth.availableDevices")}</CardTitle>
+              <CardDescription>{t("bluetooth.availableDevices")}</CardDescription>
             </div>
             <Button
               variant="outline"
@@ -175,7 +178,7 @@ export default function BluetoothPage() {
               className="touch-manipulation"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${isScanning ? 'animate-spin' : ''}`} />
-              Scan
+              {t("common.search")}
             </Button>
           </div>
         </CardHeader>
@@ -183,14 +186,14 @@ export default function BluetoothPage() {
           {isScanning ? (
             <div className="text-center py-8 text-gray-500">
               <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin" />
-              <p>Scanning for devices...</p>
-              <p className="text-sm">This may take a moment</p>
+              <p>{t("bluetooth.scanning")}</p>
+              <p className="text-sm">{t("common.loading")}</p>
             </div>
           ) : availableDevices.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Bluetooth className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No devices found</p>
-              <p className="text-sm">Click scan to search for devices</p>
+              <p>{t("bluetooth.noDevices")}</p>
+              <p className="text-sm">{t("common.search")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -211,7 +214,7 @@ export default function BluetoothPage() {
                     <Form method="post">
                       <input type="hidden" name="intent" value="pair" />
                       <input type="hidden" name="address" value={device.address} />
-                      <Button type="submit" size="sm">Pair</Button>
+                      <Button type="submit" size="sm">{t("bluetooth.pair")}</Button>
                     </Form>
                   </div>
                 ))}

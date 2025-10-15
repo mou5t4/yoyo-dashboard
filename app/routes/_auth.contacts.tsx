@@ -1,6 +1,7 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -11,6 +12,10 @@ import { prisma } from "~/lib/db.server";
 import { getUserId, logAuditEvent } from "~/lib/auth.server";
 import { contactSchema } from "~/lib/validation";
 import { Phone, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, Star } from "lucide-react";
+
+export let handle = {
+  i18n: "common",
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const contacts = await prisma.contact.findMany({
@@ -85,21 +90,23 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ error: "Invalid action", success: false }, { status: 400 });
 }
 
+
 export default function Contacts() {
   const { contacts } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [showAddForm, setShowAddForm] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Contacts</h1>
-          <p className="text-gray-600 mt-1">Manage VoIP contacts for your child</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t("contacts.title")}</h1>
+          <p className="text-gray-600 mt-1">{t("contacts.subtitle")}</p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Contact
+          {t("contacts.addContact")}
         </Button>
       </div>
 
@@ -123,8 +130,8 @@ export default function Contacts() {
       {showAddForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add New Contact</CardTitle>
-            <CardDescription>Create a contact for your child to call</CardDescription>
+            <CardTitle>{t("contacts.addContact")}</CardTitle>
+            <CardDescription>{t("contacts.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Form method="post" className="space-y-4">
@@ -132,44 +139,44 @@ export default function Contacts() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
+                  <Label htmlFor="name">{t("contacts.name")} *</Label>
                   <Input
                     id="name"
                     name="name"
-                    placeholder="e.g., Mom"
+                    placeholder={t("contacts.name")}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phoneNumber">Phone Number *</Label>
+                  <Label htmlFor="phoneNumber">{t("contacts.phoneNumber")} *</Label>
                   <Input
                     id="phoneNumber"
                     name="phoneNumber"
                     type="tel"
-                    placeholder="+1 555-1234"
+                    placeholder={t("contacts.phoneNumber")}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="relationship">Relationship</Label>
+                  <Label htmlFor="relationship">{t("contacts.relationship")}</Label>
                   <Input
                     id="relationship"
                     name="relationship"
-                    placeholder="e.g., parent"
+                    placeholder={t("contacts.relationship")}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="quickDial">Quick Dial (1-9)</Label>
+                  <Label htmlFor="quickDial">{t("contacts.quickDial")}</Label>
                   <Input
                     id="quickDial"
                     name="quickDial"
                     type="number"
                     min="1"
                     max="9"
-                    placeholder="Optional"
+                    placeholder={t("common.optional")}
                   />
                 </div>
               </div>
@@ -183,7 +190,7 @@ export default function Contacts() {
                     className="rounded"
                   />
                   <Label htmlFor="isPrimary" className="font-normal cursor-pointer">
-                    Set as primary contact
+                    {t("contacts.isPrimary")}
                   </Label>
                 </div>
 
@@ -196,7 +203,7 @@ export default function Contacts() {
                     className="rounded"
                   />
                   <Label htmlFor="canCall" className="font-normal cursor-pointer">
-                    Child can call this contact
+                    {t("contacts.canCall")}
                   </Label>
                 </div>
 
@@ -209,21 +216,21 @@ export default function Contacts() {
                     className="rounded"
                   />
                   <Label htmlFor="canReceive" className="font-normal cursor-pointer">
-                    Can receive calls from this contact
+                    {t("contacts.canReceive")}
                   </Label>
                 </div>
               </div>
 
               <div className="flex space-x-2">
                 <Button type="submit" className="flex-1">
-                  Add Contact
+                  {t("contacts.addContact")}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setShowAddForm(false)}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
               </div>
             </Form>
@@ -237,8 +244,8 @@ export default function Contacts() {
           <Card>
             <CardContent className="py-12 text-center">
               <Phone className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <p className="text-gray-600">No contacts yet</p>
-              <p className="text-sm text-gray-500 mt-1">Add your first contact to get started</p>
+              <p className="text-gray-600">{t("contacts.noContacts")}</p>
+              <p className="text-sm text-gray-500 mt-1">{t("contacts.addContact")}</p>
             </CardContent>
           </Card>
         ) : (

@@ -1,0 +1,31 @@
+{
+  "reports": {
+    "title": "Aktivität",
+    "subtitle": "Sehen Sie, was Ihr Kind gemacht hat",
+    "dateRange": "Zeitraum",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "thisWeek": "Diese Woche",
+    "lastWeek": "Letzte Woche",
+    "thisMonth": "Dieser Monat",
+    "custom": "Benutzerdefinierter Bereich",
+    "from": "Von",
+    "to": "Bis",
+    "overview": "Übersicht",
+    "totalUsage": "Gesamtnutzungszeit",
+    "contentListened": "Angehörte Inhalte",
+    "callsMade": "Getätigte Anrufe",
+    "mostListened": "Am meisten gehört",
+    "usageByDay": "Tägliche Aufschlüsselung",
+    "usageByType": "Nach Typ",
+    "music": "Musik",
+    "podcasts": "Geschichten",
+    "audiobooks": "Hörbücher",
+    "ai": "Sprachassistent",
+    "callHistory": "Anrufverlauf",
+    "locationHistory": "Standortverlauf",
+    "noData": "Keine Aktivität für diesen Zeitraum anzuzeigen",
+    "export": "Bericht exportieren",
+    "exportSuccess": "Bericht exportiert!"
+  }
+}

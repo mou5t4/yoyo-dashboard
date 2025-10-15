@@ -1,6 +1,7 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData, useFetcher, useRouteError, isRouteErrorResponse } from "@remix-run/react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -87,6 +88,7 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ error: "Invalid action", success: false }, { status: 400 });
 }
 
+
 export default function WiFiPage() {
   // Safely get loader data with error handling
   const loaderData = useLoaderData<typeof loader>();
@@ -98,6 +100,7 @@ export default function WiFiPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const { t } = useTranslation();
 
   // Auto-fetch networks on mount if not already loaded
   useEffect(() => {
@@ -124,8 +127,8 @@ export default function WiFiPage() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">WiFi Configuration</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Connect to a wireless network</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("wifi.title")}</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{t("wifi.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -149,7 +152,7 @@ export default function WiFiPage() {
       {currentWiFi && (
         <Card>
           <CardHeader>
-            <CardTitle>Current Connection</CardTitle>
+            <CardTitle>{t("wifi.currentNetwork")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -157,10 +160,10 @@ export default function WiFiPage() {
                 <Wifi className="h-5 w-5 text-green-500" />
                 <div>
                   <p className="font-medium">{currentWiFi.ssid}</p>
-                  <p className="text-sm text-gray-500">Signal: {currentWiFi.signal}%</p>
+                  <p className="text-sm text-gray-500">{t("wifi.signalQuality")}: {currentWiFi.signal}%</p>
                 </div>
               </div>
-              <Badge variant="success">Connected</Badge>
+              <Badge variant="success">{t("dashboard.connected")}</Badge>
             </div>
           </CardContent>
         </Card>
@@ -171,8 +174,8 @@ export default function WiFiPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Available Networks</CardTitle>
-              <CardDescription>Select a network to connect</CardDescription>
+              <CardTitle>{t("wifi.availableNetworks")}</CardTitle>
+              <CardDescription>{t("wifi.networkName")}</CardDescription>
             </div>
             <Button
               variant="outline"
@@ -184,7 +187,7 @@ export default function WiFiPage() {
               className="touch-manipulation"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-              Scan
+              {t("wifi.scanNetworks")}
             </Button>
           </div>
         </CardHeader>
@@ -192,14 +195,14 @@ export default function WiFiPage() {
           {isLoading ? (
             <div className="text-center py-8 text-gray-500">
               <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin" />
-              <p>Scanning for networks...</p>
-              <p className="text-sm">This may take a few seconds</p>
+              <p>{t("wifi.scanning")}</p>
+              <p className="text-sm">{t("common.loading")}</p>
             </div>
           ) : networks.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Wifi className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No networks found</p>
-              <p className="text-sm">Click scan to search for networks</p>
+              <p>{t("common.noData")}</p>
+              <p className="text-sm">{t("wifi.scanNetworks")}</p>
             </div>
           ) : (
             <div className="space-y-2 sm:space-y-3">
@@ -253,14 +256,14 @@ export default function WiFiPage() {
 
                       {network.security !== 'open' && (
                         <div className="space-y-2">
-                          <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                          <Label htmlFor="password" className="text-sm font-medium">{t("wifi.password")}</Label>
                           <Input
                             id="password"
                             name="password"
                             type={showPassword ? "text" : "password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter WiFi password"
+                            placeholder={t("wifi.enterPassword")}
                             required
                           />
                           <div className="flex items-center space-x-2">
@@ -272,7 +275,7 @@ export default function WiFiPage() {
                               className="rounded h-4 w-4"
                             />
                             <Label htmlFor="showPassword" className="text-sm font-normal cursor-pointer">
-                              Show password
+                              {t("auth.showPassword")}
                             </Label>
                           </div>
                         </div>
@@ -280,7 +283,7 @@ export default function WiFiPage() {
 
                       <div className="flex gap-2 sm:gap-3">
                         <Button type="submit" size="lg" className="flex-1 touch-manipulation">
-                          Connect
+                          {t("wifi.connect")}
                         </Button>
                         <Button
                           type="button"
@@ -292,7 +295,7 @@ export default function WiFiPage() {
                           }}
                           className="touch-manipulation"
                         >
-                          Cancel
+                          {t("common.cancel")}
                         </Button>
                       </div>
                     </Form>

@@ -1,6 +1,7 @@
 import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,7 +14,12 @@ import { prisma } from "~/lib/db.server";
 import { getUserId, logAuditEvent } from "~/lib/auth.server";
 import { geofenceSchema, locationSettingsSchema } from "~/lib/validation";
 import { MapPin, Plus, Trash2, CheckCircle2, AlertCircle } from "lucide-react";
-import { formatDate, formatTime } from "~/lib/utils";
+import { formatDateOnly, formatTimeOnly } from "~/lib/format";
+import type { SupportedLanguage } from "~/i18n";
+
+export let handle = {
+  i18n: "common",
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -115,16 +121,31 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ error: "Invalid action", success: false }, { status: 400 });
 }
 
+
 export default function Location() {
   const { currentLocation, locationHistory, geofences, settings } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [showAddGeofence, setShowAddGeofence] = useState(false);
+  const { t } = useTranslation();
+
+  // Get current locale from settings or use English as default
+  const currentLocale = (settings?.language as SupportedLanguage) || 'en';
+  
+  const formatDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return formatDateOnly(d, currentLocale);
+  };
+  
+  const formatTime = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return formatTimeOnly(d, currentLocale);
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Location & Geofencing</h1>
-        <p className="text-gray-600 mt-1">Track device location and set up safe zones</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t("location.title")}</h1>
+        <p className="text-gray-600 mt-1">{t("location.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -146,8 +167,8 @@ export default function Location() {
       {/* Location Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Location Settings</CardTitle>
-          <CardDescription>Enable or disable location features</CardDescription>
+          <CardTitle>{t("location.settings")}</CardTitle>
+          <CardDescription>{t("location.settingsDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-4">
@@ -156,9 +177,9 @@ export default function Location() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Location Tracking</Label>
+                  <Label>{t("location.tracking")}</Label>
                   <p className="text-sm text-gray-500">
-                    Track device location in real-time
+                    {t("location.trackingDescription")}
                   </p>
                 </div>
                 <Switch
@@ -169,9 +190,9 @@ export default function Location() {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Geofencing</Label>
+                  <Label>{t("location.geofencing")}</Label>
                   <p className="text-sm text-gray-500">
-                    Receive alerts when device enters/exits zones
+                    {t("location.geofencingDescription")}
                   </p>
                 </div>
                 <Switch
@@ -181,7 +202,7 @@ export default function Location() {
               </div>
             </div>
 
-            <Button type="submit">Save Settings</Button>
+            <Button type="submit">{t("location.saveSettings")}</Button>
           </Form>
         </CardContent>
       </Card>
@@ -192,23 +213,23 @@ export default function Location() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <MapPin className="h-5 w-5" />
-              <span>Current Location</span>
+              <span>{t("location.currentLocation")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="bg-gray-100 rounded-lg p-4 space-y-1">
-              <p className="font-medium">{currentLocation.address || "Location tracked"}</p>
+              <p className="font-medium">{currentLocation.address || t("location.locationTracked")}</p>
               <p className="text-sm text-gray-600">
-                Lat: {currentLocation.latitude.toFixed(6)}, Lon: {currentLocation.longitude.toFixed(6)}
+                {t("location.latitude")}: {currentLocation.latitude.toFixed(6)}, {t("location.longitude")}: {currentLocation.longitude.toFixed(6)}
               </p>
-              <p className="text-sm text-gray-600">Accuracy: {currentLocation.accuracy}m</p>
+              <p className="text-sm text-gray-600">{t("location.accuracy")}: {currentLocation.accuracy}m</p>
               <p className="text-xs text-gray-500">
-                Last updated: {formatTime(currentLocation.timestamp)}
+                {t("location.lastUpdated")}: {formatTime(currentLocation.timestamp)}
               </p>
             </div>
             <Button variant="outline" className="w-full">
               <MapPin className="h-4 w-4 mr-2" />
-              Locate Now
+              {t("location.locateNow")}
             </Button>
           </CardContent>
         </Card>
@@ -219,12 +240,12 @@ export default function Location() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Geofences</CardTitle>
-              <CardDescription>Safe zones for your child</CardDescription>
+            <CardTitle>{t("location.geofences")}</CardTitle>
+            <CardDescription>{t("location.geofencesDescription")}</CardDescription>
             </div>
             <Button onClick={() => setShowAddGeofence(!showAddGeofence)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Geofence
+              {t("location.addGeofence")}
             </Button>
           </div>
         </CardHeader>
@@ -236,17 +257,17 @@ export default function Location() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="name">Geofence Name *</Label>
+                    <Label htmlFor="name">{t("location.geofenceName")} *</Label>
                     <Input
                       id="name"
                       name="name"
-                      placeholder="e.g., Home, School"
+                      placeholder={t("location.geofenceNamePlaceholder")}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="latitude">Latitude *</Label>
+                    <Label htmlFor="latitude">{t("location.latitude")} *</Label>
                     <Input
                       id="latitude"
                       name="latitude"
@@ -259,7 +280,7 @@ export default function Location() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="longitude">Longitude *</Label>
+                    <Label htmlFor="longitude">{t("location.longitude")} *</Label>
                     <Input
                       id="longitude"
                       name="longitude"
@@ -272,7 +293,7 @@ export default function Location() {
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="radius">Radius (meters) *</Label>
+                    <Label htmlFor="radius">{t("location.radius")} *</Label>
                     <Input
                       id="radius"
                       name="radius"
@@ -295,7 +316,7 @@ export default function Location() {
                       className="rounded"
                     />
                     <Label htmlFor="alertOnExit" className="font-normal cursor-pointer">
-                      Alert when device exits this zone
+                      {t("location.exitAlert")}
                     </Label>
                   </div>
 
@@ -307,21 +328,21 @@ export default function Location() {
                       className="rounded"
                     />
                     <Label htmlFor="alertOnEnter" className="font-normal cursor-pointer">
-                      Alert when device enters this zone
+                      {t("location.enterAlert")}
                     </Label>
                   </div>
                 </div>
 
                 <div className="flex space-x-2">
                   <Button type="submit" className="flex-1">
-                    Create Geofence
+                    {t("location.createGeofence")}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setShowAddGeofence(false)}
                   >
-                    Cancel
+                    {t("location.cancel")}
                   </Button>
                 </div>
               </Form>
@@ -331,7 +352,7 @@ export default function Location() {
           {geofences.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No geofences configured</p>
+              <p>{t("location.noGeofences")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -386,7 +407,7 @@ export default function Location() {
       {locationHistory.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Location History (Last 7 Days)</CardTitle>
+            <CardTitle>{t("location.locationHistory")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -397,10 +418,10 @@ export default function Location() {
                 >
                   <div>
                     <p className="text-sm font-medium">
-                      {location.address || "Location tracked"}
+                      {location.address || t("location.locationTracked")}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {formatDate(location.timestamp)} at {formatTime(location.timestamp)}
+                      {formatDate(location.timestamp)} {t("location.lastUpdated")} {formatTime(location.timestamp)}
                     </p>
                   </div>
                   <Badge variant="outline" className="text-xs">
