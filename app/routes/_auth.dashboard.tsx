@@ -1,6 +1,6 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useRevalidator, Link } from "@remix-run/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Progress } from "~/components/ui/progress";
@@ -21,7 +21,8 @@ import {
   Music, 
   Lock,
   AlertTriangle,
-  CheckCircle2
+  CheckCircle2,
+  Clock
 } from "lucide-react";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -44,6 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export default function Dashboard() {
   const { deviceStatus, currentPlayback, currentLocation, settings } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
@@ -54,8 +56,30 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [revalidator]);
 
+  // Update clock every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const batteryLevel = getBatteryLevel(deviceStatus.battery);
   const wifiSignal = getSignalStrength(deviceStatus.signal.wifi);
+
+  const formatDateTime = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+      timeZone: settings?.timezone || 'UTC',
+    }).format(date);
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -65,6 +89,25 @@ export default function Dashboard() {
           Monitor your {settings?.deviceName || "YoyoPod"} device
         </p>
       </div>
+
+      {/* Current Time Display */}
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <CardContent className="py-4 sm:py-6">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex h-12 w-12 rounded-full bg-blue-100 items-center justify-center flex-shrink-0">
+                <Clock className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xs sm:text-sm font-medium text-blue-900 mb-1">Current Time</p>
+                <p className="text-lg sm:text-xl md:text-2xl font-bold text-blue-950" suppressHydrationWarning>
+                  {formatDateTime(currentTime)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Device Status */}
       <Card>

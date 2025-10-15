@@ -56,6 +56,9 @@ model Settings {
   contentFilterEnabled  Boolean  @default(true)
   explicitContentBlocked Boolean @default(true)
   
+  // System Settings
+  timezone              String   @default("UTC")
+  
   // AI Settings (for AI variant)
   aiEnabled             Boolean  @default(false)
   aiDailyLimit          Int?     // minutes

@@ -90,6 +90,12 @@ export const locationSettingsSchema = z.object({
   geofencingEnabled: z.boolean(),
 });
 
+// System settings schemas
+export const systemSettingsSchema = z.object({
+  datetime: z.string().optional(),
+  timezone: z.string().min(1, 'Timezone is required'),
+});
+
 // Type exports
 export type LoginInput = z.infer<typeof loginSchema>;
 export type PasswordChangeInput = z.infer<typeof passwordChangeSchema>;
@@ -100,4 +106,5 @@ export type GeofenceInput = z.infer<typeof geofenceSchema>;
 export type ScheduleInput = z.infer<typeof scheduleSchema>;
 export type AISettingsInput = z.infer<typeof aiSettingsSchema>;
 export type LocationSettingsInput = z.infer<typeof locationSettingsSchema>;
+export type SystemSettingsInput = z.infer<typeof systemSettingsSchema>;
 
