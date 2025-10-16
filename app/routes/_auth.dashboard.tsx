@@ -79,28 +79,25 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("dashboard.title")}</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4), 0 4px 24px rgba(0,0,0,0.2)' }}>{t("dashboard.title")}</h1>
+        <p className="text-base sm:text-lg text-white/90 mt-2" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
           {t("dashboard.subtitle", { deviceName: settings?.deviceName || "YoyoPod" })}
         </p>
       </div>
 
       {/* Current Time Display */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-        <CardContent className="py-4 sm:py-6">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex h-12 w-12 rounded-full bg-blue-100 items-center justify-center flex-shrink-0">
-                <Clock className="h-6 w-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-blue-900 mb-1">{t("dashboard.currentTime")}</p>
-                <p className="text-lg sm:text-xl md:text-2xl font-bold text-blue-950" suppressHydrationWarning>
-                  {formatDateTime(currentTime)}
-                </p>
-              </div>
+      <Card className="bg-gradient-to-r from-purple-500/20 to-blue-500/20">
+        <CardContent className="flex items-center justify-start h-20 sm:h-24" style={{ padding: '32px' }}>
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center flex-shrink-0">
+              <Clock className="h-6 w-6 text-white" />
+            </div>
+            <div className="flex items-center">
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-white" suppressHydrationWarning>
+                {formatDateTime(currentTime)}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -117,17 +114,17 @@ export default function Dashboard() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div className="flex-shrink-0">
-                <Battery className={`h-5 w-5 sm:h-6 sm:w-6 ${deviceStatus.charging ? 'text-green-500' : 'text-gray-500'}`} />
+                <Battery className={`h-5 w-5 sm:h-6 sm:w-6 ${deviceStatus.charging ? 'text-green-300' : 'text-white/70'}`} />
               </div>
               <div className="min-w-0">
-                <p className="text-sm sm:text-base font-medium">{t("dashboard.battery")}</p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-sm sm:text-base font-medium text-white">{t("dashboard.battery")}</p>
+                <p className="text-xs text-white/70 truncate">
                   {deviceStatus.charging ? t("dashboard.charging") : t("dashboard.discharging")}
                 </p>
               </div>
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-xl sm:text-2xl font-bold">{deviceStatus.battery}%</p>
+              <p className="text-xl sm:text-2xl font-bold text-white">{deviceStatus.battery}%</p>
               <Badge variant={batteryLevel === 'critical' ? 'destructive' : 'default'} className="mt-1">
                 {batteryLevel}
               </Badge>
@@ -137,20 +134,20 @@ export default function Dashboard() {
           <Progress value={deviceStatus.battery} className="h-2.5" />
 
           {/* WiFi Signal */}
-          <div className="flex items-center justify-between pt-4 border-t gap-4">
+          <div className="flex items-center justify-between pt-4 border-t border-white/20 gap-4">
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div className="flex-shrink-0">
-                <Wifi className="h-5 w-5 sm:h-6 sm:w-6 text-primary-500" />
+                <Wifi className="h-5 w-5 sm:h-6 sm:w-6 text-blue-300" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm sm:text-base font-medium">{t("dashboard.wifi")}</p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-sm sm:text-base font-medium text-white">{t("dashboard.wifi")}</p>
+                <p className="text-xs text-white/70 truncate">
                   {settings?.currentWifiSSID || t("dashboard.disconnected")}
                 </p>
               </div>
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-xl sm:text-2xl font-bold">{deviceStatus.signal.wifi}%</p>
+              <p className="text-xl sm:text-2xl font-bold text-white">{deviceStatus.signal.wifi}%</p>
               <Badge variant={wifiSignal === 'poor' ? 'warning' : 'success'} className="mt-1">
                 {wifiSignal}
               </Badge>
@@ -158,20 +155,20 @@ export default function Dashboard() {
           </div>
 
           {/* Storage */}
-          <div className="flex items-center justify-between pt-4 border-t gap-4">
+          <div className="flex items-center justify-between pt-4 border-t border-white/20 gap-4">
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div className="flex-shrink-0">
-                <HardDrive className="h-5 w-5 sm:h-6 sm:w-6 text-gray-500" />
+                <HardDrive className="h-5 w-5 sm:h-6 sm:w-6 text-white/70" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm sm:text-base font-medium">{t("dashboard.storage")}</p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-sm sm:text-base font-medium text-white">{t("dashboard.storage")}</p>
+                <p className="text-xs text-white/70 truncate">
                   {formatFileSize(deviceStatus.storage.used, currentLocale)} / {formatFileSize(deviceStatus.storage.total, currentLocale)}
                 </p>
               </div>
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-xl sm:text-2xl font-bold">
+              <p className="text-xl sm:text-2xl font-bold text-white">
                 {Math.round((deviceStatus.storage.used / deviceStatus.storage.total) * 100)}%
               </p>
             </div>
@@ -191,12 +188,12 @@ export default function Dashboard() {
           <CardContent>
             {currentPlayback ? (
               <div className="space-y-2">
-                <p className="font-medium">{currentPlayback.title}</p>
-                <p className="text-sm text-gray-600">{currentPlayback.artist}</p>
+                <p className="font-medium text-white">{currentPlayback.title}</p>
+                <p className="text-sm text-white/70">{currentPlayback.artist}</p>
                 <Badge variant="outline">{currentPlayback.type}</Badge>
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">{t("dashboard.noActivePlayback")}</p>
+              <p className="text-white/70 text-sm">{t("dashboard.noActivePlayback")}</p>
             )}
           </CardContent>
         </Card>
@@ -211,18 +208,18 @@ export default function Dashboard() {
           <CardContent>
             {currentLocation ? (
               <div className="space-y-2">
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium text-white">
                   {currentLocation.address || t("dashboard.locationTracked")}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-white/70">
                   Lat: {currentLocation.latitude.toFixed(6)}, Lon: {currentLocation.longitude.toFixed(6)}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-white/70">
                   Accuracy: {currentLocation.accuracy}m
                 </p>
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">
+              <p className="text-white/70 text-sm">
                 {settings?.locationEnabled ? t("dashboard.locationUnavailable") : t("dashboard.locationTrackingDisabled")}
               </p>
             )}
@@ -238,25 +235,25 @@ export default function Dashboard() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             <Link to="/settings" className="no-underline">
-              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation text-white">
                 <Lock className="h-6 w-6 sm:h-5 sm:w-5" />
                 <span className="text-xs sm:text-sm font-medium">{t("dashboard.lockDevice")}</span>
               </Button>
             </Link>
             <Link to="/location" className="no-underline">
-              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation text-white">
                 <MapPin className="h-6 w-6 sm:h-5 sm:w-5" />
                 <span className="text-xs sm:text-sm font-medium">{t("dashboard.locateDevice")}</span>
               </Button>
             </Link>
             <Link to="/wifi" className="no-underline">
-              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation text-white">
                 <Wifi className="h-6 w-6 sm:h-5 sm:w-5" />
                 <span className="text-xs sm:text-sm font-medium">{t("wifi.title")}</span>
               </Button>
             </Link>
             <Link to="/content" className="no-underline">
-              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation">
+              <Button variant="outline" className="h-24 sm:h-20 flex flex-col justify-center items-center gap-2 w-full touch-manipulation text-white">
                 <Music className="h-6 w-6 sm:h-5 sm:w-5" />
                 <span className="text-xs sm:text-sm font-medium">{t("content.title")}</span>
               </Button>

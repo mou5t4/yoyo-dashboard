@@ -24,7 +24,7 @@ export function LanguageSelector({ currentLanguage }: LanguageSelectorProps) {
       <Select
         value={currentLanguage}
         onChange={handleLanguageChange}
-        className="w-[140px] sm:w-[160px] h-9 text-sm"
+        className="w-[160px] h-9 text-sm font-medium leading-tight"
       >
         {Object.entries(supportedLanguages).map(([code, name]) => (
           <option key={code} value={code}>

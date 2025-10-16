@@ -144,34 +144,34 @@ export default function Index() {
   // First run: License agreement
   if (isFirstRun && !licenseAccepted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
-        <Card className="max-w-2xl w-full shadow-xl">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="max-w-2xl w-full shadow-2xl">
           <CardHeader>
             <CardTitle className="text-2xl sm:text-3xl">{t("license.title", { appName: APP_NAME })}</CardTitle>
             <CardDescription className="text-sm">{t("license.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="prose max-w-none mb-6 max-h-96 overflow-y-auto bg-gray-50 p-3 sm:p-4 rounded-lg text-xs sm:text-sm">
-              <h3 className="font-semibold">{t("license.heading")}</h3>
-              <p><strong>{t("license.lastUpdated")}:</strong> {new Date().toLocaleDateString()}</p>
+            <div className="prose max-w-none mb-6 max-h-96 overflow-y-auto bg-white/10 backdrop-blur-sm border border-white/20 p-3 sm:p-4 rounded-lg text-xs sm:text-sm text-white">
+              <h3 className="font-semibold text-white">{t("license.heading")}</h3>
+              <p className="text-white/90"><strong>{t("license.lastUpdated")}:</strong> {new Date().toLocaleDateString()}</p>
               
-              <h4 className="font-semibold mt-4">{t("license.privacy.title")}</h4>
-              <p>{t("license.privacy.content")}</p>
+              <h4 className="font-semibold mt-4 text-white">{t("license.privacy.title")}</h4>
+              <p className="text-white/90">{t("license.privacy.content")}</p>
 
-              <h4 className="font-semibold mt-4">{t("license.coppa.title")}</h4>
-              <p>{t("license.coppa.content")}</p>
+              <h4 className="font-semibold mt-4 text-white">{t("license.coppa.title")}</h4>
+              <p className="text-white/90">{t("license.coppa.content")}</p>
 
-              <h4 className="font-semibold mt-4">{t("license.gdpr.title")}</h4>
-              <p>{t("license.gdpr.content")}</p>
+              <h4 className="font-semibold mt-4 text-white">{t("license.gdpr.title")}</h4>
+              <p className="text-white/90">{t("license.gdpr.content")}</p>
 
-              <h4 className="font-semibold mt-4">{t("license.liability.title")}</h4>
-              <p>{t("license.liability.content")}</p>
+              <h4 className="font-semibold mt-4 text-white">{t("license.liability.title")}</h4>
+              <p className="text-white/90">{t("license.liability.content")}</p>
 
-              <h4 className="font-semibold mt-4">{t("license.ai.title")}</h4>
-              <p>{t("license.ai.content")}</p>
+              <h4 className="font-semibold mt-4 text-white">{t("license.ai.title")}</h4>
+              <p className="text-white/90">{t("license.ai.content")}</p>
 
-              <h4 className="font-semibold mt-4">{t("license.terms.title")}</h4>
-              <p>{t("license.terms.content")}</p>
+              <h4 className="font-semibold mt-4 text-white">{t("license.terms.title")}</h4>
+              <p className="text-white/90">{t("license.terms.content")}</p>
             </div>
 
             <Form method="post" className="space-y-4">
@@ -189,8 +189,8 @@ export default function Index() {
   // First run: Password setup
   if (isFirstRun && licenseAccepted && !setupCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full shadow-xl">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="max-w-md w-full shadow-2xl">
           <CardHeader>
             <CardTitle className="text-xl sm:text-2xl">{t("setup.setPassword")}</CardTitle>
             <CardDescription className="text-sm">
@@ -245,7 +245,7 @@ export default function Index() {
                 </Label>
               </div>
 
-              <div className="text-sm text-gray-600 space-y-1">
+              <div className="text-sm text-white/80 space-y-1">
                 <p>{t("setup.passwordRequirements")}</p>
                 <ul className="list-disc list-inside space-y-1">
                   <li>{t("setup.passwordLength")}</li>
@@ -266,11 +266,11 @@ export default function Index() {
 
   // Regular login
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
-      <Card className="max-w-md w-full shadow-xl">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="max-w-md w-full shadow-2xl">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 sm:w-20 sm:h-20 bg-primary-500 rounded-full flex items-center justify-center shadow-lg">
-            <span className="text-2xl sm:text-3xl text-white font-bold">Y</span>
+          <div className="mx-auto mb-4 w-16 h-16 sm:w-20 sm:h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/30">
+            <span className="text-2xl sm:text-3xl text-white font-bold drop-shadow-lg">Y</span>
           </div>
           <CardTitle className="text-2xl sm:text-3xl">{APP_NAME}</CardTitle>
           <CardDescription className="text-sm">{t("app.parentDashboard")}</CardDescription>
@@ -327,8 +327,8 @@ export default function Index() {
             </Button>
           </Form>
 
-          <div className="mt-4 text-center text-sm text-gray-600">
-            <p>{t("auth.defaultPassword")}: <code className="bg-gray-100 px-2 py-1 rounded">{DEFAULT_PASSWORD}</code></p>
+          <div className="mt-4 text-center text-sm text-white/80">
+            <p>{t("auth.defaultPassword")}: <code className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded text-white border border-white/30">{DEFAULT_PASSWORD}</code></p>
           </div>
         </CardContent>
       </Card>

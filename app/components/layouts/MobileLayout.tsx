@@ -36,16 +36,16 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Mobile Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="flex items-center justify-between px-4 py-3 gap-2">
-          <h1 className="text-xl font-bold text-primary-500">{APP_NAME}</h1>
-          <div className="flex items-center gap-2">
+      <header className="fixed top-0 left-0 right-0 z-50 glass-nav m-3 rounded-2xl">
+        <div className="flex items-center justify-between px-5 py-4 gap-3">
+          <h1 className="text-xl font-extrabold text-white" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{APP_NAME}</h1>
+          <div className="flex items-center gap-3">
             <LanguageSelector currentLanguage={language} />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-md hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+              className="p-2.5 rounded-xl hover:bg-white/25 active:bg-white/35 transition-all duration-200 touch-manipulation text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -63,57 +63,58 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-40 bg-black/50 animate-fade-in"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade-in"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
           {/* Menu Panel */}
           <div className={cn(
-            "fixed top-0 bottom-0 w-[280px] z-50 bg-white shadow-xl animate-slide-in",
+            "fixed top-0 bottom-0 w-[300px] z-50 glass-nav shadow-2xl animate-slide-in m-3 rounded-3xl",
             rtl ? "right-0" : "left-0"
           )}>
-            <div className="h-full overflow-y-auto pt-16 pb-6">
-              <nav className="flex flex-col p-4 space-y-1">
-                {navigation.map((item) => {
-                  const active = isActive(item.href);
-                  return (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={cn(
-                        'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                        active
-                          ? 'bg-primary-100 text-primary-700 border-r-2 border-primary-500'
-                          : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                      )}
-                    >
-                      <span className="text-lg">{item.icon}</span>
-                      {t(`nav.${item.key}`)}
-                    </Link>
-                  );
-                })}
-                <div className="mt-6 pt-4 border-t border-gray-200">
-                  <button
-                    onClick={() => {
-                      // Handle logout
-                      setMobileMenuOpen(false);
-                    }}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors w-full"
+          <div className="h-full overflow-y-auto pt-20 pb-6 scrollbar-hide">
+            <nav className="flex flex-col p-5 space-y-1">
+              {navigation.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 touch-manipulation min-h-[44px]',
+                      active
+                        ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60'
+                        : 'text-white/85 hover:bg-white/20 hover:text-white hover:shadow-lg active:bg-white/25'
+                    )}
+                    style={active ? { textShadow: '0 1px 4px rgba(0,0,0,0.3)' } : undefined}
                   >
-                    <span className="text-lg">🚪</span>
-                    {t('nav.logout')}
-                  </button>
-                </div>
-              </nav>
-            </div>
+                    <span className="text-xl flex-shrink-0">{item.icon}</span>
+                    <span className="flex-1">{t(`nav.${item.key}`)}</span>
+                  </Link>
+                );
+              })}
+              <div className="mt-6 pt-4 border-t border-white/30">
+                <button
+                  onClick={() => {
+                    // Handle logout
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-200 hover:bg-red-500/40 hover:text-white hover:shadow-lg active:bg-red-500/50 transition-all duration-300 w-full touch-manipulation min-h-[44px]"
+                >
+                  <span className="text-xl flex-shrink-0">🚪</span>
+                  <span className="flex-1 text-left">{t('nav.logout')}</span>
+                </button>
+              </div>
+            </nav>
+          </div>
           </div>
         </>
       )}
 
       {/* Mobile Main Content */}
-      <main className="pt-16">
-        <div className="px-4 py-6">
+      <main className="pt-24">
+        <div className="px-5 py-6">
           {children}
         </div>
       </main>

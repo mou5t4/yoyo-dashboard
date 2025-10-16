@@ -15,6 +15,7 @@ import { prisma } from "~/lib/db.server";
 import { logAuditEvent } from "~/lib/auth.server";
 import { wifiConnectSchema } from "~/lib/validation";
 import { Wifi, Lock, Unlock, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
+import { cn } from "~/lib/utils";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -209,9 +210,12 @@ export default function WiFiPage() {
               {networks.map((network) => (
                 <div
                   key={network.ssid}
-                  className={`border-2 rounded-xl p-3 sm:p-4 cursor-pointer hover:border-primary-500 active:bg-gray-50 transition-all touch-manipulation ${
-                    selectedNetwork === network.ssid ? 'border-primary-500 bg-primary-50 shadow-md' : 'border-gray-200'
-                  }`}
+                  className={cn(
+                    "glass-card border-2 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-300 touch-manipulation",
+                    selectedNetwork === network.ssid 
+                      ? 'border-blue-400/70 bg-blue-500/20 shadow-xl shadow-blue-500/20' 
+                      : 'border-white/30 hover:border-white/50 hover:shadow-lg hover:-translate-y-0.5'
+                  )}
                   onClick={() => setSelectedNetwork(network.ssid)}
                   role="button"
                   tabIndex={0}
@@ -221,84 +225,111 @@ export default function WiFiPage() {
                     }
                   }}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center space-x-3 min-w-0 flex-1">
-                      <Wifi className={`h-5 w-5 flex-shrink-0 ${selectedNetwork === network.ssid ? 'text-primary-600' : 'text-gray-600'}`} />
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center space-x-4 min-w-0 flex-1">
+                      <Wifi className={cn(
+                        "h-6 w-6 flex-shrink-0 transition-colors duration-200",
+                        selectedNetwork === network.ssid ? 'text-blue-300' : 'text-white/70'
+                      )} />
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium text-sm sm:text-base truncate">{network.ssid}</p>
-                        <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500">
+                        <p className="font-bold text-base sm:text-lg truncate text-white" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
+                          {network.ssid}
+                        </p>
+                        <div className="flex items-center space-x-2 text-sm text-white/70">
                           {getSecurityIcon(network.security)}
-                          <span className="uppercase">{network.security}</span>
+                          <span className="uppercase font-medium">{network.security}</span>
                           <span>•</span>
                           <span>{network.frequency}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-0.5 flex-shrink-0">
+                    <div className="flex items-center space-x-1 flex-shrink-0">
                       {[...Array(4)].map((_, i) => (
                         <div
                           key={i}
-                          className={`h-4 w-1.5 rounded-sm ${
+                          className={cn(
+                            "h-4 w-2 rounded-sm transition-all duration-200",
                             i < getSignalBars(network.signal)
-                              ? 'bg-primary-500'
-                              : 'bg-gray-300'
-                          }`}
+                              ? selectedNetwork === network.ssid 
+                                ? 'bg-blue-300 shadow-sm shadow-blue-300/50'
+                                : 'bg-white/80 shadow-sm shadow-white/30'
+                              : 'bg-white/30'
+                          )}
                         />
                       ))}
                     </div>
                   </div>
 
                   {selectedNetwork === network.ssid && (
-                    <Form method="post" className="mt-4 space-y-4">
-                      <input type="hidden" name="intent" value="connect" />
-                      <input type="hidden" name="ssid" value={network.ssid} />
-                      <input type="hidden" name="security" value={network.security} />
+                    <div className="mt-6 p-6 glass-card rounded-xl border-2 border-white/30">
+                      <Form method="post" className="space-y-5">
+                        <input type="hidden" name="intent" value="connect" />
+                        <input type="hidden" name="ssid" value={network.ssid} />
+                        <input type="hidden" name="security" value={network.security} />
 
-                      {network.security !== 'open' && (
-                        <div className="space-y-2">
-                          <Label htmlFor="password" className="text-sm font-medium">{t("wifi.password")}</Label>
-                          <Input
-                            id="password"
-                            name="password"
-                            type={showPassword ? "text" : "password"}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder={t("wifi.enterPassword")}
-                            required
-                          />
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              id="showPassword"
-                              checked={showPassword}
-                              onChange={(e) => setShowPassword(e.target.checked)}
-                              className="rounded h-4 w-4"
-                            />
-                            <Label htmlFor="showPassword" className="text-sm font-normal cursor-pointer">
-                              {t("auth.showPassword")}
+                        {network.security !== 'open' && (
+                          <div className="space-y-3">
+                            <Label htmlFor="password" className="text-base font-semibold text-white" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
+                              {t("wifi.password")}
                             </Label>
+                            <Input
+                              id="password"
+                              name="password"
+                              type={showPassword ? "text" : "password"}
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              placeholder={t("wifi.enterPassword")}
+                              required
+                              className="h-12 text-base"
+                            />
+                            <div className="flex items-center space-x-3 pt-2">
+                              <label className="flex items-center space-x-3 cursor-pointer group">
+                                <input
+                                  type="checkbox"
+                                  id="showPassword"
+                                  checked={showPassword}
+                                  onChange={(e) => setShowPassword(e.target.checked)}
+                                  className="h-5 w-5 rounded-md border-2 border-white/40 glass-input appearance-none checked:bg-blue-500 checked:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 group-hover:border-white/60"
+                                  style={{
+                                    backgroundImage: showPassword ? 'url("data:image/svg+xml,%3csvg viewBox=\'0 0 16 16\' fill=\'white\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpath d=\'m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z\'/%3e%3c/svg%3e")' : 'none',
+                                    backgroundSize: '12px',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'center'
+                                  }}
+                                />
+                                <Label htmlFor="showPassword" className="text-sm font-medium text-white/90 cursor-pointer group-hover:text-white transition-colors duration-200">
+                                  {t("auth.showPassword")}
+                                </Label>
+                              </label>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      <div className="flex gap-2 sm:gap-3">
-                        <Button type="submit" size="lg" className="flex-1 touch-manipulation">
-                          {t("wifi.connect")}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="lg"
-                          onClick={() => {
-                            setSelectedNetwork(null);
-                            setPassword("");
-                          }}
-                          className="touch-manipulation"
-                        >
-                          {t("common.cancel")}
-                        </Button>
-                      </div>
-                    </Form>
+                        <div className="flex gap-3 pt-2">
+                          <Button 
+                            type="submit" 
+                            size="lg" 
+                            className="flex-1 touch-manipulation"
+                            disabled={network.security !== 'open' && !password.trim()}
+                          >
+                            {t("wifi.connect")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="lg"
+                            onClick={() => {
+                              setSelectedNetwork(null);
+                              setPassword("");
+                              setShowPassword(false);
+                            }}
+                            className="touch-manipulation"
+                          >
+                            {t("common.cancel")}
+                          </Button>
+                        </div>
+                      </Form>
+                    </div>
                   )}
                 </div>
               ))}

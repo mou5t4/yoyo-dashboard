@@ -33,59 +33,62 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Desktop Sidebar */}
       <aside className={cn(
-        "fixed top-0 bottom-0 w-64 bg-white shadow-sm z-40",
-        rtl ? "right-0 border-l border-gray-200" : "left-0 border-r border-gray-200"
+        "fixed top-0 bottom-0 w-80 glass-nav z-40 m-6 rounded-3xl",
+        rtl ? "right-0" : "left-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-primary-500">{APP_NAME}</h1>
-            <LanguageSelector currentLanguage={language} />
+          <div className="flex items-center justify-between px-6 py-5 border-b border-white/30 gap-4">
+            <h1 className="text-2xl font-extrabold text-white flex-1 leading-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{APP_NAME}</h1>
+            <div className="flex-shrink-0 flex items-center">
+              <LanguageSelector currentLanguage={language} />
+            </div>
           </div>
 
           {/* Sidebar Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {navigation.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                    active
-                      ? 'bg-primary-100 text-primary-700 border-l-2 border-primary-500'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  )}
-                >
-                  <span className="text-lg">{item.icon}</span>
-                  {t(`nav.${item.key}`)}
-                </Link>
-              );
-            })}
-          </nav>
+        <nav className="flex-1 p-6 space-y-1 overflow-y-auto scrollbar-hide">
+          {navigation.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={cn(
+                  'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 relative',
+                  active
+                    ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60'
+                    : 'text-white/85 hover:bg-white/20 hover:text-white hover:shadow-lg hover:translate-x-1'
+                )}
+                style={active ? { textShadow: '0 1px 4px rgba(0,0,0,0.3)' } : undefined}
+              >
+                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <span className="flex-1">{t(`nav.${item.key}`)}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-6 border-t border-white/30">
             <button
               onClick={() => {
                 // Handle logout
               }}
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors w-full"
+              className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-200 hover:bg-red-500/40 hover:text-white hover:shadow-lg transition-all duration-300 w-full"
             >
-              <span className="text-lg">🚪</span>
-              {t('nav.logout')}
+              <span className="text-xl flex-shrink-0">🚪</span>
+              <span className="flex-1 text-left">{t('nav.logout')}</span>
             </button>
           </div>
         </div>
       </aside>
 
       {/* Desktop Main Content */}
-      <main className={rtl ? "pr-64" : "pl-64"}>
-        <div className="px-4 sm:px-6 lg:px-8 py-8">
+      <main className={rtl ? "pr-96" : "pl-96"}>
+        <div className="px-6 sm:px-8 lg:px-10 py-10">
           {children}
         </div>
       </main>

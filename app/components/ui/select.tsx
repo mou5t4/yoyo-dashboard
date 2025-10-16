@@ -7,25 +7,32 @@ export interface SelectProps
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <select
-        className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          "disabled:cursor-not-allowed disabled:opacity-50",
-          "appearance-none bg-no-repeat bg-right pr-10",
-          "cursor-pointer",
-          className
-        )}
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-          backgroundPosition: 'right 0.5rem center',
-          backgroundSize: '1.5em 1.5em',
-        }}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </select>
+      <div className="relative">
+        <select
+          className={cn(
+            "flex h-10 w-full rounded-xl border-2 border-white/40 glass-input px-4 py-2 text-sm font-medium text-white",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-0 focus-visible:border-white/70 focus-visible:bg-white/25",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            "appearance-none cursor-pointer transition-all duration-300 shadow-lg",
+            "pr-10 hover:shadow-xl hover:border-white/50",
+            "leading-tight",
+            className
+          )}
+          style={{
+            colorScheme: 'dark',
+            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+          }}
+          ref={ref}
+          {...props}
+        >
+          {children}
+        </select>
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
     );
   }
 );
