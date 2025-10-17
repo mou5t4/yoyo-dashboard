@@ -85,7 +85,7 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
                       'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
                       active
                         ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60 high-contrast-white'
-                        : 'text-white/85 hover:bg-white/20 hover:text-white hover:shadow-lg active:bg-white/25 focus-visible:bg-white/20 focus-visible:text-white'
+                        : 'text-white/92 hover:bg-white/20 hover:text-white hover:shadow-lg active:bg-white/25 focus-visible:bg-white/20 focus-visible:text-white improved-contrast-text'
                     )}
                     style={active ? { textShadow: '0 1px 4px rgba(0,0,0,0.3)' } : undefined}
                   >

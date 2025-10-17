@@ -229,13 +229,13 @@ export default function WiFiPage() {
                     <div className="flex items-center space-x-4 min-w-0 flex-1">
                       <Wifi className={cn(
                         "h-6 w-6 flex-shrink-0 transition-colors duration-200",
-                        selectedNetwork === network.ssid ? 'text-blue-300' : 'text-white/70'
+                        selectedNetwork === network.ssid ? 'text-blue-300' : 'text-white/90'
                       )} />
                       <div className="min-w-0 flex-1">
                         <p className="font-bold text-base sm:text-lg truncate text-white high-contrast-white" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
                           {network.ssid}
                         </p>
-                        <div className="flex items-center space-x-2 text-sm text-white/80">
+                        <div className="flex items-center space-x-2 text-sm text-white/92 improved-contrast-text">
                           {getSecurityIcon(network.security)}
                           <span className="uppercase font-medium">{network.security}</span>
                           <span>•</span>

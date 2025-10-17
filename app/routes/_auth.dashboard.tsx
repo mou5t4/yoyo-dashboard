@@ -82,7 +82,7 @@ export default function Dashboard() {
     <div className="space-y-6 sm:space-y-8">
       <div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4), 0 4px 24px rgba(0,0,0,0.2)' }}>{t("dashboard.title")}</h1>
-        <p className="text-base sm:text-lg text-white/90 mt-2" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
+        <p className="text-base sm:text-lg text-white/95 mt-2 improved-contrast-text" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
           {t("dashboard.subtitle", { deviceName: settings?.deviceName || "YoyoPod" })}
         </p>
       </div>
@@ -114,11 +114,11 @@ export default function Dashboard() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div className="flex-shrink-0">
-                <Battery className={`h-5 w-5 sm:h-6 sm:w-6 ${deviceStatus.charging ? 'text-green-300' : 'text-white/70'}`} />
+                <Battery className={`h-5 w-5 sm:h-6 sm:w-6 ${deviceStatus.charging ? 'text-green-300' : 'text-white/90'}`} />
               </div>
               <div className="min-w-0">
                 <p className="text-sm sm:text-base font-medium text-white">{t("dashboard.battery")}</p>
-                <p className="text-xs text-white/70 truncate">
+                <p className="text-xs text-white/90 truncate improved-contrast-text">
                   {deviceStatus.charging ? t("dashboard.charging") : t("dashboard.discharging")}
                 </p>
               </div>
@@ -141,7 +141,7 @@ export default function Dashboard() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm sm:text-base font-medium text-white">{t("dashboard.wifi")}</p>
-                <p className="text-xs text-white/70 truncate">
+                <p className="text-xs text-white/90 truncate improved-contrast-text">
                   {settings?.currentWifiSSID || t("dashboard.disconnected")}
                 </p>
               </div>
@@ -158,11 +158,11 @@ export default function Dashboard() {
           <div className="flex items-center justify-between pt-4 border-t border-white/20 gap-4">
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div className="flex-shrink-0">
-                <HardDrive className="h-5 w-5 sm:h-6 sm:w-6 text-white/70" />
+                <HardDrive className="h-5 w-5 sm:h-6 sm:w-6 text-white/90" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm sm:text-base font-medium text-white">{t("dashboard.storage")}</p>
-                <p className="text-xs text-white/70 truncate">
+                <p className="text-xs text-white/90 truncate improved-contrast-text">
                   {formatFileSize(deviceStatus.storage.used, currentLocale)} / {formatFileSize(deviceStatus.storage.total, currentLocale)}
                 </p>
               </div>
@@ -189,11 +189,11 @@ export default function Dashboard() {
             {currentPlayback ? (
               <div className="space-y-2">
                 <p className="font-medium text-white">{currentPlayback.title}</p>
-                <p className="text-sm text-white/70">{currentPlayback.artist}</p>
+                <p className="text-sm text-white/90 improved-contrast-text">{currentPlayback.artist}</p>
                 <Badge variant="outline">{currentPlayback.type}</Badge>
               </div>
             ) : (
-              <p className="text-white/70 text-sm">{t("dashboard.noActivePlayback")}</p>
+              <p className="text-white/90 text-sm improved-contrast-text">{t("dashboard.noActivePlayback")}</p>
             )}
           </CardContent>
         </Card>
@@ -211,15 +211,15 @@ export default function Dashboard() {
                 <p className="text-sm font-medium text-white">
                   {currentLocation.address || t("dashboard.locationTracked")}
                 </p>
-                <p className="text-xs text-white/70">
+                <p className="text-xs text-white/90 improved-contrast-text">
                   Lat: {currentLocation.latitude.toFixed(6)}, Lon: {currentLocation.longitude.toFixed(6)}
                 </p>
-                <p className="text-xs text-white/70">
+                <p className="text-xs text-white/90 improved-contrast-text">
                   Accuracy: {currentLocation.accuracy}m
                 </p>
               </div>
             ) : (
-              <p className="text-white/70 text-sm">
+              <p className="text-white/90 text-sm improved-contrast-text">
                 {settings?.locationEnabled ? t("dashboard.locationUnavailable") : t("dashboard.locationTrackingDisabled")}
               </p>
             )}
