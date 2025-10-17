@@ -127,6 +127,21 @@ select option:checked {
     display: none;  /* Safari and Chrome */
   }
   
+  /* Accessibility improvements */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent;
+  }
+  
+  .high-contrast-text {
+    color: rgba(0, 0, 0, 0.87);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+  
+  .high-contrast-white {
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  
   /* Screen reader only */
   .sr-only {
     position: absolute;

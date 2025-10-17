@@ -211,10 +211,10 @@ export default function WiFiPage() {
                 <div
                   key={network.ssid}
                   className={cn(
-                    "glass-card border-2 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-300 touch-manipulation",
+                    "glass-card border-2 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-300 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
                     selectedNetwork === network.ssid 
                       ? 'border-blue-400/70 bg-blue-500/20 shadow-xl shadow-blue-500/20' 
-                      : 'border-white/30 hover:border-white/50 hover:shadow-lg hover:-translate-y-0.5'
+                      : 'border-white/30 hover:border-white/50 hover:shadow-lg hover:-translate-y-0.5 focus-visible:border-white/50 focus-visible:shadow-lg'
                   )}
                   onClick={() => setSelectedNetwork(network.ssid)}
                   role="button"
@@ -232,10 +232,10 @@ export default function WiFiPage() {
                         selectedNetwork === network.ssid ? 'text-blue-300' : 'text-white/70'
                       )} />
                       <div className="min-w-0 flex-1">
-                        <p className="font-bold text-base sm:text-lg truncate text-white" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
+                        <p className="font-bold text-base sm:text-lg truncate text-white high-contrast-white" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
                           {network.ssid}
                         </p>
-                        <div className="flex items-center space-x-2 text-sm text-white/70">
+                        <div className="flex items-center space-x-2 text-sm text-white/80">
                           {getSecurityIcon(network.security)}
                           <span className="uppercase font-medium">{network.security}</span>
                           <span>•</span>

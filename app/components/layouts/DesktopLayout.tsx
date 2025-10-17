@@ -57,10 +57,10 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 relative',
+                  'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
                   active
-                    ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60'
-                    : 'text-white/85 hover:bg-white/20 hover:text-white hover:shadow-lg hover:translate-x-1'
+                    ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60 high-contrast-white'
+                    : 'text-white/85 hover:bg-white/20 hover:text-white hover:shadow-lg hover:translate-x-1 focus-visible:bg-white/20 focus-visible:text-white'
                 )}
                 style={active ? { textShadow: '0 1px 4px rgba(0,0,0,0.3)' } : undefined}
               >
@@ -77,7 +77,7 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
               onClick={() => {
                 // Handle logout
               }}
-              className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-200 hover:bg-red-500/40 hover:text-white hover:shadow-lg transition-all duration-300 w-full"
+              className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-200 hover:bg-red-500/40 hover:text-white hover:shadow-lg transition-all duration-300 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-500/40 focus-visible:text-white"
             >
               <span className="text-xl flex-shrink-0">🚪</span>
               <span className="flex-1 text-left">{t('nav.logout')}</span>

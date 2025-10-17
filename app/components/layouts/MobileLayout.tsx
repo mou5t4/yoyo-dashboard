@@ -82,10 +82,10 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
                     to={item.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
-                      'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 touch-manipulation min-h-[44px]',
+                      'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
                       active
-                        ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60'
-                        : 'text-white/85 hover:bg-white/20 hover:text-white hover:shadow-lg active:bg-white/25'
+                        ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60 high-contrast-white'
+                        : 'text-white/85 hover:bg-white/20 hover:text-white hover:shadow-lg active:bg-white/25 focus-visible:bg-white/20 focus-visible:text-white'
                     )}
                     style={active ? { textShadow: '0 1px 4px rgba(0,0,0,0.3)' } : undefined}
                   >
@@ -100,7 +100,7 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
                     // Handle logout
                     setMobileMenuOpen(false);
                   }}
-                  className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-200 hover:bg-red-500/40 hover:text-white hover:shadow-lg active:bg-red-500/50 transition-all duration-300 w-full touch-manipulation min-h-[44px]"
+                  className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-200 hover:bg-red-500/40 hover:text-white hover:shadow-lg active:bg-red-500/50 transition-all duration-300 w-full touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-500/40 focus-visible:text-white"
                 >
                   <span className="text-xl flex-shrink-0">🚪</span>
                   <span className="flex-1 text-left">{t('nav.logout')}</span>
