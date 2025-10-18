@@ -18,7 +18,7 @@ export function MiniChart({
   value, 
   max = 100, 
   color, 
-  backgroundColor = "rgba(75, 85, 99, 0.1)",
+  backgroundColor = "rgba(156, 163, 175, 0.2)",
   size = 64 
 }: MiniChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

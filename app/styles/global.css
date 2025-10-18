@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Light theme variables */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -33,9 +34,18 @@
     --ring: 221.2 83.2% 53.3%;
 
     --radius: 0.75rem;
+
+    /* Custom theme variables for light mode */
+    --bg-primary: 255 255 255;
+    --bg-secondary: 249 250 251;
+    --bg-card: 255 255 255;
+    --text-primary: 17 24 39;
+    --text-secondary: 75 85 99;
+    --border-color: 229 231 235;
   }
 
   .dark {
+    /* Dark theme variables */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -63,6 +73,14 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
+
+    /* Custom theme variables for dark mode */
+    --bg-primary: 17 24 39;
+    --bg-secondary: 31 41 55;
+    --bg-card: 31 41 55;
+    --text-primary: 255 255 255;
+    --text-secondary: 156 163 175;
+    --border-color: 55 65 81;
   }
 }
 
@@ -71,8 +89,9 @@
     @apply border-border;
   }
   body {
-    @apply text-foreground bg-gray-900;
+    @apply text-foreground bg-gray-50 dark:bg-gray-900;
     min-height: 100vh;
+    transition: background-color 0.3s ease;
   }
 }
 

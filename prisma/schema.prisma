@@ -59,6 +59,7 @@ model Settings {
   // System Settings
   timezone              String   @default("UTC")
   language              String   @default("en") // en, de, fr, ar, it, es, zh, fa
+  theme                 String   @default("dark") // light, dark, system
   
   // AI Settings (for AI variant)
   aiEnabled             Boolean  @default(false)

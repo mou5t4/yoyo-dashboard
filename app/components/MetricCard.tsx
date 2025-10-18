@@ -40,11 +40,11 @@ export function MetricCard({
   const finalChartColor = chartColor || defaultChartColors[statusColor];
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 card-hover transition-colors duration-300">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-gray-400 text-sm font-medium">{title}</h3>
-          <p className="text-3xl font-bold mt-2 text-white">{value}</p>
+          <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium">{title}</h3>
+          <p className="text-3xl font-bold mt-2 text-gray-900 dark:text-white">{value}</p>
         </div>
         <div className="w-16 h-16">
           {showChart && chartValue !== undefined ? (
@@ -55,14 +55,14 @@ export function MetricCard({
               size={64}
             />
           ) : (
-            icon && <div className="text-gray-400">{icon}</div>
+            icon && <div className="text-gray-600 dark:text-gray-400">{icon}</div>
           )}
         </div>
       </div>
       {subtitle && (
         <div className="mt-4 flex items-center">
           <span className={`status-indicator ${statusColors[statusColor]}`}></span>
-          <span className="text-sm text-gray-400">{subtitle}</span>
+          <span className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</span>
         </div>
       )}
     </div>

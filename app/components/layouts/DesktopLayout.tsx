@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { APP_NAME } from '~/lib/constants';
 import { LanguageSelector } from '~/components/LanguageSelector';
+import { ThemeToggle } from '~/components/ThemeToggle';
 import { isRTL } from '~/i18n';
 import type { SupportedLanguage } from '~/i18n';
 
@@ -43,7 +44,8 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
           {/* Sidebar Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/30 gap-4">
             <h1 className="text-2xl font-extrabold text-white flex-1 leading-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{APP_NAME}</h1>
-            <div className="flex-shrink-0 flex items-center">
+            <div className="flex-shrink-0 flex items-center gap-2">
+              <ThemeToggle />
               <LanguageSelector currentLanguage={language} />
             </div>
           </div>

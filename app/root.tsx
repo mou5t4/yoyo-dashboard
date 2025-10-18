@@ -19,6 +19,8 @@ import { i18nServer } from "./i18n.server";
 import { isRTL, defaultLanguage } from "./i18n";
 import { getUserId } from "./lib/session.server";
 import { prisma } from "./lib/db.server";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import type { Theme } from "./contexts/ThemeContext";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
@@ -29,6 +31,7 @@ export const links: LinksFunction = () => [
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
   let locale = defaultLanguage;
+  let theme: Theme = "dark";
 
   if (userId) {
     const user = await prisma.user.findUnique({
@@ -39,11 +42,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
     if (user?.settings?.language) {
       locale = user.settings.language;
     }
+    if (user?.settings?.theme) {
+      theme = user.settings.theme as Theme;
+    }
   }
 
   return json({
     locale,
     dir: isRTL(locale) ? 'rtl' : 'ltr',
+    theme,
   });
 }
 
@@ -52,14 +59,14 @@ export let handle = {
 };
 
 export default function App() {
-  const { locale, dir } = useLoaderData<typeof loader>();
+  const { locale, dir, theme } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   
   // This hook handles language changes and keeps client/server in sync
   useChangeLanguage(locale);
 
   return (
-    <html lang={locale} dir={dir}>
+    <html lang={locale} dir={dir} className={theme === "dark" ? "dark" : ""}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -69,8 +76,10 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen overflow-x-hidden bg-gray-900">
-        <Outlet />
+      <body className="min-h-screen overflow-x-hidden">
+        <ThemeProvider defaultTheme={theme}>
+          <Outlet />
+        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -104,16 +113,16 @@ export function ErrorBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen flex items-center justify-center overflow-x-hidden bg-gray-900">
+      <body className="min-h-screen flex items-center justify-center overflow-x-hidden bg-gray-50 dark:bg-gray-900">
         <div className="max-w-md w-full mx-4">
-          <div className="bg-gray-800 rounded-2xl p-8 text-center shadow-lg">
-            <h1 className="text-6xl font-bold text-white mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-lg border border-gray-200 dark:border-gray-700">
+            <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4">
               {errorStatus}
             </h1>
-            <h2 className="text-2xl font-semibold text-white mb-4">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
               Oops! Something went wrong
             </h2>
-            <p className="text-white/95 mb-8 improved-contrast-text">{errorMessage}</p>
+            <p className="text-gray-700 dark:text-white/95 mb-8">{errorMessage}</p>
             <a
               href="/"
               className="inline-block bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white font-medium transition-colors"

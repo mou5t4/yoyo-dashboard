@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { APP_NAME } from '~/lib/constants';
 import { LanguageSelector } from '~/components/LanguageSelector';
+import { ThemeToggle } from '~/components/ThemeToggle';
 import { isRTL } from '~/i18n';
 import type { SupportedLanguage } from '~/i18n';
 
@@ -41,7 +42,8 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
       <header className="fixed top-0 left-0 right-0 z-50 glass-nav m-3 rounded-2xl">
         <div className="flex items-center justify-between px-5 py-4 gap-3">
           <h1 className="text-xl font-extrabold text-white" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{APP_NAME}</h1>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <LanguageSelector currentLanguage={language} />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
