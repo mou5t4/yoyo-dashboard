@@ -131,7 +131,7 @@ export default function Contacts() {
         <Card>
           <CardHeader>
             <CardTitle>{t("contacts.addContact")}</CardTitle>
-            <CardDescription>{t("contacts.subtitle")}</CardDescription>
+            <CardDescription className="text-gray-400">{t("contacts.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Form method="post" className="space-y-4">

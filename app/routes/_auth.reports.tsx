@@ -69,21 +69,21 @@ export default function Reports() {
             <Progress value={todayPercentage} className="h-2.5 sm:h-3" />
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.musicListened}</p>
-                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">Minutes Music</p>
+              <div className="text-center p-3 sm:p-4 bg-purple-900/30 rounded-lg border border-purple-900">
+                <p className="text-xl sm:text-2xl font-bold text-purple-400">{stats.today.musicListened}</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-1">Minutes Music</p>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.podcastsListened}</p>
-                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">Minutes Podcasts</p>
+              <div className="text-center p-3 sm:p-4 bg-blue-900/30 rounded-lg border border-blue-900">
+                <p className="text-xl sm:text-2xl font-bold text-blue-400">{stats.today.podcastsListened}</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-1">Minutes Podcasts</p>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.calls}</p>
-                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">Calls Made</p>
+              <div className="text-center p-3 sm:p-4 bg-green-900/30 rounded-lg border border-green-900">
+                <p className="text-xl sm:text-2xl font-bold text-green-400">{stats.today.calls}</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-1">Calls Made</p>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.aiInteractions}</p>
-                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">AI Chats</p>
+              <div className="text-center p-3 sm:p-4 bg-indigo-900/30 rounded-lg border border-indigo-900">
+                <p className="text-xl sm:text-2xl font-bold text-indigo-400">{stats.today.aiInteractions}</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-1">AI Chats</p>
               </div>
             </div>
           </CardContent>

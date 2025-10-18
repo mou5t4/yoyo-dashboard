@@ -163,7 +163,7 @@ export default function Location() {
       <Card>
         <CardHeader>
           <CardTitle>{t("location.settings")}</CardTitle>
-          <CardDescription>{t("location.settingsDescription")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("location.settingsDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-4">
@@ -236,7 +236,7 @@ export default function Location() {
           <div className="flex items-center justify-between">
             <div>
             <CardTitle>{t("location.geofences")}</CardTitle>
-            <CardDescription>{t("location.geofencesDescription")}</CardDescription>
+            <CardDescription className="text-gray-400">{t("location.geofencesDescription")}</CardDescription>
             </div>
             <Button onClick={() => setShowAddGeofence(!showAddGeofence)}>
               <Plus className="h-4 w-4 mr-2" />

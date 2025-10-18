@@ -115,7 +115,7 @@ export default function AudioPage() {
             <Speaker className="h-5 w-5" />
             <span>{t("audio.audioOutput")}</span>
           </CardTitle>
-          <CardDescription>{t("audio.audioOutputDescription")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("audio.audioOutputDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Output Devices */}
@@ -202,7 +202,7 @@ export default function AudioPage() {
             <Mic className="h-5 w-5" />
             <span>{t("audio.audioInput")}</span>
           </CardTitle>
-          <CardDescription>{t("audio.audioInputDescription")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("audio.audioInputDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Input Devices */}

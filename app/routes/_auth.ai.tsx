@@ -118,7 +118,7 @@ export default function AISettings() {
             <Bot className="h-5 w-5" />
             <span>{t("ai.title")}</span>
           </CardTitle>
-          <CardDescription>{t("ai.subtitle")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("ai.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-6">
@@ -220,7 +220,7 @@ export default function AISettings() {
             <MessageSquare className="h-5 w-5" />
             <span>{t("ai.recentConversations")}</span>
           </CardTitle>
-          <CardDescription>{t("ai.recentConversations")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("ai.recentConversations")}</CardDescription>
         </CardHeader>
         <CardContent>
           {conversations.length === 0 ? (

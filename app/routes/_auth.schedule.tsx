@@ -123,7 +123,7 @@ export default function Schedule() {
         <Card>
           <CardHeader>
             <CardTitle>{t("schedule.addSchedule")}</CardTitle>
-            <CardDescription>{t("schedule.subtitle")}</CardDescription>
+            <CardDescription className="text-gray-400">{t("schedule.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Form method="post" className="space-y-4">

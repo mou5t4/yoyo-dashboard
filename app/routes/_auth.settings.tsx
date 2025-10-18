@@ -231,28 +231,30 @@ export default function Settings() {
       )}
 
       {/* System Settings */}
-      <Card className="border-blue-200">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-blue-600" />
+            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-900 flex items-center justify-center">
+              <Clock className="h-5 w-5 text-blue-400" />
+            </div>
             {t("settings.systemSettings")}
           </CardTitle>
-          <CardDescription>{t("settings.systemSettingsDescription")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("settings.systemSettingsDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           {/* Current Time Display */}
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="mb-6 p-4 bg-gray-700/50 rounded-lg border border-gray-600">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
-                <p className="text-sm font-medium text-blue-900 mb-1">{t("settings.currentTime")}</p>
-                <p className="text-xl sm:text-2xl font-bold text-blue-950" suppressHydrationWarning>
+                <p className="text-sm font-medium text-gray-300 mb-1">{t("settings.currentTime")}</p>
+                <p className="text-xl sm:text-2xl font-bold text-white" suppressHydrationWarning>
                   {formatDateTime(currentTime)}
                 </p>
-                <p className="text-xs text-blue-700 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   {t("settings.timezone")}: {settings.timezone || systemTimeInfo.timezone}
                   {systemTimeInfo.ntpSynchronized && (
                     <span className="ml-2 inline-flex items-center">
-                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      <CheckCircle2 className="h-3 w-3 mr-1 text-green-400" />
                       {t("settings.ntpSynced")}
                     </span>
                   )}
@@ -305,10 +307,12 @@ export default function Settings() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <SettingsIcon className="h-5 w-5 text-white/90" />
+            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-purple-900 flex items-center justify-center">
+              <SettingsIcon className="h-5 w-5 text-purple-400" />
+            </div>
             {t("settings.general")}
           </CardTitle>
-          <CardDescription>{t("settings.generalDescription")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("settings.generalDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-6">
@@ -421,10 +425,12 @@ export default function Settings() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-white/90" />
+            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-900 flex items-center justify-center">
+              <Shield className="h-5 w-5 text-indigo-400" />
+            </div>
             {t("settings.changePassword")}
           </CardTitle>
-          <CardDescription>{t("settings.securityDescription")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("settings.securityDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post" className="space-y-4">
@@ -472,25 +478,27 @@ export default function Settings() {
       </Card>
 
       {/* Danger Zone */}
-      <Card className="border-red-200">
+      <Card className="border-red-900 bg-red-900/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-600">
-            <AlertTriangle className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-red-400">
+            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-red-900 flex items-center justify-center">
+              <AlertTriangle className="h-5 w-5 text-red-400" />
+            </div>
             {t("settings.advanced")}
           </CardTitle>
-          <CardDescription>{t("settings.advancedDescription")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("settings.advancedDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form method="post">
             <input type="hidden" name="intent" value="factory-reset" />
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">{t("settings.resetDevice")}</p>
-                <p className="text-sm text-white/90 improved-contrast-text">
+                <p className="font-medium text-white">{t("settings.resetDevice")}</p>
+                <p className="text-sm text-gray-400">
                   {t("settings.resetDeviceDesc")}
                 </p>
               </div>
-              <Button type="submit" variant="destructive">
+              <Button type="submit" variant="destructive" className="bg-red-600 hover:bg-red-700">
                 {t("settings.resetDevice")}
               </Button>
             </div>

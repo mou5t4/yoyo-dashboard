@@ -71,12 +71,30 @@
     @apply border-border;
   }
   body {
-    @apply text-foreground;
-    background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 25%, #2196f3 50%, #42a5f5 75%, #64b5f6 100%);
+    @apply text-foreground bg-gray-900;
     min-height: 100vh;
   }
 }
 
+
+/* Card hover effect for dark theme */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Status indicator dots */
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
 
 /* Shimmer animation for progress bars */
 @keyframes shimmer {

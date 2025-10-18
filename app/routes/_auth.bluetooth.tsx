@@ -137,7 +137,10 @@ export default function BluetoothPage() {
                   </div>
                   <div className="flex items-center space-x-2">
                     {device.connected ? (
-                      <Badge variant="success">{t("bluetooth.connected")}</Badge>
+                      <Badge className="bg-green-900 text-green-300">
+                        <span className="status-indicator bg-green-500 mr-1"></span>
+                        {t("bluetooth.connected")}
+                      </Badge>
                     ) : (
                       <Form method="post">
                         <input type="hidden" name="intent" value="connect" />

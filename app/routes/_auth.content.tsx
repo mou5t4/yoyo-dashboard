@@ -40,19 +40,21 @@ export default function Content() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <Play className="h-5 w-5" />
+              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-purple-900 flex items-center justify-center">
+                <Play className="h-5 w-5 text-purple-400" />
+              </div>
               <span>{t("content.currentlyPlaying")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-4">
-              <div className="h-16 w-16 bg-primary-100 rounded-lg flex items-center justify-center">
-                <Music className="h-8 w-8 text-primary-600" />
+              <div className="h-16 w-16 bg-purple-900/30 rounded-lg flex items-center justify-center border border-purple-900">
+                <Music className="h-8 w-8 text-purple-400" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold">{currentPlayback.title}</p>
-                <p className="text-sm text-white/90 improved-contrast-text">{currentPlayback.artist}</p>
-                <Badge variant="outline" className="mt-1">{currentPlayback.type}</Badge>
+                <p className="font-semibold text-white">{currentPlayback.title}</p>
+                <p className="text-sm text-gray-400">{currentPlayback.artist}</p>
+                <Badge className="mt-1 bg-purple-900 text-purple-300">{currentPlayback.type}</Badge>
               </div>
             </div>
           </CardContent>
@@ -63,7 +65,7 @@ export default function Content() {
       <Card>
         <CardHeader>
           <CardTitle>{t("content.contentLibrary")}</CardTitle>
-          <CardDescription>{t("content.availableContent")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("content.availableContent")}</CardDescription>
         </CardHeader>
         <CardContent>
           {contentLibrary.length === 0 ? (
@@ -77,21 +79,21 @@ export default function Content() {
               {contentLibrary.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between gap-3 p-3 sm:p-4 border-2 rounded-xl hover:border-primary-300 transition-all"
+                  className="flex items-center justify-between gap-3 p-3 sm:p-4 border-2 border-gray-700 rounded-xl hover:border-purple-500 transition-all bg-gray-700/30"
                 >
                   <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 text-purple-400">
                       {getContentIcon(item.type)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-sm sm:text-base truncate">{item.title}</p>
-                      <p className="text-xs sm:text-sm text-white/90 truncate improved-contrast-text">{item.creator}</p>
+                      <p className="font-medium text-sm sm:text-base truncate text-white">{item.title}</p>
+                      <p className="text-xs sm:text-sm text-gray-400 truncate">{item.creator}</p>
                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <Badge variant="outline" className="text-xs capitalize">
+                        <Badge className="text-xs capitalize bg-purple-900/50 text-purple-300 border-purple-900">
                           {item.type}
                         </Badge>
                         {item.explicit && (
-                          <Badge variant="warning" className="text-xs">
+                          <Badge className="text-xs bg-yellow-900/50 text-yellow-300 border-yellow-900">
                             {t("content.explicit")}
                           </Badge>
                         )}
@@ -116,7 +118,7 @@ export default function Content() {
       <Card>
         <CardHeader>
           <CardTitle>{t("content.contentFilters")}</CardTitle>
-          <CardDescription>{t("content.controlWhatContent")}</CardDescription>
+          <CardDescription className="text-gray-400">{t("content.controlWhatContent")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between gap-4">

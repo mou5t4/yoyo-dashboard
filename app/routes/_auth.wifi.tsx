@@ -164,7 +164,10 @@ export default function WiFiPage() {
                   <p className="text-sm text-white/90 improved-contrast-text">{t("wifi.signalQuality")}: {currentWiFi.signal}%</p>
                 </div>
               </div>
-              <Badge variant="success">{t("dashboard.connected")}</Badge>
+              <Badge className="bg-green-900 text-green-300">
+                <span className="status-indicator bg-green-500 mr-1"></span>
+                {t("dashboard.connected")}
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -211,10 +214,10 @@ export default function WiFiPage() {
                 <div
                   key={network.ssid}
                   className={cn(
-                    "glass-card border-2 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-300 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+                    "bg-gray-700/50 border-2 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-300 card-hover touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
                     selectedNetwork === network.ssid 
-                      ? 'border-blue-400/70 bg-blue-500/20 shadow-xl shadow-blue-500/20' 
-                      : 'border-white/30 hover:border-white/50 hover:shadow-lg hover:-translate-y-0.5 focus-visible:border-white/50 focus-visible:shadow-lg'
+                      ? 'border-blue-500 bg-blue-900/30 shadow-xl shadow-blue-500/20' 
+                      : 'border-gray-600 hover:border-blue-400 hover:shadow-lg focus-visible:border-blue-400 focus-visible:shadow-lg'
                   )}
                   onClick={() => setSelectedNetwork(network.ssid)}
                   role="button"

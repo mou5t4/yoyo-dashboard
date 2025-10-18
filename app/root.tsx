@@ -69,7 +69,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen overflow-x-hidden">
+      <body className="min-h-screen overflow-x-hidden bg-gray-900">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
@@ -104,9 +104,9 @@ export function ErrorBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen flex items-center justify-center overflow-x-hidden">
+      <body className="min-h-screen flex items-center justify-center overflow-x-hidden bg-gray-900">
         <div className="max-w-md w-full mx-4">
-          <div className="glass-card rounded-2xl p-8 text-center">
+          <div className="bg-gray-800 rounded-2xl p-8 text-center shadow-lg">
             <h1 className="text-6xl font-bold text-white mb-4">
               {errorStatus}
             </h1>
@@ -116,7 +116,7 @@ export function ErrorBoundary() {
             <p className="text-white/95 mb-8 improved-contrast-text">{errorMessage}</p>
             <a
               href="/"
-              className="inline-block glass-hover px-6 py-3 rounded-lg text-white font-medium"
+              className="inline-block bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white font-medium transition-colors"
             >
               Go back home
             </a>
