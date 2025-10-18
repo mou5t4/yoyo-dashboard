@@ -90,7 +90,7 @@ export default function Dashboard() {
     <div className="space-y-10">
       {/* System Overview Section */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6 flex items-center text-white">
+        <h2 className="text-2xl font-semibold mb-6 flex items-center text-gray-900 dark:text-white">
           <Activity className="w-6 h-6 mr-2 text-red-400" />
           {t("dashboard.deviceStatus")}
         </h2>
@@ -153,12 +153,12 @@ export default function Dashboard() {
           <CardContent>
             {currentPlayback ? (
               <div className="space-y-2">
-                <p className="font-medium text-white">{currentPlayback.title}</p>
-                <p className="text-sm text-gray-400">{currentPlayback.artist}</p>
-                <Badge className="bg-purple-900 text-purple-300">{currentPlayback.type}</Badge>
+                <p className="font-medium text-gray-900 dark:text-white">{currentPlayback.title}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{currentPlayback.artist}</p>
+                <Badge className="bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-300">{currentPlayback.type}</Badge>
               </div>
             ) : (
-              <p className="text-gray-400 text-sm">{t("dashboard.noActivePlayback")}</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">{t("dashboard.noActivePlayback")}</p>
             )}
           </CardContent>
         </Card>
@@ -175,18 +175,18 @@ export default function Dashboard() {
           <CardContent>
             {currentLocation ? (
               <div className="space-y-2">
-                <p className="text-sm font-medium text-white">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {currentLocation.address || t("dashboard.locationTracked")}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Lat: {currentLocation.latitude.toFixed(6)}, Lon: {currentLocation.longitude.toFixed(6)}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Accuracy: {currentLocation.accuracy}m
                 </p>
               </div>
             ) : (
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
                 {settings?.locationEnabled ? t("dashboard.locationUnavailable") : t("dashboard.locationTrackingDisabled")}
               </p>
             )}
@@ -196,41 +196,41 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6 flex items-center text-white">
+        <h2 className="text-2xl font-semibold mb-6 flex items-center text-gray-900 dark:text-white">
           <Activity className="w-6 h-6 mr-2 text-yellow-400" />
           {t("dashboard.quickActions")}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <Link to="/settings" className="no-underline">
-            <button className="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 shadow-lg card-hover flex flex-col items-center w-full">
-              <div className="w-12 h-12 rounded-full bg-red-900 flex items-center justify-center mb-4">
-                <Power className="w-6 h-6 text-red-400" />
+            <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 card-hover flex flex-col items-center w-full">
+              <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mb-4">
+                <Power className="w-6 h-6 text-red-600 dark:text-red-400" />
               </div>
-              <span className="text-sm font-medium text-white">{t("settings.title")}</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-white">{t("settings.title")}</span>
             </button>
           </Link>
           <Link to="/location" className="no-underline">
-            <button className="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 shadow-lg card-hover flex flex-col items-center w-full">
-              <div className="w-12 h-12 rounded-full bg-blue-900 flex items-center justify-center mb-4">
-                <MapPin className="w-6 h-6 text-blue-400" />
+            <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 card-hover flex flex-col items-center w-full">
+              <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-4">
+                <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <span className="text-sm font-medium text-white">{t("dashboard.locateDevice")}</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-white">{t("dashboard.locateDevice")}</span>
             </button>
           </Link>
           <Link to="/wifi" className="no-underline">
-            <button className="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 shadow-lg card-hover flex flex-col items-center w-full">
-              <div className="w-12 h-12 rounded-full bg-green-900 flex items-center justify-center mb-4">
-                <Wifi className="w-6 h-6 text-green-400" />
+            <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 card-hover flex flex-col items-center w-full">
+              <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mb-4">
+                <Wifi className="w-6 h-6 text-green-600 dark:text-green-400" />
               </div>
-              <span className="text-sm font-medium text-white">{t("wifi.title")}</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-white">{t("wifi.title")}</span>
             </button>
           </Link>
           <Link to="/content" className="no-underline">
-            <button className="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 shadow-lg card-hover flex flex-col items-center w-full">
-              <div className="w-12 h-12 rounded-full bg-purple-900 flex items-center justify-center mb-4">
-                <Music className="w-6 h-6 text-purple-400" />
+            <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 card-hover flex flex-col items-center w-full">
+              <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mb-4">
+                <Music className="w-6 h-6 text-purple-600 dark:text-purple-400" />
               </div>
-              <span className="text-sm font-medium text-white">{t("content.title")}</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-white">{t("content.title")}</span>
             </button>
           </Link>
         </div>
@@ -238,7 +238,7 @@ export default function Dashboard() {
 
       {/* Recent Activity */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6 flex items-center text-white">
+        <h2 className="text-2xl font-semibold mb-6 flex items-center text-gray-900 dark:text-white">
           <Clock className="w-6 h-6 mr-2 text-purple-400" />
           Recent Activity
         </h2>
@@ -247,33 +247,33 @@ export default function Dashboard() {
             <div className="space-y-6">
               <div className="flex">
                 <div className="flex-shrink-0 mr-4">
-                  <div className="w-10 h-10 rounded-full bg-green-900 flex items-center justify-center">
-                    <CheckCircle2 className="w-5 h-5 text-green-400" />
+                  <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
                   </div>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-white">Device connected</h3>
-                    <span className="text-xs text-gray-400" suppressHydrationWarning>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white">Device connected</h3>
+                    <span className="text-xs text-gray-600 dark:text-gray-400" suppressHydrationWarning>
                       {new Date().toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-400 mt-1">Successfully connected to WiFi network</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Successfully connected to WiFi network</p>
                 </div>
               </div>
               {deviceStatus.battery < 50 && (
                 <div className="flex">
                   <div className="flex-shrink-0 mr-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-900 flex items-center justify-center">
-                      <Activity className="w-5 h-5 text-blue-400" />
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                      <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-white">Battery level</h3>
-                      <span className="text-xs text-gray-400">Just now</span>
+                      <h3 className="text-sm font-medium text-gray-900 dark:text-white">Battery level</h3>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">Just now</span>
                     </div>
-                    <p className="text-sm text-gray-400 mt-1">Battery at {deviceStatus.battery}%</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Battery at {deviceStatus.battery}%</p>
                   </div>
                 </div>
               )}
@@ -284,18 +284,18 @@ export default function Dashboard() {
 
       {/* Alerts */}
       {deviceStatus.battery < 20 && !deviceStatus.charging && (
-        <Alert variant="warning" className="bg-yellow-900/20 border-yellow-900">
-          <AlertTriangle className="h-4 w-4 text-yellow-400" />
-          <AlertDescription className="text-white">
+        <Alert variant="warning" className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-900">
+          <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+          <AlertDescription className="text-yellow-900 dark:text-white">
             {t("dashboard.batteryLowAlert", { percent: deviceStatus.battery })}
           </AlertDescription>
         </Alert>
       )}
 
       {!settings?.wifiConfigured && (
-        <Alert variant="destructive" className="bg-red-900/20 border-red-900">
-          <AlertTriangle className="h-4 w-4 text-red-400" />
-          <AlertDescription className="text-white">
+        <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-900">
+          <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
+          <AlertDescription className="text-red-900 dark:text-white">
             {t("dashboard.wifiNotConfiguredAlert")}
           </AlertDescription>
         </Alert>
