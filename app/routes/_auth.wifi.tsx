@@ -128,8 +128,8 @@ export default function WiFiPage() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("wifi.title")}</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">{t("wifi.subtitle")}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white high-contrast-white">{t("wifi.title")}</h1>
+        <p className="text-sm sm:text-base text-white/95 mt-1 improved-contrast-text">{t("wifi.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -161,7 +161,7 @@ export default function WiFiPage() {
                 <Wifi className="h-5 w-5 text-green-500" />
                 <div>
                   <p className="font-medium">{currentWiFi.ssid}</p>
-                  <p className="text-sm text-gray-500">{t("wifi.signalQuality")}: {currentWiFi.signal}%</p>
+                  <p className="text-sm text-white/90 improved-contrast-text">{t("wifi.signalQuality")}: {currentWiFi.signal}%</p>
                 </div>
               </div>
               <Badge variant="success">{t("dashboard.connected")}</Badge>
@@ -194,14 +194,14 @@ export default function WiFiPage() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8 text-gray-500">
-              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin" />
+            <div className="text-center py-8 text-white/90 improved-contrast-text">
+              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin text-white/90" />
               <p>{t("wifi.scanning")}</p>
               <p className="text-sm">{t("common.loading")}</p>
             </div>
           ) : networks.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Wifi className="h-12 w-12 mx-auto mb-2 opacity-50" />
+            <div className="text-center py-8 text-white/90 improved-contrast-text">
+              <Wifi className="h-12 w-12 mx-auto mb-2 text-white/90" />
               <p>{t("common.noData")}</p>
               <p className="text-sm">{t("wifi.scanNetworks")}</p>
             </div>
@@ -362,8 +362,8 @@ export function ErrorBoundary() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">WiFi Configuration</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Connect to a wireless network</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white high-contrast-white">WiFi Configuration</h1>
+        <p className="text-sm sm:text-base text-white/95 mt-1 improved-contrast-text">Connect to a wireless network</p>
       </div>
 
       <div className="rounded-xl border border-red-200 bg-red-50 p-6">

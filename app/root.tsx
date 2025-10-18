@@ -113,7 +113,7 @@ export function ErrorBoundary() {
             <h2 className="text-2xl font-semibold text-white mb-4">
               Oops! Something went wrong
             </h2>
-            <p className="text-white/90 mb-8">{errorMessage}</p>
+            <p className="text-white/95 mb-8 improved-contrast-text">{errorMessage}</p>
             <a
               href="/"
               className="inline-block glass-hover px-6 py-3 rounded-lg text-white font-medium"

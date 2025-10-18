@@ -153,25 +153,25 @@ export default function Index() {
           <CardContent>
             <div className="prose max-w-none mb-6 max-h-96 overflow-y-auto bg-white/10 backdrop-blur-sm border border-white/20 p-3 sm:p-4 rounded-lg text-xs sm:text-sm text-white">
               <h3 className="font-semibold text-white">{t("license.heading")}</h3>
-              <p className="text-white/90"><strong>{t("license.lastUpdated")}:</strong> {new Date().toLocaleDateString()}</p>
+              <p className="text-white/95 improved-contrast-text"><strong>{t("license.lastUpdated")}:</strong> {new Date().toLocaleDateString()}</p>
               
               <h4 className="font-semibold mt-4 text-white">{t("license.privacy.title")}</h4>
-              <p className="text-white/90">{t("license.privacy.content")}</p>
+              <p className="text-white/95 improved-contrast-text">{t("license.privacy.content")}</p>
 
               <h4 className="font-semibold mt-4 text-white">{t("license.coppa.title")}</h4>
-              <p className="text-white/90">{t("license.coppa.content")}</p>
+              <p className="text-white/95 improved-contrast-text">{t("license.coppa.content")}</p>
 
               <h4 className="font-semibold mt-4 text-white">{t("license.gdpr.title")}</h4>
-              <p className="text-white/90">{t("license.gdpr.content")}</p>
+              <p className="text-white/95 improved-contrast-text">{t("license.gdpr.content")}</p>
 
               <h4 className="font-semibold mt-4 text-white">{t("license.liability.title")}</h4>
-              <p className="text-white/90">{t("license.liability.content")}</p>
+              <p className="text-white/95 improved-contrast-text">{t("license.liability.content")}</p>
 
               <h4 className="font-semibold mt-4 text-white">{t("license.ai.title")}</h4>
-              <p className="text-white/90">{t("license.ai.content")}</p>
+              <p className="text-white/95 improved-contrast-text">{t("license.ai.content")}</p>
 
               <h4 className="font-semibold mt-4 text-white">{t("license.terms.title")}</h4>
-              <p className="text-white/90">{t("license.terms.content")}</p>
+              <p className="text-white/95 improved-contrast-text">{t("license.terms.content")}</p>
             </div>
 
             <Form method="post" className="space-y-4">
@@ -245,7 +245,7 @@ export default function Index() {
                 </Label>
               </div>
 
-              <div className="text-sm text-white/80 space-y-1">
+              <div className="text-sm text-white/95 space-y-1 improved-contrast-text">
                 <p>{t("setup.passwordRequirements")}</p>
                 <ul className="list-disc list-inside space-y-1">
                   <li>{t("setup.passwordLength")}</li>
@@ -327,7 +327,7 @@ export default function Index() {
             </Button>
           </Form>
 
-          <div className="mt-4 text-center text-sm text-white/80">
+          <div className="mt-4 text-center text-sm text-white/95 improved-contrast-text">
             <p>{t("auth.defaultPassword")}: <code className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded text-white border border-white/30">{DEFAULT_PASSWORD}</code></p>
           </div>
         </CardContent>

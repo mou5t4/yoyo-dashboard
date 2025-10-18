@@ -101,8 +101,8 @@ export default function Contacts() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t("contacts.title")}</h1>
-          <p className="text-gray-600 mt-1">{t("contacts.subtitle")}</p>
+          <h1 className="text-3xl font-bold text-white high-contrast-white">{t("contacts.title")}</h1>
+          <p className="text-white/95 mt-1 improved-contrast-text">{t("contacts.subtitle")}</p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -243,9 +243,9 @@ export default function Contacts() {
         {contacts.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Phone className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <p className="text-gray-600">{t("contacts.noContacts")}</p>
-              <p className="text-sm text-gray-500 mt-1">{t("contacts.addContact")}</p>
+              <Phone className="h-12 w-12 mx-auto mb-4 text-white/90" />
+              <p className="text-white/90 improved-contrast-text">{t("contacts.noContacts")}</p>
+              <p className="text-sm text-white/90 mt-1 improved-contrast-text">{t("contacts.addContact")}</p>
             </CardContent>
           </Card>
         ) : (
@@ -267,9 +267,9 @@ export default function Contacts() {
                           <Badge variant="outline">Quick Dial {contact.quickDial}</Badge>
                         )}
                       </div>
-                      <p className="text-gray-600">{contact.phoneNumber}</p>
+                      <p className="text-white/90 improved-contrast-text">{contact.phoneNumber}</p>
                       {contact.relationship && (
-                        <p className="text-sm text-gray-500 capitalize">{contact.relationship}</p>
+                        <p className="text-sm text-white/90 capitalize improved-contrast-text">{contact.relationship}</p>
                       )}
                       <div className="flex items-center space-x-2 mt-2">
                         {contact.canCall && (

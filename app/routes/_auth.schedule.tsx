@@ -93,8 +93,8 @@ export default function Schedule() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t("schedule.title")}</h1>
-          <p className="text-gray-600 mt-1">{t("schedule.subtitle")}</p>
+          <h1 className="text-3xl font-bold text-white high-contrast-white">{t("schedule.title")}</h1>
+          <p className="text-white/95 mt-1 improved-contrast-text">{t("schedule.subtitle")}</p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -241,9 +241,9 @@ export default function Schedule() {
         {schedules.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <p className="text-gray-600">No schedules configured</p>
-              <p className="text-sm text-gray-500 mt-1">Add your first schedule to get started</p>
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-white/90" />
+              <p className="text-white/90 improved-contrast-text">No schedules configured</p>
+              <p className="text-sm text-white/90 mt-1 improved-contrast-text">Add your first schedule to get started</p>
             </CardContent>
           </Card>
         ) : (
@@ -273,7 +273,7 @@ export default function Schedule() {
                             {schedule.enabled ? "Active" : "Inactive"}
                           </Badge>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                        <div className="flex items-center space-x-2 text-sm text-white/90 mb-2 improved-contrast-text">
                           <Clock className="h-4 w-4" />
                           <span>
                             {schedule.startTime} - {schedule.endTime}

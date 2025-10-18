@@ -210,8 +210,8 @@ export default function Settings() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("settings.title")}</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">{t("settings.subtitle")}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white high-contrast-white">{t("settings.title")}</h1>
+        <p className="text-sm sm:text-base text-white/95 mt-1 improved-contrast-text">{t("settings.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -273,7 +273,7 @@ export default function Settings() {
                   type="datetime-local"
                   step="1"
                 />
-                <p className="text-xs text-gray-500">{t("settings.leaveEmptyKeepCurrent")}</p>
+                <p className="text-xs text-white/90 improved-contrast-text">{t("settings.leaveEmptyKeepCurrent")}</p>
               </div>
 
               <div className="space-y-2">
@@ -305,7 +305,7 @@ export default function Settings() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <SettingsIcon className="h-5 w-5 text-gray-600" />
+            <SettingsIcon className="h-5 w-5 text-white/90" />
             {t("settings.general")}
           </CardTitle>
           <CardDescription>{t("settings.generalDescription")}</CardDescription>
@@ -384,7 +384,7 @@ export default function Settings() {
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-0.5 flex-1 min-w-0">
                   <Label className="text-sm font-medium">{t("settings.contentFilter")}</Label>
-                  <p className="text-xs sm:text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
                     {t("settings.contentFilterDesc")}
                   </p>
                 </div>
@@ -398,7 +398,7 @@ export default function Settings() {
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-0.5 flex-1 min-w-0">
                   <Label className="text-sm font-medium">{t("settings.explicitContent")}</Label>
-                  <p className="text-xs sm:text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
                     {t("settings.explicitContentDesc")}
                   </p>
                 </div>
@@ -421,7 +421,7 @@ export default function Settings() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-gray-600" />
+            <Shield className="h-5 w-5 text-white/90" />
             {t("settings.changePassword")}
           </CardTitle>
           <CardDescription>{t("settings.securityDescription")}</CardDescription>
@@ -486,7 +486,7 @@ export default function Settings() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">{t("settings.resetDevice")}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-white/90 improved-contrast-text">
                   {t("settings.resetDeviceDesc")}
                 </p>
               </div>

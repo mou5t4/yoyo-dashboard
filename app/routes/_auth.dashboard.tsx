@@ -80,13 +80,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4), 0 4px 24px rgba(0,0,0,0.2)' }}>{t("dashboard.title")}</h1>
-        <p className="text-base sm:text-lg text-white/95 mt-2 improved-contrast-text" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
-          {t("dashboard.subtitle", { deviceName: settings?.deviceName || "YoyoPod" })}
-        </p>
-      </div>
-
       {/* Current Time Display */}
       <Card className="bg-gradient-to-r from-purple-500/20 to-blue-500/20">
         <CardContent className="flex items-center justify-start h-20 sm:h-24" style={{ padding: '32px' }}>

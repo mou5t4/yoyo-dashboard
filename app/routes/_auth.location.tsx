@@ -143,11 +143,6 @@ export default function Location() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">{t("location.title")}</h1>
-        <p className="text-gray-600 mt-1">{t("location.subtitle")}</p>
-      </div>
-
       {actionData?.success && (
         <Alert variant="default" className="border-green-200 bg-green-50">
           <CheckCircle2 className="h-4 w-4 text-green-600" />
@@ -178,7 +173,7 @@ export default function Location() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>{t("location.tracking")}</Label>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-white/90 improved-contrast-text">
                     {t("location.trackingDescription")}
                   </p>
                 </div>
@@ -191,7 +186,7 @@ export default function Location() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>{t("location.geofencing")}</Label>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-white/90 improved-contrast-text">
                     {t("location.geofencingDescription")}
                   </p>
                 </div>
@@ -219,11 +214,11 @@ export default function Location() {
           <CardContent className="space-y-2">
             <div className="bg-gray-100 rounded-lg p-4 space-y-1">
               <p className="font-medium">{currentLocation.address || t("location.locationTracked")}</p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-white/90 improved-contrast-text">
                 {t("location.latitude")}: {currentLocation.latitude.toFixed(6)}, {t("location.longitude")}: {currentLocation.longitude.toFixed(6)}
               </p>
-              <p className="text-sm text-gray-600">{t("location.accuracy")}: {currentLocation.accuracy}m</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm text-white/90 improved-contrast-text">{t("location.accuracy")}: {currentLocation.accuracy}m</p>
+              <p className="text-xs text-white/90 improved-contrast-text">
                 {t("location.lastUpdated")}: {formatTime(currentLocation.timestamp)}
               </p>
             </div>
@@ -350,7 +345,7 @@ export default function Location() {
           )}
 
           {geofences.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-white/90 improved-contrast-text">
               <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>{t("location.noGeofences")}</p>
             </div>
@@ -369,10 +364,10 @@ export default function Location() {
                           {geofence.enabled ? "Active" : "Inactive"}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-white/90 improved-contrast-text">
                         Lat: {geofence.latitude.toFixed(6)}, Lon: {geofence.longitude.toFixed(6)}
                       </p>
-                      <p className="text-sm text-gray-600">Radius: {geofence.radius}m</p>
+                      <p className="text-sm text-white/90 improved-contrast-text">Radius: {geofence.radius}m</p>
                       <div className="flex items-center space-x-2 mt-2">
                         {geofence.alertOnExit && (
                           <Badge variant="outline" className="text-xs">Exit Alert</Badge>
@@ -420,7 +415,7 @@ export default function Location() {
                     <p className="text-sm font-medium">
                       {location.address || t("location.locationTracked")}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-white/90 improved-contrast-text">
                       {formatDate(location.timestamp)} {t("location.lastUpdated")} {formatTime(location.timestamp)}
                     </p>
                   </div>

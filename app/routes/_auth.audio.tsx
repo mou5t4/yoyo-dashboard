@@ -88,8 +88,8 @@ export default function AudioPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">{t("audio.title")}</h1>
-        <p className="text-gray-600 mt-1">{t("audio.subtitle")}</p>
+        <h1 className="text-3xl font-bold text-white high-contrast-white">{t("audio.title")}</h1>
+        <p className="text-white/95 mt-1 improved-contrast-text">{t("audio.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -123,17 +123,17 @@ export default function AudioPage() {
             <Label className="text-sm font-medium mb-2 block">{t("audio.availableOutputDevices")}</Label>
             <div className="space-y-2">
               {devices.playback.length === 0 ? (
-                <p className="text-sm text-gray-500">{t("audio.noInputDevices")}</p>
+                <p className="text-sm text-white/90 improved-contrast-text">{t("audio.noInputDevices")}</p>
               ) : (
                 devices.playback.map((device) => (
                   <div
                     key={device.id}
                     className="flex items-center space-x-3 p-3 border rounded-lg"
                   >
-                    <Volume2 className="h-4 w-4 text-gray-500" />
+                    <Volume2 className="h-4 w-4 text-white/90" />
                     <div className="flex-1">
                       <p className="font-medium text-sm">{device.name}</p>
-                      <p className="text-xs text-gray-500">{device.id}</p>
+                      <p className="text-xs text-white/90 improved-contrast-text">{device.id}</p>
                     </div>
                     {device.isDefault && (
                       <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
@@ -210,17 +210,17 @@ export default function AudioPage() {
             <Label className="text-sm font-medium mb-2 block">{t("audio.availableInputDevices")}</Label>
             <div className="space-y-2">
               {devices.capture.length === 0 ? (
-                <p className="text-sm text-gray-500">{t("audio.noInputDevices")}</p>
+                <p className="text-sm text-white/90 improved-contrast-text">{t("audio.noInputDevices")}</p>
               ) : (
                 devices.capture.map((device) => (
                   <div
                     key={device.id}
                     className="flex items-center space-x-3 p-3 border rounded-lg"
                   >
-                    <Mic className="h-4 w-4 text-gray-500" />
+                    <Mic className="h-4 w-4 text-white/90" />
                     <div className="flex-1">
                       <p className="font-medium text-sm">{device.name}</p>
-                      <p className="text-xs text-gray-500">{device.id}</p>
+                      <p className="text-xs text-white/90 improved-contrast-text">{device.id}</p>
                     </div>
                     {device.isDefault && (
                       <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
@@ -290,19 +290,19 @@ export default function AudioPage() {
         <CardContent>
           <div className="grid gap-4 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-600">{t("audio.outputDevices")}:</span>
+              <span className="text-white/90 improved-contrast-text">{t("audio.outputDevices")}:</span>
               <span className="font-medium">{devices.playback.length}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">{t("audio.inputDevices")}:</span>
+              <span className="text-white/90 improved-contrast-text">{t("audio.inputDevices")}:</span>
               <span className="font-medium">{devices.capture.length}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">{t("audio.currentOutput")}:</span>
+              <span className="text-white/90 improved-contrast-text">{t("audio.currentOutput")}:</span>
               <span className="font-medium">{settings.outputDevice}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">{t("audio.currentInput")}:</span>
+              <span className="text-white/90 improved-contrast-text">{t("audio.currentInput")}:</span>
               <span className="font-medium">{settings.inputDevice}</span>
             </div>
           </div>

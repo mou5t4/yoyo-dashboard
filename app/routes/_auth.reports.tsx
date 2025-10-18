@@ -47,11 +47,7 @@ export default function Reports() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("reports.title")}</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">{t("reports.subtitle")}</p>
-        </div>
+      <div className="flex justify-end">
         <Button variant="outline" size="lg" className="w-full sm:w-auto">
           <Download className="h-4 w-4 mr-2" />
           {t("reports.export")}
@@ -75,19 +71,19 @@ export default function Reports() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
                 <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.musicListened}</p>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">Minutes Music</p>
+                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">Minutes Music</p>
               </div>
               <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
                 <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.podcastsListened}</p>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">Minutes Podcasts</p>
+                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">Minutes Podcasts</p>
               </div>
               <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
                 <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.calls}</p>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">Calls Made</p>
+                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">Calls Made</p>
               </div>
               <div className="text-center p-3 sm:p-4 bg-primary-50 rounded-lg">
                 <p className="text-xl sm:text-2xl font-bold text-primary-500">{stats.today.aiInteractions}</p>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">AI Chats</p>
+                <p className="text-xs sm:text-sm text-white/90 mt-1 improved-contrast-text">AI Chats</p>
               </div>
             </div>
           </CardContent>
@@ -104,11 +100,11 @@ export default function Reports() {
           <CardContent>
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
               <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs sm:text-sm text-gray-600 mb-2">Total Usage</p>
+                <p className="text-xs sm:text-sm text-white/90 mb-2 improved-contrast-text">Total Usage</p>
                 <p className="text-2xl sm:text-3xl font-bold">{formatDuration(stats.week.totalUsage * 60)}</p>
               </div>
               <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs sm:text-sm text-gray-600 mb-2">Daily Average</p>
+                <p className="text-xs sm:text-sm text-white/90 mb-2 improved-contrast-text">Daily Average</p>
                 <p className="text-2xl sm:text-3xl font-bold">{formatDuration(stats.week.dailyAverage * 60)}</p>
               </div>
             </div>
@@ -139,7 +135,7 @@ export default function Reports() {
                       </Badge>
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-600 font-medium flex-shrink-0">
+                  <p className="text-xs sm:text-sm text-white/90 font-medium flex-shrink-0 improved-contrast-text">
                     {formatDuration(item.duration * 60)}
                   </p>
                 </div>
@@ -158,7 +154,7 @@ export default function Reports() {
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-center justify-center border-2 border-dashed rounded-lg">
-              <div className="text-center text-gray-500">
+              <div className="text-center text-white/90 improved-contrast-text">
                 <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>Usage chart visualization</p>
                 <p className="text-sm">Charts would be implemented with a charting library</p>

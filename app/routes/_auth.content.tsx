@@ -35,11 +35,6 @@ export default function Content() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("content.title")}</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">{t("content.subtitle")}</p>
-      </div>
-
       {/* Current Playback */}
       {currentPlayback && (
         <Card>
@@ -56,7 +51,7 @@ export default function Content() {
               </div>
               <div className="flex-1">
                 <p className="font-semibold">{currentPlayback.title}</p>
-                <p className="text-sm text-gray-600">{currentPlayback.artist}</p>
+                <p className="text-sm text-white/90 improved-contrast-text">{currentPlayback.artist}</p>
                 <Badge variant="outline" className="mt-1">{currentPlayback.type}</Badge>
               </div>
             </div>
@@ -72,7 +67,7 @@ export default function Content() {
         </CardHeader>
         <CardContent>
           {contentLibrary.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-white/90 improved-contrast-text">
               <Music className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>{t("content.noContentAvailable")}</p>
               <p className="text-sm">{t("content.contentWillAppear")}</p>
@@ -90,7 +85,7 @@ export default function Content() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-sm sm:text-base truncate">{item.title}</p>
-                      <p className="text-xs sm:text-sm text-gray-600 truncate">{item.creator}</p>
+                      <p className="text-xs sm:text-sm text-white/90 truncate improved-contrast-text">{item.creator}</p>
                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                         <Badge variant="outline" className="text-xs capitalize">
                           {item.type}
@@ -127,7 +122,7 @@ export default function Content() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm sm:text-base">{t("content.explicitContent")}</p>
-              <p className="text-xs sm:text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
                 {t("content.preventAccess")}
               </p>
             </div>
@@ -137,7 +132,7 @@ export default function Content() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm sm:text-base">{t("content.ageAppropriateFilter")}</p>
-              <p className="text-xs sm:text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
                 {t("content.onlyShowContent")}
               </p>
             </div>
