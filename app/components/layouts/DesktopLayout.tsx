@@ -37,13 +37,13 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
     <div className="min-h-screen">
       {/* Desktop Sidebar */}
       <aside className={cn(
-        "fixed top-0 bottom-0 w-80 glass-nav z-40 m-6 rounded-3xl",
+        "fixed top-0 bottom-0 w-80 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200 dark:border-gray-700 z-40 m-6 rounded-3xl shadow-2xl",
         rtl ? "right-0" : "left-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between px-6 py-5 border-b border-white/30 gap-4">
-            <h1 className="text-2xl font-extrabold text-white flex-1 leading-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{APP_NAME}</h1>
+          <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-white/30 gap-4">
+            <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white flex-1 leading-tight">{APP_NAME}</h1>
             <div className="flex-shrink-0 flex items-center gap-2">
               <ThemeToggle />
               <LanguageSelector currentLanguage={language} />
@@ -61,10 +61,9 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
                 className={cn(
                   'flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
                   active
-                    ? 'bg-white/30 text-white shadow-xl backdrop-blur-sm border-l-4 border-white/60 high-contrast-white'
-                    : 'text-white/92 hover:bg-white/20 hover:text-white hover:shadow-lg hover:translate-x-1 focus-visible:bg-white/20 focus-visible:text-white improved-contrast-text'
+                    ? 'bg-blue-100 dark:bg-white/30 text-blue-900 dark:text-white shadow-xl border-l-4 border-blue-600 dark:border-white/60'
+                    : 'text-gray-700 dark:text-white/92 hover:bg-gray-100 dark:hover:bg-white/20 hover:text-gray-900 dark:hover:text-white hover:shadow-lg hover:translate-x-1 focus-visible:bg-gray-100 dark:focus-visible:bg-white/20 focus-visible:text-gray-900 dark:focus-visible:text-white'
                 )}
-                style={active ? { textShadow: '0 1px 4px rgba(0,0,0,0.3)' } : undefined}
               >
                 <span className="text-xl flex-shrink-0">{item.icon}</span>
                 <span className="flex-1">{t(`nav.${item.key}`)}</span>
@@ -74,12 +73,12 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
         </nav>
 
           {/* Sidebar Footer */}
-          <div className="p-6 border-t border-white/30">
+          <div className="p-6 border-t border-gray-200 dark:border-white/30">
             <button
               onClick={() => {
                 // Handle logout
               }}
-              className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-200 hover:bg-red-500/40 hover:text-white hover:shadow-lg transition-all duration-300 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-500/40 focus-visible:text-white"
+              className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-600 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-500/40 hover:text-red-700 dark:hover:text-white hover:shadow-lg transition-all duration-300 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-100 dark:focus-visible:bg-red-500/40 focus-visible:text-red-700 dark:focus-visible:text-white"
             >
               <span className="text-xl flex-shrink-0">🚪</span>
               <span className="flex-1 text-left">{t('nav.logout')}</span>
