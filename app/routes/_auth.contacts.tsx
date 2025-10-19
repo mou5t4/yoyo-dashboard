@@ -101,8 +101,8 @@ export default function Contacts() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white high-contrast-white">{t("contacts.title")}</h1>
-          <p className="text-white/95 mt-1 improved-contrast-text">{t("contacts.subtitle")}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("contacts.title")}</h1>
+          <p className="text-gray-700 dark:text-white/95 mt-1">{t("contacts.subtitle")}</p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -243,9 +243,9 @@ export default function Contacts() {
         {contacts.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Phone className="h-12 w-12 mx-auto mb-4 text-white/90" />
-              <p className="text-white/90 improved-contrast-text">{t("contacts.noContacts")}</p>
-              <p className="text-sm text-white/90 mt-1 improved-contrast-text">{t("contacts.addContact")}</p>
+              <Phone className="h-12 w-12 mx-auto mb-4 text-gray-600 dark:text-gray-400" />
+              <p className="text-gray-700 dark:text-gray-400">{t("contacts.noContacts")}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400 mt-1">{t("contacts.addContact")}</p>
             </CardContent>
           </Card>
         ) : (
@@ -259,7 +259,7 @@ export default function Contacts() {
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <h3 className="text-lg font-semibold">{contact.name}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{contact.name}</h3>
                         {contact.isPrimary && (
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                         )}
@@ -267,9 +267,9 @@ export default function Contacts() {
                           <Badge variant="outline">Quick Dial {contact.quickDial}</Badge>
                         )}
                       </div>
-                      <p className="text-white/90 improved-contrast-text">{contact.phoneNumber}</p>
+                      <p className="text-gray-700 dark:text-gray-400">{contact.phoneNumber}</p>
                       {contact.relationship && (
-                        <p className="text-sm text-white/90 capitalize improved-contrast-text">{contact.relationship}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-400 capitalize">{contact.relationship}</p>
                       )}
                       <div className="flex items-center space-x-2 mt-2">
                         {contact.canCall && (

@@ -91,8 +91,8 @@ export default function AISettings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white high-contrast-white">{t("ai.title")}</h1>
-        <p className="text-white/95 mt-1 improved-contrast-text">{t("ai.subtitle")}</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("ai.title")}</h1>
+        <p className="text-gray-700 dark:text-white/95 mt-1">{t("ai.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -125,7 +125,7 @@ export default function AISettings() {
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label>{t("ai.enabled")}</Label>
-                <p className="text-sm text-white/90 improved-contrast-text">
+                <p className="text-sm text-gray-700 dark:text-gray-400">
                   {t("ai.enabled")}
                 </p>
               </div>
@@ -145,7 +145,7 @@ export default function AISettings() {
                 defaultValue={settings?.aiDailyLimit || ""}
                 placeholder={t("common.noLimit")}
               />
-              <p className="text-sm text-white/90 improved-contrast-text">
+              <p className="text-sm text-gray-700 dark:text-gray-400">
                 {t("ai.dailyLimitDesc")}
               </p>
             </div>
@@ -158,7 +158,7 @@ export default function AISettings() {
                 placeholder={t("ai.topicFiltersDesc")}
                 defaultValue={topicFilters.join(', ')}
               />
-              <p className="text-sm text-white/90 improved-contrast-text">
+              <p className="text-sm text-gray-700 dark:text-gray-400">
                 {t("ai.topicFiltersDesc")}
               </p>
             </div>
@@ -166,7 +166,7 @@ export default function AISettings() {
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label>{t("ai.conversationLogging")}</Label>
-                <p className="text-sm text-white/90 improved-contrast-text">
+                <p className="text-sm text-gray-700 dark:text-gray-400">
                   {t("ai.conversationLoggingDesc")}
                 </p>
               </div>
@@ -195,8 +195,8 @@ export default function AISettings() {
           <div className="flex items-start space-x-3">
             <Badge variant="success">Strict</Badge>
             <div>
-              <p className="font-medium">Maximum Safety</p>
-              <p className="text-sm text-white/90 improved-contrast-text">
+              <p className="font-medium text-gray-900 dark:text-white">Maximum Safety</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">
                 AI avoids all potentially sensitive topics and uses child-friendly language
               </p>
             </div>
@@ -204,8 +204,8 @@ export default function AISettings() {
           <div className="flex items-start space-x-3">
             <Badge variant="default">Moderate</Badge>
             <div>
-              <p className="font-medium">Balanced Approach</p>
-              <p className="text-sm text-white/90 improved-contrast-text">
+              <p className="font-medium text-gray-900 dark:text-white">Balanced Approach</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">
                 AI provides educational content while filtering inappropriate topics
               </p>
             </div>
@@ -224,7 +224,7 @@ export default function AISettings() {
         </CardHeader>
         <CardContent>
           {conversations.length === 0 ? (
-            <div className="text-center py-8 text-white/90 improved-contrast-text">
+            <div className="text-center py-8 text-gray-700 dark:text-gray-400">
               <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>{t("ai.noConversations")}</p>
             </div>
@@ -236,8 +236,8 @@ export default function AISettings() {
                   className="flex items-start justify-between p-3 border rounded-lg hover:bg-gray-50"
                 >
                   <div className="flex-1">
-                    <p className="text-sm font-medium">{conv.summary}</p>
-                    <p className="text-xs text-white/90 improved-contrast-text">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{conv.summary}</p>
+                    <p className="text-xs text-gray-700 dark:text-gray-400">
                       {formatDate(conv.timestamp)} at {formatTime(conv.timestamp)}
                     </p>
                   </div>

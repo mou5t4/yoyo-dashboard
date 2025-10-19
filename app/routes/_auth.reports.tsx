@@ -100,12 +100,12 @@ export default function Reports() {
           <CardContent>
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
               <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs sm:text-sm text-white/90 mb-2 improved-contrast-text">Total Usage</p>
-                <p className="text-2xl sm:text-3xl font-bold">{formatDuration(stats.week.totalUsage * 60)}</p>
+                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 mb-2">Total Usage</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{formatDuration(stats.week.totalUsage * 60)}</p>
               </div>
               <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs sm:text-sm text-white/90 mb-2 improved-contrast-text">Daily Average</p>
-                <p className="text-2xl sm:text-3xl font-bold">{formatDuration(stats.week.dailyAverage * 60)}</p>
+                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 mb-2">Daily Average</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{formatDuration(stats.week.dailyAverage * 60)}</p>
               </div>
             </div>
           </CardContent>
@@ -129,13 +129,13 @@ export default function Reports() {
                       {index + 1}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-sm sm:text-base truncate">{item.name}</p>
+                      <p className="font-medium text-sm sm:text-base truncate text-gray-900 dark:text-white">{item.name}</p>
                       <Badge variant="outline" className="text-xs capitalize mt-1">
                         {item.type}
                       </Badge>
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-white/90 font-medium flex-shrink-0 improved-contrast-text">
+                  <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 font-medium flex-shrink-0">
                     {formatDuration(item.duration * 60)}
                   </p>
                 </div>
@@ -154,10 +154,10 @@ export default function Reports() {
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-center justify-center border-2 border-dashed rounded-lg">
-              <div className="text-center text-white/90 improved-contrast-text">
+              <div className="text-center text-gray-700 dark:text-gray-400">
                 <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>Usage chart visualization</p>
-                <p className="text-sm">Charts would be implemented with a charting library</p>
+                <p className="text-sm text-gray-700 dark:text-gray-400">Charts would be implemented with a charting library</p>
               </div>
             </div>
           </CardContent>

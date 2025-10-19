@@ -89,8 +89,8 @@ export default function BluetoothPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white high-contrast-white">{t("bluetooth.title")}</h1>
-        <p className="text-white/95 mt-1 improved-contrast-text">{t("bluetooth.subtitle")}</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("bluetooth.title")}</h1>
+        <p className="text-gray-700 dark:text-white/95 mt-1">{t("bluetooth.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -117,8 +117,8 @@ export default function BluetoothPage() {
         </CardHeader>
         <CardContent>
           {pairedDevices.length === 0 ? (
-            <div className="text-center py-8 text-white/90 improved-contrast-text">
-              <Bluetooth className="h-12 w-12 mx-auto mb-2 text-white/90" />
+            <div className="text-center py-8 text-gray-700 dark:text-gray-400">
+              <Bluetooth className="h-12 w-12 mx-auto mb-2 text-gray-600 dark:text-gray-400" />
               <p>{t("bluetooth.noDevices")}</p>
             </div>
           ) : (
@@ -131,8 +131,8 @@ export default function BluetoothPage() {
                   <div className="flex items-center space-x-3">
                     {getDeviceIcon(device.type)}
                     <div>
-                      <p className="font-medium">{device.name}</p>
-                      <p className="text-sm text-white/90 improved-contrast-text">{device.address}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{device.name}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-400">{device.address}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -187,16 +187,16 @@ export default function BluetoothPage() {
         </CardHeader>
         <CardContent>
           {isScanning ? (
-            <div className="text-center py-8 text-white/90 improved-contrast-text">
-              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin text-white/90" />
+            <div className="text-center py-8 text-gray-700 dark:text-gray-400">
+              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin text-gray-600 dark:text-gray-400" />
               <p>{t("bluetooth.scanning")}</p>
-              <p className="text-sm">{t("common.loading")}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t("common.loading")}</p>
             </div>
           ) : availableDevices.length === 0 ? (
-            <div className="text-center py-8 text-white/90 improved-contrast-text">
-              <Bluetooth className="h-12 w-12 mx-auto mb-2 text-white/90" />
+            <div className="text-center py-8 text-gray-700 dark:text-gray-400">
+              <Bluetooth className="h-12 w-12 mx-auto mb-2 text-gray-600 dark:text-gray-400" />
               <p>{t("bluetooth.noDevices")}</p>
-              <p className="text-sm">{t("common.search")}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t("common.search")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -210,8 +210,8 @@ export default function BluetoothPage() {
                     <div className="flex items-center space-x-3">
                       {getDeviceIcon(device.type)}
                       <div>
-                        <p className="font-medium">{device.name}</p>
-                        <p className="text-sm text-white/90 improved-contrast-text">{device.address}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{device.name}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-400">{device.address}</p>
                       </div>
                     </div>
                     <Form method="post">

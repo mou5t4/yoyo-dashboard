@@ -52,7 +52,7 @@ export default function Content() {
                 <Music className="h-8 w-8 text-purple-400" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-white">{currentPlayback.title}</p>
+                <p className="font-semibold text-gray-900 dark:text-white">{currentPlayback.title}</p>
                 <p className="text-sm text-gray-400">{currentPlayback.artist}</p>
                 <Badge className="mt-1 bg-purple-900 text-purple-300">{currentPlayback.type}</Badge>
               </div>
@@ -69,10 +69,10 @@ export default function Content() {
         </CardHeader>
         <CardContent>
           {contentLibrary.length === 0 ? (
-            <div className="text-center py-12 text-white/90 improved-contrast-text">
+            <div className="text-center py-12 text-gray-700 dark:text-gray-400">
               <Music className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>{t("content.noContentAvailable")}</p>
-              <p className="text-sm">{t("content.contentWillAppear")}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t("content.contentWillAppear")}</p>
             </div>
           ) : (
             <div className="space-y-2 sm:space-y-3">
@@ -86,7 +86,7 @@ export default function Content() {
                       {getContentIcon(item.type)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-sm sm:text-base truncate text-white">{item.title}</p>
+                      <p className="font-medium text-sm sm:text-base truncate text-gray-900 dark:text-white">{item.title}</p>
                       <p className="text-xs sm:text-sm text-gray-400 truncate">{item.creator}</p>
                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                         <Badge className="text-xs capitalize bg-purple-900/50 text-purple-300 border-purple-900">
@@ -123,8 +123,8 @@ export default function Content() {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm sm:text-base">{t("content.explicitContent")}</p>
-              <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
+              <p className="font-medium text-sm sm:text-base text-gray-900 dark:text-white">{t("content.explicitContent")}</p>
+              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-400">
                 {t("content.preventAccess")}
               </p>
             </div>
@@ -133,8 +133,8 @@ export default function Content() {
 
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm sm:text-base">{t("content.ageAppropriateFilter")}</p>
-              <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
+              <p className="font-medium text-sm sm:text-base text-gray-900 dark:text-white">{t("content.ageAppropriateFilter")}</p>
+              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-400">
                 {t("content.onlyShowContent")}
               </p>
             </div>

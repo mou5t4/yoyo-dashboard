@@ -210,8 +210,8 @@ export default function Settings() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-white high-contrast-white">{t("settings.title")}</h1>
-        <p className="text-sm sm:text-base text-white/95 mt-1 improved-contrast-text">{t("settings.subtitle")}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{t("settings.title")}</h1>
+        <p className="text-sm sm:text-base text-gray-700 dark:text-white/95 mt-1">{t("settings.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -247,7 +247,7 @@ export default function Settings() {
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
                 <p className="text-sm font-medium text-gray-300 mb-1">{t("settings.currentTime")}</p>
-                <p className="text-xl sm:text-2xl font-bold text-white" suppressHydrationWarning>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" suppressHydrationWarning>
                   {formatDateTime(currentTime)}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
@@ -275,7 +275,7 @@ export default function Settings() {
                   type="datetime-local"
                   step="1"
                 />
-                <p className="text-xs text-white/90 improved-contrast-text">{t("settings.leaveEmptyKeepCurrent")}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{t("settings.leaveEmptyKeepCurrent")}</p>
               </div>
 
               <div className="space-y-2">
@@ -388,7 +388,7 @@ export default function Settings() {
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-0.5 flex-1 min-w-0">
                   <Label className="text-sm font-medium">{t("settings.contentFilter")}</Label>
-                  <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     {t("settings.contentFilterDesc")}
                   </p>
                 </div>
@@ -402,7 +402,7 @@ export default function Settings() {
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-0.5 flex-1 min-w-0">
                   <Label className="text-sm font-medium">{t("settings.explicitContent")}</Label>
-                  <p className="text-xs sm:text-sm text-white/90 improved-contrast-text">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     {t("settings.explicitContentDesc")}
                   </p>
                 </div>
@@ -493,7 +493,7 @@ export default function Settings() {
             <input type="hidden" name="intent" value="factory-reset" />
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-white">{t("settings.resetDevice")}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{t("settings.resetDevice")}</p>
                 <p className="text-sm text-gray-400">
                   {t("settings.resetDeviceDesc")}
                 </p>

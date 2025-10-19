@@ -128,8 +128,8 @@ export default function WiFiPage() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-white high-contrast-white">{t("wifi.title")}</h1>
-        <p className="text-sm sm:text-base text-white/95 mt-1 improved-contrast-text">{t("wifi.subtitle")}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{t("wifi.title")}</h1>
+        <p className="text-sm sm:text-base text-gray-700 dark:text-white/95 mt-1">{t("wifi.subtitle")}</p>
       </div>
 
       {actionData?.success && (
@@ -160,8 +160,8 @@ export default function WiFiPage() {
               <div className="flex items-center space-x-3">
                 <Wifi className="h-5 w-5 text-green-500" />
                 <div>
-                  <p className="font-medium">{currentWiFi.ssid}</p>
-                  <p className="text-sm text-white/90 improved-contrast-text">{t("wifi.signalQuality")}: {currentWiFi.signal}%</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{currentWiFi.ssid}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t("wifi.signalQuality")}: {currentWiFi.signal}%</p>
                 </div>
               </div>
               <Badge className="bg-green-900 text-green-300">
@@ -197,14 +197,14 @@ export default function WiFiPage() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8 text-white/90 improved-contrast-text">
-              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin text-white/90" />
+            <div className="text-center py-8 text-gray-700 dark:text-white/90">
+              <RefreshCw className="h-12 w-12 mx-auto mb-2 animate-spin text-blue-600 dark:text-white/90" />
               <p>{t("wifi.scanning")}</p>
               <p className="text-sm">{t("common.loading")}</p>
             </div>
           ) : networks.length === 0 ? (
-            <div className="text-center py-8 text-white/90 improved-contrast-text">
-              <Wifi className="h-12 w-12 mx-auto mb-2 text-white/90" />
+            <div className="text-center py-8 text-gray-700 dark:text-white/90">
+              <Wifi className="h-12 w-12 mx-auto mb-2 text-blue-600 dark:text-white/90" />
               <p>{t("common.noData")}</p>
               <p className="text-sm">{t("wifi.scanNetworks")}</p>
             </div>
@@ -232,13 +232,13 @@ export default function WiFiPage() {
                     <div className="flex items-center space-x-4 min-w-0 flex-1">
                       <Wifi className={cn(
                         "h-6 w-6 flex-shrink-0 transition-colors duration-200",
-                        selectedNetwork === network.ssid ? 'text-blue-300' : 'text-white/90'
+                        selectedNetwork === network.ssid ? 'text-blue-600 dark:text-blue-300' : 'text-gray-600 dark:text-white/90'
                       )} />
                       <div className="min-w-0 flex-1">
-                        <p className="font-bold text-base sm:text-lg truncate text-white high-contrast-white" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
+                        <p className="font-bold text-base sm:text-lg truncate text-gray-900 dark:text-white">
                           {network.ssid}
                         </p>
-                        <div className="flex items-center space-x-2 text-sm text-white/92 improved-contrast-text">
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-white/92">
                           {getSecurityIcon(network.security)}
                           <span className="uppercase font-medium">{network.security}</span>
                           <span>•</span>
@@ -272,7 +272,7 @@ export default function WiFiPage() {
 
                         {network.security !== 'open' && (
                           <div className="space-y-3">
-                            <Label htmlFor="password" className="text-base font-semibold text-white" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
+                            <Label htmlFor="password" className="text-base font-semibold text-gray-900 dark:text-white">
                               {t("wifi.password")}
                             </Label>
                             <Input
@@ -300,7 +300,7 @@ export default function WiFiPage() {
                                     backgroundPosition: 'center'
                                   }}
                                 />
-                                <Label htmlFor="showPassword" className="text-sm font-medium text-white/90 cursor-pointer group-hover:text-white transition-colors duration-200">
+                                <Label htmlFor="showPassword" className="text-sm font-medium text-gray-700 dark:text-white/90 cursor-pointer group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
                                   {t("auth.showPassword")}
                                 </Label>
                               </label>
@@ -365,8 +365,8 @@ export function ErrorBoundary() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-white high-contrast-white">WiFi Configuration</h1>
-        <p className="text-sm sm:text-base text-white/95 mt-1 improved-contrast-text">Connect to a wireless network</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">WiFi Configuration</h1>
+        <p className="text-sm sm:text-base text-gray-700 dark:text-white/95 mt-1">Connect to a wireless network</p>
       </div>
 
       <div className="rounded-xl border border-red-200 bg-red-50 p-6">

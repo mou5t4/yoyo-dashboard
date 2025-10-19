@@ -173,7 +173,7 @@ export default function Location() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>{t("location.tracking")}</Label>
-                  <p className="text-sm text-white/90 improved-contrast-text">
+                  <p className="text-sm text-gray-700 dark:text-gray-400">
                     {t("location.trackingDescription")}
                   </p>
                 </div>
@@ -186,7 +186,7 @@ export default function Location() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>{t("location.geofencing")}</Label>
-                  <p className="text-sm text-white/90 improved-contrast-text">
+                  <p className="text-sm text-gray-700 dark:text-gray-400">
                     {t("location.geofencingDescription")}
                   </p>
                 </div>
@@ -213,12 +213,12 @@ export default function Location() {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="bg-gray-100 rounded-lg p-4 space-y-1">
-              <p className="font-medium">{currentLocation.address || t("location.locationTracked")}</p>
-              <p className="text-sm text-white/90 improved-contrast-text">
+              <p className="font-medium text-gray-900 dark:text-white">{currentLocation.address || t("location.locationTracked")}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">
                 {t("location.latitude")}: {currentLocation.latitude.toFixed(6)}, {t("location.longitude")}: {currentLocation.longitude.toFixed(6)}
               </p>
-              <p className="text-sm text-white/90 improved-contrast-text">{t("location.accuracy")}: {currentLocation.accuracy}m</p>
-              <p className="text-xs text-white/90 improved-contrast-text">
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t("location.accuracy")}: {currentLocation.accuracy}m</p>
+              <p className="text-xs text-gray-700 dark:text-gray-400">
                 {t("location.lastUpdated")}: {formatTime(currentLocation.timestamp)}
               </p>
             </div>
@@ -345,7 +345,7 @@ export default function Location() {
           )}
 
           {geofences.length === 0 ? (
-            <div className="text-center py-8 text-white/90 improved-contrast-text">
+            <div className="text-center py-8 text-gray-700 dark:text-gray-400">
               <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>{t("location.noGeofences")}</p>
             </div>
@@ -359,15 +359,15 @@ export default function Location() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-semibold">{geofence.name}</h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{geofence.name}</h3>
                         <Badge variant={geofence.enabled ? "success" : "outline"}>
                           {geofence.enabled ? "Active" : "Inactive"}
                         </Badge>
                       </div>
-                      <p className="text-sm text-white/90 improved-contrast-text">
+                      <p className="text-sm text-gray-700 dark:text-gray-400">
                         Lat: {geofence.latitude.toFixed(6)}, Lon: {geofence.longitude.toFixed(6)}
                       </p>
-                      <p className="text-sm text-white/90 improved-contrast-text">Radius: {geofence.radius}m</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-400">Radius: {geofence.radius}m</p>
                       <div className="flex items-center space-x-2 mt-2">
                         {geofence.alertOnExit && (
                           <Badge variant="outline" className="text-xs">Exit Alert</Badge>
@@ -412,10 +412,10 @@ export default function Location() {
                   className="flex items-start justify-between py-2 border-b last:border-0"
                 >
                   <div>
-                    <p className="text-sm font-medium">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
                       {location.address || t("location.locationTracked")}
                     </p>
-                    <p className="text-xs text-white/90 improved-contrast-text">
+                    <p className="text-xs text-gray-700 dark:text-gray-400">
                       {formatDate(location.timestamp)} {t("location.lastUpdated")} {formatTime(location.timestamp)}
                     </p>
                   </div>
