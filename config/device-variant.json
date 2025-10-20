@@ -1,0 +1,12 @@
+{
+  "variant": "core",
+  "features": {
+    "voip": false,
+    "gps": true,
+    "ai": false,
+    "bluetooth": true
+  },
+  "firmware": "1.0.0",
+  "lastUpdated": "2024-01-01T00:00:00Z"
+}
+

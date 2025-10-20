@@ -1,0 +1,34 @@
+{
+  "schedule": {
+    "title": "使用时间",
+    "subtitle": "设备可用时间",
+    "addSchedule": "添加时间段",
+    "editSchedule": "编辑时间表",
+    "deleteSchedule": "移除时间表",
+    "noSchedules": "未设置时间表",
+    "scheduleName": "名称",
+    "dayOfWeek": "星期",
+    "startTime": "开始时间",
+    "endTime": "结束时间",
+    "allowMusic": "允许音乐",
+    "allowPodcasts": "允许故事",
+    "allowAI": "允许语音助手",
+    "enabled": "启用",
+    "days": {
+      "0": "星期日",
+      "1": "星期一",
+      "2": "星期二",
+      "3": "星期三",
+      "4": "星期四",
+      "5": "星期五",
+      "6": "星期六"
+    },
+    "scheduleSaved": "时间表已保存！",
+    "scheduleDeleted": "时间表已移除",
+    "deleteConfirm": "移除此时间表？",
+    "bedtime": "就寝模式",
+    "bedtimeStart": "就寝时间开始",
+    "bedtimeEnd": "就寝时间结束",
+    "bedtimeDesc": "设备在就寝时间自动锁定"
+  }
+}

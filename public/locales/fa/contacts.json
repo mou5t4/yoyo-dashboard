@@ -1,0 +1,32 @@
+{
+  "contacts": {
+    "title": "مخاطبین تلفن",
+    "subtitle": "افرادی که فرزند شما می‌تواند با آنها تماس بگیرد",
+    "addContact": "افزودن مخاطب",
+    "editContact": "ویرایش مخاطب",
+    "deleteContact": "حذف مخاطب",
+    "noContacts": "هنوز مخاطبی نیست",
+    "name": "نام",
+    "phoneNumber": "شماره تلفن",
+    "relationship": "نسبت",
+    "quickDial": "دکمه تماس سریع",
+    "isPrimary": "مخاطب اصلی",
+    "canCall": "می‌تواند با این فرد تماس بگیرد",
+    "canReceive": "می‌تواند از این فرد تماس دریافت کند",
+    "relationships": {
+      "parent": "والدین",
+      "grandparent": "پدربزرگ/مادربزرگ",
+      "sibling": "خواهر/برادر",
+      "family": "عضو خانواده",
+      "friend": "دوست",
+      "other": "سایر"
+    },
+    "contactSaved": "مخاطب ذخیره شد!",
+    "contactDeleted": "مخاطب حذف شد",
+    "deleteConfirm": "این مخاطب حذف شود؟",
+    "callHistory": "تماس‌های اخیر",
+    "incoming": "دریافتی",
+    "outgoing": "انجام شده",
+    "missed": "از دست رفته"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "baseUrl": "http://localhost:5000/api",
+  "authToken": "shared-secret-token",
+  "endpoints": {
+    "device": "/device/status",
+    "wifi": "/wifi",
+    "bluetooth": "/bluetooth",
+    "location": "/location",
+    "voip": "/voip",
+    "content": "/content",
+    "ai": "/ai"
+  },
+  "polling": {
+    "deviceStatus": 30000,
+    "location": 60000
+  }
+}
+

@@ -1,0 +1,32 @@
+{
+  "contacts": {
+    "title": "电话联系人",
+    "subtitle": "您的孩子可以呼叫的人",
+    "addContact": "添加联系人",
+    "editContact": "编辑联系人",
+    "deleteContact": "移除联系人",
+    "noContacts": "暂无联系人",
+    "name": "姓名",
+    "phoneNumber": "电话号码",
+    "relationship": "关系",
+    "quickDial": "快速拨号按钮",
+    "isPrimary": "主要联系人",
+    "canCall": "可以呼叫此人",
+    "canReceive": "可以接收此人来电",
+    "relationships": {
+      "parent": "父母",
+      "grandparent": "祖父母",
+      "sibling": "兄弟姐妹",
+      "family": "家庭成员",
+      "friend": "朋友",
+      "other": "其他"
+    },
+    "contactSaved": "联系人已保存！",
+    "contactDeleted": "联系人已移除",
+    "deleteConfirm": "移除此联系人？",
+    "callHistory": "最近通话",
+    "incoming": "来电",
+    "outgoing": "拨出",
+    "missed": "未接"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "reports": {
+    "title": "Actividad",
+    "subtitle": "Ve lo que ha hecho tu hijo",
+    "dateRange": "Período",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "thisWeek": "Esta Semana",
+    "lastWeek": "Semana Pasada",
+    "thisMonth": "Este Mes",
+    "custom": "Rango Personalizado",
+    "from": "Desde",
+    "to": "Hasta",
+    "overview": "Resumen",
+    "totalUsage": "Tiempo Total Usado",
+    "contentListened": "Contenido Escuchado",
+    "callsMade": "Llamadas Realizadas",
+    "mostListened": "Más Escuchado",
+    "usageByDay": "Desglose Diario",
+    "usageByType": "Por Tipo",
+    "music": "Música",
+    "podcasts": "Historias",
+    "audiobooks": "Audiolibros",
+    "ai": "Asistente de Voz",
+    "callHistory": "Historial de Llamadas",
+    "locationHistory": "Historial de Ubicación",
+    "noData": "Sin actividad para mostrar en este período",
+    "export": "Exportar Informe",
+    "exportSuccess": "¡Informe exportado!"
+  }
+}

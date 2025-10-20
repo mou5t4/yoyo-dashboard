@@ -1,0 +1,31 @@
+{
+  "reports": {
+    "title": "Activity",
+    "subtitle": "See what your child has been doing",
+    "dateRange": "Time Period",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week",
+    "lastWeek": "Last Week",
+    "thisMonth": "This Month",
+    "custom": "Custom Range",
+    "from": "From",
+    "to": "To",
+    "overview": "Overview",
+    "totalUsage": "Total Time Used",
+    "contentListened": "Content Listened To",
+    "callsMade": "Calls Made",
+    "mostListened": "Most Listened To",
+    "usageByDay": "Daily Breakdown",
+    "usageByType": "By Type",
+    "music": "Music",
+    "podcasts": "Stories",
+    "audiobooks": "Audiobooks",
+    "ai": "Voice Assistant",
+    "callHistory": "Call History",
+    "locationHistory": "Location History",
+    "noData": "No activity to show for this period",
+    "export": "Export Report",
+    "exportSuccess": "Report exported!"
+  }
+}

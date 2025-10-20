@@ -1,0 +1,34 @@
+{
+  "schedule": {
+    "title": "Screen Time",
+    "subtitle": "When the device is available",
+    "addSchedule": "Add Time Block",
+    "editSchedule": "Edit Schedule",
+    "deleteSchedule": "Remove Schedule",
+    "noSchedules": "No schedules set",
+    "scheduleName": "Name",
+    "dayOfWeek": "Day",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "allowMusic": "Allow Music",
+    "allowPodcasts": "Allow Stories",
+    "allowAI": "Allow Voice Assistant",
+    "enabled": "Active",
+    "days": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    },
+    "scheduleSaved": "Schedule saved!",
+    "scheduleDeleted": "Schedule removed",
+    "deleteConfirm": "Remove this schedule?",
+    "bedtime": "Bedtime Mode",
+    "bedtimeStart": "Bedtime Starts",
+    "bedtimeEnd": "Bedtime Ends",
+    "bedtimeDesc": "Device automatically locks during bedtime"
+  }
+}

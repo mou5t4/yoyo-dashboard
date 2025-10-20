@@ -1,0 +1,31 @@
+{
+  "reports": {
+    "title": "فعالیت",
+    "subtitle": "ببینید فرزندتان چه کار کرده",
+    "dateRange": "بازه زمانی",
+    "today": "امروز",
+    "yesterday": "دیروز",
+    "thisWeek": "این هفته",
+    "lastWeek": "هفته گذشته",
+    "thisMonth": "این ماه",
+    "custom": "بازه سفارشی",
+    "from": "از",
+    "to": "تا",
+    "overview": "نمای کلی",
+    "totalUsage": "کل زمان استفاده",
+    "contentListened": "محتوای گوش داده شده",
+    "callsMade": "تماس‌های انجام شده",
+    "mostListened": "بیشترین گوش دادن",
+    "usageByDay": "تفکیک روزانه",
+    "usageByType": "بر اساس نوع",
+    "music": "موسیقی",
+    "podcasts": "داستان",
+    "audiobooks": "کتاب صوتی",
+    "ai": "دستیار صوتی",
+    "callHistory": "تاریخچه تماس",
+    "locationHistory": "تاریخچه موقعیت",
+    "noData": "هیچ فعالیتی برای نمایش در این دوره نیست",
+    "export": "خروجی گرفتن از گزارش",
+    "exportSuccess": "گزارش خروجی گرفته شد!"
+  }
+}

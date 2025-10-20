@@ -1,0 +1,1151 @@
+# YoyoPod Parent Dashboard - Complete Implementation Specification
+
+## PROJECT OVERVIEW
+Create a production-ready parent management dashboard for YoyoPod, a screen-free streaming device for children. The dashboard runs locally on a Raspberry Pi Zero 2 W and provides a mobile-first web interface for device configuration and monitoring.
+
+---
+
+## TECHNICAL STACK
+
+### Backend
+- **Runtime**: Node.js 20+ (or Bun for better Pi Zero 2 W performance)
+- **Framework**: Remix (full-stack React framework)
+- **Language**: TypeScript (strict mode)
+- **Database**: SQLite with Prisma ORM
+- **API**: Remix actions/loaders (server-side)
+- **Session**: Cookie-based sessions (secure, httpOnly)
+- **Security**: Helmet.js, CSRF protection, rate limiting
+
+### Frontend
+- **Framework**: Remix + React 18
+- **Styling**: Tailwind CSS 3.x + shadcn/ui components
+- **Icons**: Lucide React
+- **Forms**: Remix Form + Zod validation
+- **State**: React hooks + Remix loaders
+- **Mobile**: Mobile-first responsive design, PWA-capable
+
+### DevOps
+- **Package Manager**: pnpm (faster, efficient for Pi)
+- **Build**: Remix build system
+- **Process Manager**: PM2 for production
+- **Logging**: Winston with rotation
+- **Monitoring**: Simple health check endpoint
+
+---
+
+## PROJECT STRUCTURE
+
+```
+yoyopod-dashboard/
+├── backend/
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   ├── migrations/
+│   │   └── seed.ts
+│   ├── app/
+│   │   ├── routes/
+│   │   │   ├── _index.tsx                 # Login/first-run
+│   │   │   ├── _auth.tsx                  # Auth layout wrapper
+│   │   │   ├── _auth.dashboard.tsx        # Main dashboard
+│   │   │   ├── _auth.settings.tsx         # General settings
+│   │   │   ├── _auth.wifi.tsx             # WiFi configuration
+│   │   │   ├── _auth.bluetooth.tsx        # Bluetooth management
+│   │   │   ├── _auth.location.tsx         # GPS & geofencing
+│   │   │   ├── _auth.contacts.tsx         # VoIP contacts (Call variant)
+│   │   │   ├── _auth.content.tsx          # Content management
+│   │   │   ├── _auth.ai.tsx               # AI guardrails (AI variant)
+│   │   │   ├── _auth.schedule.tsx         # Usage schedules
+│   │   │   ├── _auth.reports.tsx          # Activity reports
+│   │   │   ├── api.health.ts              # Health check endpoint
+│   │   │   ├── api.device-info.ts         # Device status API
+│   │   │   └── auth.logout.ts             # Logout handler
+│   │   ├── components/
+│   │   │   ├── ui/                        # shadcn/ui components
+│   │   │   ├── layout/
+│   │   │   │   ├── Header.tsx
+│   │   │   │   ├── Navigation.tsx
+│   │   │   │   └── MobileNav.tsx
+│   │   │   ├── dashboard/
+│   │   │   │   ├── DeviceStatus.tsx
+│   │   │   │   ├── QuickActions.tsx
+│   │   │   │   └── ActivityTimeline.tsx
+│   │   │   ├── wifi/
+│   │   │   │   ├── NetworkScanner.tsx
+│   │   │   │   └── NetworkList.tsx
+│   │   │   ├── location/
+│   │   │   │   ├── MapView.tsx
+│   │   │   │   ├── GeofenceEditor.tsx
+│   │   │   │   └── LocationHistory.tsx
+│   │   │   └── shared/
+│   │   │       ├── ErrorBoundary.tsx
+│   │   │       ├── LoadingSpinner.tsx
+│   │   │       └── ConfirmDialog.tsx
+│   │   ├── lib/
+│   │   │   ├── auth.server.ts             # Authentication logic
+│   │   │   ├── session.server.ts          # Session management
+│   │   │   ├── device.server.ts           # Device service integration
+│   │   │   ├── validation.ts              # Zod schemas
+│   │   │   ├── constants.ts               # App constants
+│   │   │   └── utils.ts                   # Utility functions
+│   │   ├── services/
+│   │   │   ├── wifi.service.ts            # WiFi integration hooks
+│   │   │   ├── bluetooth.service.ts       # Bluetooth integration hooks
+│   │   │   ├── location.service.ts        # GPS integration hooks
+│   │   │   ├── voip.service.ts            # VoIP integration hooks
+│   │   │   └── content.service.ts         # Content sync hooks
+│   │   ├── types/
+│   │   │   ├── device.ts                  # Device type definitions
+│   │   │   ├── api.ts                     # API type definitions
+│   │   │   └── integration.ts             # Integration interfaces
+│   │   ├── root.tsx                       # Root layout
+│   │   └── entry.server.tsx               # Server entry point
+│   ├── public/
+│   │   ├── favicon.ico
+│   │   └── manifest.json                  # PWA manifest
+│   ├── config/
+│   │   ├── device-variant.json            # Product variant config
+│   │   ├── integration-endpoints.json     # Service endpoints
+│   │   └── default-settings.json          # Default device settings
+│   ├── scripts/
+│   │   ├── setup.sh                       # First-time setup script
+│   │   ├── start.sh                       # Production start script
+│   │   ├── migrate.sh                     # Database migration script
+│   │   └── health-check.sh                # Health monitoring script
+│   ├── tests/
+│   │   ├── unit/
+│   │   ├── integration/
+│   │   └── e2e/
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── remix.config.js
+│   ├── tailwind.config.ts
+│   └── .env.example
+├── docs/
+│   ├── INTEGRATION.md                     # Integration manual
+│   ├── API.md                             # API documentation
+│   ├── DEPLOYMENT.md                      # Deployment guide
+│   └── SECURITY.md                        # Security guidelines
+├── docker-compose.yml                     # Optional: development environment
+└── README.md
+```
+
+---
+
+## DATABASE SCHEMA (Prisma)
+
+```prisma
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./yoyopod.db"
+}
+
+model User {
+  id                String   @id @default(cuid())
+  username          String   @unique @default("parent")
+  password          String   // bcrypt hashed
+  mustChangePassword Boolean @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  sessions          Session[]
+  settings          Settings?
+  auditLogs         AuditLog[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Settings {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  deviceName            String   @default("YoyoPod")
+  childName             String?
+  
+  // Volume & Time Limits
+  maxVolume             Int      @default(80)
+  dailyUsageLimit       Int?     // minutes
+  bedtimeStart          String?  // HH:mm format
+  bedtimeEnd            String?  // HH:mm format
+  
+  // WiFi (stored for display only, actual config via service)
+  currentWifiSSID       String?
+  wifiConfigured        Boolean  @default(false)
+  
+  // Location & Safety
+  locationEnabled       Boolean  @default(false)
+  geofencingEnabled     Boolean  @default(false)
+  
+  // Parental Controls
+  contentFilterEnabled  Boolean  @default(true)
+  explicitContentBlocked Boolean @default(true)
+  
+  // AI Settings (for AI variant)
+  aiEnabled             Boolean  @default(false)
+  aiDailyLimit          Int?     // minutes
+  aiTopicFilters        String?  // JSON array of blocked topics
+  conversationLogging   Boolean  @default(true)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Geofence {
+  id          String   @id @default(cuid())
+  name        String
+  latitude    Float
+  longitude   Float
+  radius      Float    // in meters
+  enabled     Boolean  @default(true)
+  alertOnExit Boolean  @default(true)
+  alertOnEnter Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Contact {
+  id           String   @id @default(cuid())
+  name         String
+  phoneNumber  String
+  relationship String?  // "parent", "grandparent", "sibling", etc.
+  isPrimary    Boolean  @default(false)
+  canCall      Boolean  @default(true)
+  canReceive   Boolean  @default(true)
+  quickDial    Int?     // Button number (1-9) or null
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([quickDial])
+}
+
+model ContentSchedule {
+  id          String   @id @default(cuid())
+  name        String
+  dayOfWeek   Int      // 0-6 (Sunday-Saturday)
+  startTime   String   // HH:mm format
+  endTime     String   // HH:mm format
+  allowMusic  Boolean  @default(true)
+  allowPodcasts Boolean @default(true)
+  allowAI     Boolean  @default(false)
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // "login", "settings_changed", "wifi_configured", etc.
+  details   String?  // JSON string with additional info
+  ipAddress String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([createdAt])
+}
+
+model AppState {
+  id              String   @id @default("singleton")
+  isFirstRun      Boolean  @default(true)
+  licenseAccepted Boolean  @default(false)
+  setupCompleted  Boolean  @default(false)
+  deviceVariant   String   @default("core") // "core", "call", "ai"
+  firmwareVersion String?
+  lastSyncAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+```
+
+---
+
+## CORE FEATURES & ROUTES
+
+### 1. First-Run Experience (`/_index.tsx`)
+**Flow:**
+1. Check if first run → Show license agreement
+2. Accept license → Create default user
+3. Force password change (must be 8+ chars, mixed case, number)
+4. Redirect to dashboard
+
+**Components:**
+- `LicenseAgreement.tsx` - GDPR/COPPA compliant terms
+- `PasswordSetup.tsx` - Strong password validator
+- `WelcomeScreen.tsx` - Setup complete message
+
+### 2. Authentication (`/auth/`)
+- Login page with rate limiting (5 attempts/15min)
+- Secure session management (7-day expiry)
+- "Remember this device" option
+- Logout with session cleanup
+
+### 3. Main Dashboard (`/_auth.dashboard.tsx`)
+**Layout:**
+```
+┌─────────────────────────────────┐
+│ Header: YoyoPod | Battery: 85%  │
+├─────────────────────────────────┤
+│ Device Status Card              │
+│ • Status: Active                │
+│ • Child: Emma                   │
+│ • Now Playing: Adventure Podcast│
+│ • Location: Home (Safe)         │
+│ • Signal: WiFi ●●●○ 4G ●●●●    │
+└─────────────────────────────────┘
+┌─────────────────────────────────┐
+│ Quick Actions                   │
+│ [🔒 Lock] [📍 Locate] [📞 Call] │
+└─────────────────────────────────┘
+┌─────────────────────────────────┐
+│ Today's Activity                │
+│ • 2h 15m screen time            │
+│ • 3 podcasts, 8 songs           │
+│ • 2 calls to Mom                │
+└─────────────────────────────────┘
+```
+
+**Features:**
+- Real-time device status (poll every 30s)
+- Battery indicator with alerts
+- Current activity display
+- Quick access buttons
+- Daily usage summary
+
+### 4. WiFi Configuration (`/_auth.wifi.tsx`)
+**Flow:**
+1. Scan for networks → Display list
+2. Select network → Enter password
+3. Test connection → Save configuration
+4. Show new IP address for access
+
+**Integration Point:**
+```typescript
+// Service hook for WiFi scanning
+export interface WiFiNetwork {
+  ssid: string;
+  signal: number; // 0-100
+  security: 'open' | 'wep' | 'wpa' | 'wpa2';
+  frequency: string; // "2.4GHz" | "5GHz"
+}
+
+// Call external service:
+// GET http://localhost:5000/api/wifi/scan
+// POST http://localhost:5000/api/wifi/connect
+```
+
+**UI Components:**
+- Network scanner with loading state
+- Signal strength bars
+- Password input with show/hide
+- Connection test indicator
+
+### 5. Bluetooth Management (`/_auth.bluetooth.tsx`)
+**Features:**
+- Scan for nearby devices
+- Paired devices list
+- Connect/disconnect actions
+- Forget device option
+- Device info display
+
+**Integration Point:**
+```typescript
+export interface BluetoothDevice {
+  address: string;
+  name: string;
+  paired: boolean;
+  connected: boolean;
+  type: 'headphones' | 'speaker' | 'unknown';
+}
+
+// GET http://localhost:5000/api/bluetooth/scan
+// POST http://localhost:5000/api/bluetooth/pair
+```
+
+### 6. Location & Geofencing (`/_auth.location.tsx`)
+**Features:**
+- Current location map (leaflet.js or similar)
+- Location history timeline (last 7 days)
+- Create/edit geofences with radius
+- Geofence alerts log
+- "Locate Now" button
+
+**Map View:**
+```
+┌─────────────────────────────────┐
+│           [Map View]            │
+│     • Current Location (red)    │
+│     ○ Home Fence (green circle) │
+│     ○ School Fence (blue circle)│
+└─────────────────────────────────┘
+```
+
+**Integration Point:**
+```typescript
+export interface LocationData {
+  latitude: number;
+  longitude: number;
+  accuracy: number; // meters
+  timestamp: string;
+  address?: string; // Reverse geocoded
+}
+
+// GET http://localhost:5000/api/location/current
+// GET http://localhost:5000/api/location/history?days=7
+```
+
+### 7. VoIP Contacts (`/_auth.contacts.tsx`) *[Call Variant Only]*
+**Features:**
+- Contact list with CRUD operations
+- Quick-dial button assignment (1-9)
+- Call history view (read-only, from service)
+- Primary contact designation
+- Import contacts from CSV
+
+**UI:**
+```
+┌─────────────────────────────────┐
+│ Contacts                        │
+│ ┌─────────────────────────────┐ │
+│ │ 1️⃣ Mom (Primary)            │ │
+│ │ +1 555-1234  📞 [Edit] [❌] │ │
+│ └─────────────────────────────┘ │
+│ ┌─────────────────────────────┐ │
+│ │ 2️⃣ Dad                      │ │
+│ │ +1 555-5678  📞 [Edit] [❌] │ │
+│ └─────────────────────────────┘ │
+│ [+ Add Contact]                 │
+└─────────────────────────────────┘
+```
+
+**Integration Point:**
+```typescript
+export interface CallHistoryEntry {
+  id: string;
+  contactName: string;
+  phoneNumber: string;
+  direction: 'incoming' | 'outgoing';
+  duration: number; // seconds
+  timestamp: string;
+  answered: boolean;
+}
+
+// GET http://localhost:5000/api/voip/call-history
+```
+
+### 8. Content Management (`/_auth.content.tsx`)
+**Features:**
+- Spotify playlist whitelist
+- Podcast subscriptions
+- Content rating settings
+- Explicit content filter
+- Pre-download content for offline
+
+**Integration Point:**
+```typescript
+export interface ContentItem {
+  id: string;
+  type: 'playlist' | 'podcast' | 'album';
+  title: string;
+  creator: string;
+  explicit: boolean;
+  enabled: boolean;
+}
+
+// GET http://localhost:5000/api/content/playlists
+// POST http://localhost:5000/api/content/sync
+```
+
+### 9. AI Guardrails (`/_auth.ai.tsx`) *[AI Variant Only]*
+**Features:**
+- Daily AI usage limit (minutes)
+- Topic blocklist (custom keywords)
+- Conversation review mode
+- Safety level selector (strict/moderate/light)
+- Export conversation transcripts
+
+**UI:**
+```
+┌─────────────────────────────────┐
+│ AI Assistant Settings           │
+│                                 │
+│ Daily Limit: [30] minutes       │
+│ Safety Level: ● Strict          │
+│                                 │
+│ Blocked Topics:                 │
+│ • Violence  [Remove]            │
+│ • Politics  [Remove]            │
+│ [+ Add Topic]                   │
+│                                 │
+│ [View Conversations Log]        │
+└─────────────────────────────────┘
+```
+
+### 10. Usage Schedules (`/_auth.schedule.tsx`)
+**Features:**
+- Create time-based rules
+- Different rules per day
+- Content type restrictions per time
+- School mode (limited features)
+- Bedtime mode (sleep timer only)
+
+**Example Rule:**
+```
+Monday-Friday
+3:00 PM - 6:00 PM: Music + Podcasts
+6:00 PM - 8:00 PM: All content + AI
+8:00 PM - 7:00 AM: Sleep mode
+```
+
+### 11. Activity Reports (`/_auth.reports.tsx`)
+**Features:**
+- Usage charts (daily/weekly/monthly)
+- Top content listened
+- Call statistics
+- Location visit frequency
+- AI interaction summary
+- Export report as PDF
+
+### 12. General Settings (`/_auth.settings.tsx`)
+**Features:**
+- Device name & child name
+- Volume limits
+- Emergency contact
+- Firmware update check
+- Factory reset option
+- Change password
+- Data export/import
+
+---
+
+## SECURITY REQUIREMENTS
+
+### 1. Authentication
+```typescript
+// lib/auth.server.ts
+- bcrypt password hashing (10 rounds)
+- Secure cookie-based sessions
+- CSRF token validation
+- Rate limiting on login (5 attempts/15min)
+- Session expiry (7 days)
+- Automatic logout on inactivity (30min)
+```
+
+### 2. Password Policy
+- Minimum 8 characters
+- Must contain: uppercase, lowercase, number
+- Cannot be "password", "admin", "12345678"
+- Must change default password on first run
+
+### 3. HTTPS/SSL
+- Self-signed certificate generation on first run
+- Redirect HTTP → HTTPS
+- Secure cookie flags (httpOnly, secure, sameSite)
+
+### 4. Input Validation
+- Zod schema validation on all forms
+- SQL injection prevention (Prisma)
+- XSS prevention (React escaping)
+- File upload restrictions (if any)
+
+### 5. Audit Logging
+- Log all settings changes
+- Log authentication events
+- Log configuration changes
+- Store IP and user agent
+
+---
+
+## MOBILE-FIRST DESIGN PRINCIPLES
+
+### Responsive Breakpoints
+```css
+/* Tailwind Config */
+sm: 640px   // Small phones
+md: 768px   // Tablets
+lg: 1024px  // Desktops (rare for this app)
+```
+
+### UI Guidelines
+1. **Touch-friendly**: Minimum 44x44px tap targets
+2. **Single-column layouts** on mobile
+3. **Bottom navigation** for primary actions
+4. **Swipe gestures** for common actions
+5. **Progressive disclosure** - show essentials first
+6. **Skeleton loaders** during data fetch
+7. **Offline indicators** when no connectivity
+8. **Dark mode support** (system preference)
+
+### Color Scheme
+```typescript
+// Tailwind theme extension
+colors: {
+  primary: {
+    50: '#f0f9ff',
+    500: '#3b82f6',  // Vibrant blue
+    700: '#1d4ed8',
+  },
+  success: '#10b981',
+  warning: '#f59e0b',
+  danger: '#ef4444',
+  gray: { /* Tailwind defaults */ }
+}
+```
+
+---
+
+## INTEGRATION MANUAL (Critical!)
+
+### Service Communication Pattern
+```typescript
+// services/base.service.ts
+
+export class DeviceServiceClient {
+  private baseUrl = 'http://localhost:5000/api'; // Configurable
+  
+  async get<T>(endpoint: string): Promise<T> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      headers: { 'X-Dashboard-Token': process.env.SERVICE_TOKEN }
+    });
+    if (!response.ok) throw new Error(`Service error: ${response.statusText}`);
+    return response.json();
+  }
+  
+  async post<T>(endpoint: string, data: any): Promise<T> {
+    // Similar implementation
+  }
+}
+```
+
+### Required Service Endpoints
+
+**Device Info**
+```
+GET /api/device/status
+Response: {
+  battery: number,
+  charging: boolean,
+  signal: { wifi: number, lte?: number },
+  storage: { used: number, total: number },
+  uptime: number,
+  temperature: number
+}
+```
+
+**WiFi**
+```
+GET /api/wifi/scan
+Response: WiFiNetwork[]
+
+POST /api/wifi/connect
+Body: { ssid: string, password: string }
+Response: { success: boolean, ip?: string }
+```
+
+**Bluetooth**
+```
+GET /api/bluetooth/devices
+Response: BluetoothDevice[]
+
+POST /api/bluetooth/pair
+Body: { address: string }
+Response: { success: boolean }
+```
+
+**Location**
+```
+GET /api/location/current
+Response: LocationData
+
+GET /api/location/history?since=ISO8601
+Response: LocationData[]
+```
+
+**VoIP** *(Call variant)*
+```
+GET /api/voip/call-history?limit=50
+Response: CallHistoryEntry[]
+
+POST /api/voip/initiate-call
+Body: { contactId: string }
+Response: { success: boolean }
+```
+
+**Content**
+```
+GET /api/content/current-playback
+Response: { 
+  type: 'music' | 'podcast',
+  title: string,
+  artist: string,
+  progress: number
+}
+
+POST /api/content/sync-playlists
+Body: { playlistIds: string[] }
+Response: { synced: number }
+```
+
+**AI** *(AI variant)*
+```
+GET /api/ai/conversations?date=YYYY-MM-DD
+Response: { 
+  id: string,
+  timestamp: string,
+  duration: number,
+  summary: string
+}[]
+
+GET /api/ai/conversation/:id/transcript
+Response: {
+  messages: { role: 'child' | 'ai', content: string }[]
+}
+```
+
+### Configuration Files
+
+**device-variant.json**
+```json
+{
+  "variant": "core" | "call" | "ai",
+  "features": {
+    "voip": boolean,
+    "gps": boolean,
+    "ai": boolean,
+    "bluetooth": boolean
+  },
+  "firmware": "1.0.0"
+}
+```
+
+**integration-endpoints.json**
+```json
+{
+  "baseUrl": "http://localhost:5000/api",
+  "authToken": "shared-secret-token",
+  "endpoints": {
+    "device": "/device/status",
+    "wifi": "/wifi",
+    "bluetooth": "/bluetooth",
+    "location": "/location",
+    "voip": "/voip",
+    "content": "/content",
+    "ai": "/ai"
+  }
+}
+```
+
+---
+
+## DEPLOYMENT SCRIPTS
+
+### `scripts/setup.sh`
+```bash
+#!/bin/bash
+# First-time setup script
+
+echo "🚀 YoyoPod Dashboard Setup"
+
+# Install dependencies
+pnpm install
+
+# Generate Prisma client
+pnpm prisma generate
+
+# Run migrations
+pnpm prisma migrate deploy
+
+# Seed default data
+pnpm prisma db seed
+
+# Generate SSL certificate
+openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes -subj "/CN=yoyopod.local"
+
+# Build application
+pnpm build
+
+echo "✅ Setup complete! Run ./scripts/start.sh to start the dashboard"
+```
+
+### `scripts/start.sh`
+```bash
+#!/bin/bash
+# Production start script with PM2
+
+echo "Starting YoyoPod Dashboard..."
+
+# Set environment
+export NODE_ENV=production
+
+# Start with PM2
+pm2 start ecosystem.config.js --env production
+
+# Show status
+pm2 status
+
+echo "✅ Dashboard running at https://localhost:3000"
+echo "📱 Scan QR code to access from mobile"
+```
+
+### `ecosystem.config.js` (PM2)
+```javascript
+module.exports = {
+  apps: [{
+    name: 'yoyopod-dashboard',
+    script: 'npm',
+    args: 'start',
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '200M',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 3000
+    },
+    error_file: './logs/error.log',
+    out_file: './logs/output.log',
+    log_date_format: 'YYYY-MM-DD HH:mm:ss'
+  }]
+};
+```
+
+---
+
+## TESTING STRATEGY
+
+### Unit Tests (Vitest)
+```typescript
+// tests/unit/auth.test.ts
+describe('Authentication', () => {
+  it('should hash passwords securely', async () => {
+    const hashed = await hashPassword('MyPassword123');
+    expect(await verifyPassword('MyPassword123', hashed)).toBe(true);
+  });
+  
+  it('should enforce password policy', () => {
+    expect(validatePassword('weak')).toBe(false);
+    expect(validatePassword('StrongPass123')).toBe(true);
+  });
+});
+```
+
+### Integration Tests
+```typescript
+// tests/integration/routes.test.ts
+describe('Dashboard Routes', () => {
+  it('should require authentication', async () => {
+    const response = await request(app).get('/dashboard');
+    expect(response.status).toBe(302); // Redirect to login
+  });
+  
+  it('should load settings after auth', async () => {
+    const session = await createTestSession();
+    const response = await request(app)
+      .get('/settings')
+      .set('Cookie', session);
+    expect(response.status).toBe(200);
+  });
+});
+```
+
+### E2E Tests (Playwright)
+```typescript
+// tests/e2e/first-run.spec.ts
+test('first-run experience', async ({ page }) => {
+  await page.goto('/');
+  
+  // Accept license
+  await page.click('[data-testid="accept-license"]');
+  
+  // Set password
+  await page.fill('[name="password"]', 'NewPassword123');
+  await page.fill('[name="confirmPassword"]', 'NewPassword123');
+  await page.click('[type="submit"]');
+  
+  // Should redirect to dashboard
+  await expect(page).toHaveURL('/dashboard');
+});
+```
+
+---
+
+## ERROR HANDLING
+
+### Global Error Boundary
+```typescript
+// app/root.tsx
+export function ErrorBoundary() {
+  const error = useRouteError();
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold mb-4">Oops! Something went wrong</h1>
+        <p className="text-gray-600 mb-4">{error.message}</p>
+        <button onClick={() => window.location.reload()}>
+          Retry
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+### Service Error Handling
+```typescript
+// lib/device.server.ts
+export async function getDeviceStatus(): Promise<DeviceStatus> {
+  try {
+    const response = await serviceClient.get('/device/status');
+    return response;
+  } catch (error) {
+    logger.error('Failed to fetch device status', error);
+    // Return fallback data
+    return {
+      battery: 0,
+      charging: false,
+      signal: { wifi: 0 },
+      storage: { used: 0, total: 0 },
+      uptime: 0,
+      temperature: 0
+    };
+  }
+}
+```
+
+---
+
+## PERFORMANCE OPTIMIZATION
+
+### For Raspberry Pi Zero 2 W
+1. **Lazy load routes** - Code split by route
+2. **Optimize images** - Use WebP format, lazy loading
+3. **Minimize JS bundle** - Remove unused dependencies
+4. **Use SQLite efficiently** - Proper indexing, connection pooling
+5. **Cache static assets** - Service worker for offline
+6. **Debounce form inputs** - Reduce unnecessary renders
+7. **Virtual scrolling** - For long lists (location history)
+
+### Build Optimizations
+```javascript
+// remix.config.js
+module.exports = {
+  serverMinify: true,
+  serverModuleFormat: "esm",
+  future: {
+    v2_routeConvention: true,
+  },
+  tailwind: true,
+  postcss: true,
+};
+```
+
+---
+
+## ACCESSIBILITY (a11y)
+
+- Semantic HTML elements
+- ARIA labels on interactive elements
+- Keyboard navigation support (Tab, Enter, Esc)
+- Focus indicators visible
+- Color contrast ratio ≥ 4.5:1
+- Screen reader tested
+- Form validation errors announced
+- Skip to main content link
+
+---
+
+## INTERNATIONALIZATION (i18n) *[Future]*
+
+```typescript
+// lib/i18n.ts
+export const translations = {
+  en: {
+    dashboard: {
+      title: 'Dashboard',
+      battery: 'Battery',
+      // ...
+    }
+  },
+  de: {
+    dashboard: {
+      title: 'Übersicht',
+      battery: 'Batterie',
+      // ...
+    }
+  }
+};
+```
+
+---
+
+## MONITORING & HEALTH CHECKS
+
+### Health Check Endpoint
+```typescript
+// routes/api.health.ts
+export async function loader() {
+  const checks = {
+    database: await checkDatabase(),
+    disk: await checkDiskSpace(),
+    services: await checkExternalServices(),
+    memory: process.memoryUsage()
+  };
+  
+  const healthy = Object.values(checks).every(c => c.status === 'ok');
+  
+  return json(
+    { healthy, checks },
+    { status: healthy ? 200 : 503 }
+  );
+}
+```
+
+### Logging
+```typescript
+// lib/logger.ts
+import winston from 'winston';
+
+export const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
+  ],
+});
+```
+
+---
+
+## FINAL DELIVERABLES
+
+1. **Complete codebase** with folder structure as specified
+2. **Database schema** with migrations
+3. **All routes implemented** with mobile-responsive UI
+4. **Integration service layer** with documented endpoints
+5. **Setup scripts** for deployment
+6. **Comprehensive documentation**:
+   - INTEGRATION.md - For Pi services team
+   - API.md - Endpoint specifications
+   - DEPLOYMENT.md - Installation guide
+   - SECURITY.md - Security best practices
+7. **Test suite** with ≥70% coverage
+8. **PWA manifest** for mobile install
+9. **Docker Compose** for dev environment (optional)
+10. **QR code generation** for device access
+
+---
+
+## SPECIAL REQUIREMENTS
+
+### License Agreement
+Create a comprehensive, parent-friendly license that covers:
+- Data collection (local only, no cloud)
+- COPPA compliance (children's privacy)
+- GDPR compliance (EU users)
+- Liability limitations
+- Terms of use for AI features
+- Warranty disclaimers
+
+### Default Password
+- Default: `yoyopod2024`
+- Must be changed on first login
+- Display in QR code scan results
+
+### Mobile Phone Optimization
+- Test on iPhone Safari & Chrome Android
+- Support iOS PWA installation
+- Handle mobile keyboard overlays
+- Optimize for 4G latency
+- Work offline after initial setup
+
+---
+
+## SUCCESS CRITERIA
+
+✅ Dashboard loads in <3 seconds on Pi Zero 2 W  
+✅ Mobile-friendly on screens ≥320px width  
+✅ First-run setup completable in <5 minutes  
+✅ No crashes under normal operation  
+✅ All variants (Core/Call/AI) properly supported  
+✅ Integration hooks documented and testable  
+✅ Security audit pass (no critical vulnerabilities)  
+✅ Works offline after WiFi configuration  
+✅ Battery-efficient (minimal polling)  
+✅ Parent-friendly UI (non-technical language)  
+
+---
+
+## NOTES FOR IMPLEMENTATION
+
+1. Use **shadcn/ui** components for consistency
+2. Implement **optimistic UI** for better perceived performance
+3. Add **confirmation dialogs** for destructive actions
+4. Use **toast notifications** for feedback
+5. Implement **pull-to-refresh** on mobile
+6. Add **skeleton loaders** during data fetch
+7. Support **swipe to delete** on lists
+8. Include **empty states** with helpful messages
+9. Add **search/filter** for long lists
+10. Implement **undo actions** where appropriate
+
+---
+
+## DEVELOPMENT WORKFLOW
+
+```bash
+# Install dependencies
+pnpm install
+
+# Setup database
+pnpm prisma migrate dev
+pnpm prisma db seed
+
+# Start dev server
+pnpm dev
+
+# Run tests
+pnpm test
+pnpm test:e2e
+
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
+
+# Deploy to Pi
+./scripts/deploy-to-pi.sh [pi-ip-address]
+```
+
+---
+
+## QUESTIONS FOR PRODUCT TEAM
+
+Before implementation, confirm:
+1. Exact device variant detection method?
+2. Should we support multiple languages from v1?
+3. Analytics/telemetry requirements?
+4. Backup/restore priority?
+5. Remote access (outside home network) needed?
+6. White-label customization requirements?
+7. Beta testing process?
+
+---
+
+**END OF SPECIFICATION**
+
+Generate the complete dashboard implementation following this specification exactly. Prioritize mobile UX, security, and seamless integration with Pi services.

@@ -1,0 +1,140 @@
+// YoyoPod Dashboard Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  username          String   @unique @default("parent")
+  password          String   // bcrypt hashed
+  mustChangePassword Boolean @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  sessions          Session[]
+  settings          Settings?
+  auditLogs         AuditLog[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Settings {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  deviceName            String   @default("YoyoPod")
+  childName             String?
+  
+  // Volume & Time Limits
+  maxVolume             Int      @default(80)
+  dailyUsageLimit       Int?     // minutes
+  bedtimeStart          String?  // HH:mm format
+  bedtimeEnd            String?  // HH:mm format
+  
+  // WiFi (stored for display only, actual config via service)
+  currentWifiSSID       String?
+  wifiConfigured        Boolean  @default(false)
+  
+  // Location & Safety
+  locationEnabled       Boolean  @default(false)
+  geofencingEnabled     Boolean  @default(false)
+  
+  // Parental Controls
+  contentFilterEnabled  Boolean  @default(true)
+  explicitContentBlocked Boolean @default(true)
+  
+  // System Settings
+  timezone              String   @default("UTC")
+  language              String   @default("en") // en, de, fr, ar, it, es, zh, fa
+  theme                 String   @default("dark") // light, dark, system
+  
+  // AI Settings (for AI variant)
+  aiEnabled             Boolean  @default(false)
+  aiDailyLimit          Int?     // minutes
+  aiTopicFilters        String?  // JSON array of blocked topics
+  conversationLogging   Boolean  @default(true)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Geofence {
+  id          String   @id @default(cuid())
+  name        String
+  latitude    Float
+  longitude   Float
+  radius      Float    // in meters
+  enabled     Boolean  @default(true)
+  alertOnExit Boolean  @default(true)
+  alertOnEnter Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Contact {
+  id           String   @id @default(cuid())
+  name         String
+  phoneNumber  String
+  relationship String?  // "parent", "grandparent", "sibling", etc.
+  isPrimary    Boolean  @default(false)
+  canCall      Boolean  @default(true)
+  canReceive   Boolean  @default(true)
+  quickDial    Int?     // Button number (1-9) or null
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([quickDial])
+}
+
+model ContentSchedule {
+  id          String   @id @default(cuid())
+  name        String
+  dayOfWeek   Int      // 0-6 (Sunday-Saturday)
+  startTime   String   // HH:mm format
+  endTime     String   // HH:mm format
+  allowMusic  Boolean  @default(true)
+  allowPodcasts Boolean @default(true)
+  allowAI     Boolean  @default(false)
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // "login", "settings_changed", "wifi_configured", etc.
+  details   String?  // JSON string with additional info
+  ipAddress String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([createdAt])
+}
+
+model AppState {
+  id              String   @id @default("singleton")
+  isFirstRun      Boolean  @default(true)
+  licenseAccepted Boolean  @default(false)
+  setupCompleted  Boolean  @default(false)
+  deviceVariant   String   @default("core") // "core", "call", "ai"
+  firmwareVersion String?
+  lastSyncAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+

@@ -1,0 +1,34 @@
+{
+  "schedule": {
+    "title": "Tiempo de Pantalla",
+    "subtitle": "Cuándo está disponible el dispositivo",
+    "addSchedule": "Agregar Bloque de Tiempo",
+    "editSchedule": "Editar Horario",
+    "deleteSchedule": "Quitar Horario",
+    "noSchedules": "Sin horarios configurados",
+    "scheduleName": "Nombre",
+    "dayOfWeek": "Día",
+    "startTime": "Hora de Inicio",
+    "endTime": "Hora de Fin",
+    "allowMusic": "Permitir Música",
+    "allowPodcasts": "Permitir Historias",
+    "allowAI": "Permitir Asistente de Voz",
+    "enabled": "Activo",
+    "days": {
+      "0": "Domingo",
+      "1": "Lunes",
+      "2": "Martes",
+      "3": "Miércoles",
+      "4": "Jueves",
+      "5": "Viernes",
+      "6": "Sábado"
+    },
+    "scheduleSaved": "¡Horario guardado!",
+    "scheduleDeleted": "Horario eliminado",
+    "deleteConfirm": "¿Quitar este horario?",
+    "bedtime": "Modo Hora de Dormir",
+    "bedtimeStart": "Hora de Dormir Comienza",
+    "bedtimeEnd": "Hora de Dormir Termina",
+    "bedtimeDesc": "El dispositivo se bloquea automáticamente durante la hora de dormir"
+  }
+}
