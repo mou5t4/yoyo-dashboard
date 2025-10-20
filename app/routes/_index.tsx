@@ -141,6 +141,11 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation();
 
+  // Debug: Log action data to console
+  if (typeof window !== 'undefined' && actionData) {
+    console.log('🔍 Login Response:', actionData);
+  }
+
   // First run: License agreement
   if (isFirstRun && !licenseAccepted) {
     return (

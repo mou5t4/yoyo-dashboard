@@ -9,7 +9,13 @@ module.exports = {
     max_memory_restart: '200M',
     env: {
       NODE_ENV: 'production',
-      PORT: 3000
+      PORT: 3000,
+      SESSION_SECRET: 'dev-secret-change-in-production-12345678',
+      DATABASE_URL: 'file:./yoyopod.db',
+      SERVICE_TOKEN: 'dev-token',
+      SERVICE_BASE_URL: 'http://localhost:5000/api',
+      LOG_LEVEL: 'info',
+      LOG_DIR: 'logs'
     },
     error_file: './logs/error.log',
     out_file: './logs/output.log',
