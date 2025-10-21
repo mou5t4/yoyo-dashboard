@@ -145,11 +145,11 @@ export default function Dashboard() {
           {/* Temperature Card */}
           <MetricCard
             title="Temperature"
-            value="48°C"
-            subtitle="Normal range"
-            statusColor="yellow"
+            value={`${deviceStatus.temperature}°C`}
+            subtitle={deviceStatus.temperature > 70 ? "High temperature" : deviceStatus.temperature > 50 ? "Warm" : "Normal range"}
+            statusColor={deviceStatus.temperature > 70 ? "red" : deviceStatus.temperature > 50 ? "yellow" : "green"}
             showChart={false}
-            icon={<Thermometer className="w-12 h-12 text-red-400" />}
+            icon={<Thermometer className={`w-12 h-12 ${deviceStatus.temperature > 70 ? "text-red-400" : deviceStatus.temperature > 50 ? "text-yellow-400" : "text-green-400"}`} />}
           />
         </div>
       </section>
