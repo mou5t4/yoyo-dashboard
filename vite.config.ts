@@ -14,6 +14,13 @@ export default defineConfig({
   server: {
     port: 3000,
     host: "0.0.0.0",
+    allowedHosts: [
+      "localhost",
+      "127.0.0.1",
+      "170040534c13.ngrok-free.app",
+      ".ngrok-free.app", // Allow all ngrok free domains
+      ".ngrok.io", // Allow all ngrok domains
+    ],
   },
   resolve: {
     alias: {
