@@ -167,7 +167,7 @@ export default function AudioPage() {
             "md:col-span-1 lg:col-span-1 hover:shadow-xl transition-all duration-300",
             isTestingOutput && "animate-pulse-glow"
           )}>
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-1">
               <CardTitle className="flex items-center space-x-2">
                 <Speaker className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 <span>{t("audio.audioOutput")}</span>
@@ -176,10 +176,10 @@ export default function AudioPage() {
                 {t("audio.audioOutputDescription")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-1 md:space-y-0.25">
+            <CardContent className="space-y-0.5 md:space-y-0.125">
               {/* Volume Control */}
               <div className="space-y-0">
-                <div className="flex justify-center py-0">
+                <div className="flex justify-center py-0 -my-1">
                   <Form method="post" onChange={(e) => e.currentTarget.requestSubmit()}>
                     <input type="hidden" name="intent" value="set-output-volume" />
                     <input type="hidden" name="volume" value={outputVolume} />
@@ -197,18 +197,18 @@ export default function AudioPage() {
               </div>
 
               {/* Audio Visualizer */}
-              <div className="h-3">
+              <div className="h-2 -mt-2">
                 <AudioVisualizer
                   active={isTestingOutput}
                   type="wave"
-                  height={12}
+                  height={8}
                   color="#3b82f6"
                   className="w-full"
                 />
               </div>
 
               {/* Control Buttons */}
-              <div className="flex space-x-0.5 mt-0.25">
+              <div className="flex space-x-0.5 mt-0">
                 <Form method="post" className="flex-1">
                   <input type="hidden" name="intent" value="toggle-output-mute" />
                   <input type="hidden" name="muted" value={(!outputMuted).toString()} />
@@ -256,7 +256,7 @@ export default function AudioPage() {
             "md:col-span-1 lg:col-span-1 hover:shadow-xl transition-all duration-300",
             isTestingInput && "animate-pulse-glow"
           )}>
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-1">
               <CardTitle className="flex items-center space-x-2">
                 <Mic className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <span>{t("audio.audioInput")}</span>
@@ -265,10 +265,10 @@ export default function AudioPage() {
                 {t("audio.audioInputDescription")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-1 md:space-y-0.25">
+            <CardContent className="space-y-0.5 md:space-y-0.125">
               {/* Volume Control */}
               <div className="space-y-0">
-                <div className="flex justify-center py-0">
+                <div className="flex justify-center py-0 -my-1">
                   <Form method="post" onChange={(e) => e.currentTarget.requestSubmit()}>
                     <input type="hidden" name="intent" value="set-input-volume" />
                     <input type="hidden" name="volume" value={inputVolume} />
@@ -286,18 +286,18 @@ export default function AudioPage() {
               </div>
 
               {/* Audio Visualizer */}
-              <div className="h-3">
+              <div className="h-2 -mt-2">
                 <AudioVisualizer
                   active={isTestingInput}
                   type="bars"
-                  height={12}
+                  height={8}
                   color="#10b981"
                   className="w-full"
                 />
               </div>
 
               {/* Control Buttons */}
-              <div className="flex space-x-0.5 mt-0.25">
+              <div className="flex space-x-0.5 mt-0">
                 <Form method="post" className="flex-1">
                   <input type="hidden" name="intent" value="toggle-input-mute" />
                   <input type="hidden" name="muted" value={(!inputMuted).toString()} />

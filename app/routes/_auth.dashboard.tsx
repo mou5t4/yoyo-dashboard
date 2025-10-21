@@ -7,10 +7,13 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Alert, AlertDescription } from "~/components/ui/alert";
 import { MetricCard } from "~/components/MetricCard";
+import { BatteryWidget } from "~/components/BatteryWidget";
 import { getDeviceStatus } from "~/services/device.service.server";
 import { getCurrentPlayback } from "~/services/content.service";
 import { getCurrentLocation } from "~/services/location.service.server";
+import { getCurrentWiFi } from "~/services/wifi.service.server";
 import { getUserId, getUser } from "~/lib/auth.server";
+import { prisma } from "~/lib/db.server";
 import { formatBytes, getBatteryLevel, getSignalStrength, formatDuration } from "~/lib/utils";
 import { formatDateTime as formatDateTimeLocale, formatFileSize } from "~/lib/format";
 import { POLL_INTERVAL } from "~/lib/constants";
@@ -42,17 +45,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const deviceStatus = await getDeviceStatus();
   const currentPlayback = await getCurrentPlayback();
   const currentLocation = await getCurrentLocation();
+  
+  // Check real WiFi status and sync with database
+  const currentWiFi = await getCurrentWiFi();
+  const isWiFiConnected = currentWiFi !== null;
+  
+  // Update wifiConfigured flag if WiFi is actually connected
+  if (isWiFiConnected && user?.settings && !user.settings.wifiConfigured) {
+    await prisma.settings.updateMany({
+      where: { userId: userId! },
+      data: {
+        wifiConfigured: true,
+        currentWifiSSID: currentWiFi.ssid,
+      },
+    });
+  }
 
   return json({
     deviceStatus,
     currentPlayback,
     currentLocation,
     settings: user?.settings,
+    currentWiFi,
   });
 }
 
 export default function Dashboard() {
-  const { deviceStatus, currentPlayback, currentLocation, settings } = useLoaderData<typeof loader>();
+  const { deviceStatus, currentPlayback, currentLocation, settings, currentWiFi } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
   const [currentTime, setCurrentTime] = useState(new Date());
   const { t } = useTranslation();
@@ -95,14 +114,10 @@ export default function Dashboard() {
           {t("dashboard.deviceStatus")}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Battery Card */}
-          <MetricCard
-            title={t("dashboard.battery")}
-            value={`${deviceStatus.battery}%`}
-            subtitle={deviceStatus.charging ? t("dashboard.charging") : t("dashboard.discharging")}
-            statusColor={deviceStatus.battery > 50 ? "green" : deviceStatus.battery > 20 ? "yellow" : "red"}
-            chartValue={deviceStatus.battery}
-            chartMax={100}
+          {/* Battery Widget */}
+          <BatteryWidget
+            level={deviceStatus.battery}
+            isCharging={deviceStatus.charging}
           />
 
           {/* WiFi Card */}
@@ -243,22 +258,29 @@ export default function Dashboard() {
           Recent Activity
         </h2>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-8">
             <div className="space-y-6">
               <div className="flex">
-                <div className="flex-shrink-0 mr-4">
+                <div className="flex-shrink-0 mr-4 mt-3">
                   <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
                     <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white">Device connected</h3>
+                  <div className="flex items-center justify-between mt-3">
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                      {currentWiFi ? "Device connected" : "Device disconnected"}
+                    </h3>
                     <span className="text-xs text-gray-600 dark:text-gray-400" suppressHydrationWarning>
                       {new Date().toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Successfully connected to WiFi network</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {currentWiFi 
+                      ? `Successfully connected to WiFi network (${currentWiFi.ssid})` 
+                      : "Not connected to any WiFi network"
+                    }
+                  </p>
                 </div>
               </div>
               {deviceStatus.battery < 50 && (
@@ -292,7 +314,7 @@ export default function Dashboard() {
         </Alert>
       )}
 
-      {!settings?.wifiConfigured && (
+      {!currentWiFi && (
         <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-900">
           <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
           <AlertDescription className="text-red-900 dark:text-white">

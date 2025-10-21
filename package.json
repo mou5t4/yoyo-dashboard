@@ -20,7 +20,9 @@
     "i18n:validate": "tsx scripts/validate-translations.ts",
     "i18n:split": "tsx scripts/split-namespaces.ts",
     "i18n:merge": "tsx scripts/merge-namespaces.ts",
-    "i18n:coverage": "tsx scripts/translation-coverage.ts"
+    "i18n:coverage": "tsx scripts/translation-coverage.ts",
+    "battery:mock": "tsx services/mock-battery-service.ts",
+    "battery:status": "cat /run/yoyo/battery.json"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",
