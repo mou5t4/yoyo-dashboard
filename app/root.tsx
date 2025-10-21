@@ -22,8 +22,11 @@ import { prisma } from "./lib/db.server";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import type { Theme } from "./contexts/ThemeContext";
 
+import leafletStyles from "leaflet/dist/leaflet.css?url";
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: leafletStyles },
   { rel: "manifest", href: "/manifest.json" },
   { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
 ];

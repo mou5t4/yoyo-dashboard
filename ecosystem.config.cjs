@@ -40,6 +40,25 @@ module.exports = {
       out_file: './logs/battery-output.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
       time: true
+    },
+    {
+      name: 'mock-gps-service',
+      script: 'tsx',
+      args: 'services/mock-gps-service.ts',
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '50M',
+      env: {
+        LOCATION_UPDATE_INTERVAL: '30000',  // 30 seconds
+        GPS_CENTER_LAT: '37.7749',          // San Francisco latitude
+        GPS_CENTER_LON: '-122.4194',        // San Francisco longitude
+        GPS_WALK_RADIUS: '500',             // 500 meters
+      },
+      error_file: './logs/gps-error.log',
+      out_file: './logs/gps-output.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss',
+      time: true
     }
   ]
 };

@@ -1,82 +1,77 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import fs from 'fs/promises';
 import { logger } from '~/lib/logger.server';
 import { prisma } from '~/lib/db.server';
-
-const execAsync = promisify(exec);
-
-export interface LocationData {
-  latitude: number;
-  longitude: number;
-  accuracy: number; // meters
-  timestamp: string;
-  address?: string; // Reverse geocoded
-}
+import type { LocationData } from '~/types/location.types';
+import { LOCATION_DATA_FILE } from '~/types/location.types';
 
 // Cache for the last known location
 let lastKnownLocation: LocationData | null = null;
 
+// Maximum age for location data (2 minutes)
+const MAX_LOCATION_AGE_MS = 2 * 60 * 1000;
+
+/**
+ * Read location data from file written by GPS service
+ */
+async function readLocationFromFile(): Promise<LocationData | null> {
+  try {
+    const data = await fs.readFile(LOCATION_DATA_FILE, 'utf-8');
+    const location: LocationData = JSON.parse(data);
+    
+    // Check if data is fresh (< 2 minutes old)
+    const locationTime = new Date(location.timestamp).getTime();
+    const now = Date.now();
+    const age = now - locationTime;
+    
+    if (age > MAX_LOCATION_AGE_MS) {
+      logger.warn('Location data is stale', { age: Math.round(age / 1000) + 's' });
+      return null;
+    }
+    
+    logger.debug('Read location from file', { 
+      lat: location.latitude, 
+      lon: location.longitude,
+      age: Math.round(age / 1000) + 's'
+    });
+    
+    return location;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      logger.debug('Location file not found', { file: LOCATION_DATA_FILE });
+    } else {
+      logger.error('Failed to read location file', error);
+    }
+    return null;
+  }
+}
+
 export async function getCurrentLocation(): Promise<LocationData | null> {
   try {
-    // Try multiple methods to get location
-
-    // Method 1: gpsd (if GPS hardware is available)
-    try {
-      const { stdout } = await execAsync('timeout 5 gpspipe -w -n 10 2>/dev/null | grep -m 1 TPV');
-      const data = JSON.parse(stdout);
-
-      if (data.lat && data.lon) {
-        const location: LocationData = {
-          latitude: data.lat,
-          longitude: data.lon,
-          accuracy: data.epy || data.epx || 10,
-          timestamp: new Date().toISOString(),
-        };
-
-        // Try to get address
+    // Read location from file (written by GPS service)
+    const location = await readLocationFromFile();
+    
+    if (location) {
+      // Try to get address if not already present
+      if (!location.address) {
         location.address = await reverseGeocode(location.latitude, location.longitude);
-
-        lastKnownLocation = location;
-
-        // Store in database for history
-        await storeLocationHistory(location);
-
-        logger.info('Got location from GPS', { lat: location.latitude, lon: location.longitude });
-        return location;
       }
-    } catch (gpsError) {
-      logger.debug('GPS not available', gpsError);
+      
+      lastKnownLocation = location;
+      
+      // Store in database for history
+      await storeLocationHistory(location);
+      
+      return location;
     }
-
-    // Method 2: geoclue (system location service)
-    try {
-      const { stdout } = await execAsync('busctl --user call org.freedesktop.GeoClue2 /org/freedesktop/GeoClue2/Manager org.freedesktop.GeoClue2.Manager GetClient');
-      // Parse geoclue output if available
-      // This is complex and depends on system setup
-    } catch (geoclueError) {
-      logger.debug('Geoclue not available', geoclueError);
-    }
-
-    // Method 3: WiFi-based location (using network scan)
-    try {
-      const location = await getLocationFromWiFi();
-      if (location) {
-        lastKnownLocation = location;
-        await storeLocationHistory(location);
-        return location;
-      }
-    } catch (wifiError) {
-      logger.debug('WiFi location not available', wifiError);
-    }
-
-    // Method 4: Return last known location if available
+    
+    // Fallback: Return last known location if available
     if (lastKnownLocation) {
-      logger.info('Returning last known location');
+      logger.info('Returning last known location (cached)');
       return lastKnownLocation;
     }
-
-    // Fallback: Return mock location
-    logger.warn('No location method available, using mock data');
+    
+    // Final fallback: Return mock location
+    logger.warn('No location data available, using fallback');
     return {
       latitude: 37.7749,
       longitude: -122.4194,
@@ -96,23 +91,6 @@ export async function getCurrentLocation(): Promise<LocationData | null> {
   }
 }
 
-async function getLocationFromWiFi(): Promise<LocationData | null> {
-  try {
-    // Get WiFi networks for location lookup
-    const { stdout } = await execAsync('nmcli -t -f BSSID,SIGNAL dev wifi list 2>/dev/null | head -5');
-    const lines = stdout.trim().split('\n');
-
-    if (lines.length === 0) return null;
-
-    // In a real implementation, you would send these BSSIDs to a location service
-    // like Mozilla Location Service, Google Geolocation API, etc.
-    // For now, return null to fall back to other methods
-
-    return null;
-  } catch (error) {
-    return null;
-  }
-}
 
 async function reverseGeocode(lat: number, lon: number): Promise<string | undefined> {
   try {

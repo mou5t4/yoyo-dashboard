@@ -37,7 +37,7 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
     <div className="min-h-screen">
       {/* Desktop Sidebar */}
       <aside className={cn(
-        "fixed top-0 bottom-0 w-96 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200 dark:border-gray-700 z-40 m-6 rounded-3xl shadow-2xl",
+        "fixed top-0 bottom-0 w-96 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200 dark:border-gray-700 z-50 m-6 rounded-3xl shadow-2xl",
         rtl ? "right-0" : "left-0"
       )}>
         <div className="flex flex-col h-full">
