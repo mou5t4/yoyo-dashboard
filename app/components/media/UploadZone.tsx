@@ -18,6 +18,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileDialogOpenRef = useRef(false);
   const [fileDialogOpen, setFileDialogOpen] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -168,6 +169,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
               className="hidden"
               accept="audio/*"
               onChange={(e) => {
+                fileDialogOpenRef.current = false;
                 setFileDialogOpen(false);
                 const file = e.target.files?.[0];
                 if (file) handleFileSelect(file);
@@ -175,11 +177,17 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
             />
             <Button
               onClick={() => {
-                if (!fileDialogOpen) {
+                // Use ref for synchronous check and state for rendering
+                if (!fileDialogOpenRef.current) {
+                  fileDialogOpenRef.current = true;
                   setFileDialogOpen(true);
+                  // Click immediately
                   fileInputRef.current?.click();
-                  // Reset the flag after a delay to allow new attempts
-                  setTimeout(() => setFileDialogOpen(false), 500);
+                  // Reset after dialog interaction or timeout
+                  setTimeout(() => {
+                    fileDialogOpenRef.current = false;
+                    setFileDialogOpen(false);
+                  }, 1000);
                 }
               }}
               className="bg-purple-600 hover:bg-purple-700"
