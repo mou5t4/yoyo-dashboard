@@ -219,9 +219,9 @@ export function CircularVolumeKnob({
   }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div className={cn('flex flex-col items-center space-y-4', className)}>
+    <div className={cn('flex flex-col items-center gap-2 w-full', className)}>
       {label && (
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
           {label}
         </label>
       )}
@@ -230,14 +230,10 @@ export function CircularVolumeKnob({
         ref={knobRef}
         className={cn(
           'relative cursor-pointer select-none transition-all duration-150',
-          'volume-button-knob',
+          'volume-button-knob flex-shrink-0',
+          'aspect-square w-full max-w-xs',
           disabled && 'opacity-50 cursor-not-allowed'
         )}
-        style={{ 
-          width: config.diameter,
-          height: config.diameter,
-          transform: `scale(${config.scale})`
-        }}
         tabIndex={disabled ? -1 : 0}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}

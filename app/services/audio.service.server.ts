@@ -4,6 +4,62 @@ import { logger } from '~/lib/logger.server';
 
 const execAsync = promisify(exec);
 
+// Friendly name mapping for common audio devices
+function getFriendlyDeviceName(technicalName: string, type: 'playback' | 'capture'): string {
+  const lowerName = technicalName.toLowerCase();
+
+  // Common patterns
+  if (lowerName.includes('bcm2835')) {
+    return type === 'playback' ? '3.5mm Audio Jack' : 'Built-in Microphone';
+  }
+  if (lowerName.includes('vc4-hdmi') || lowerName.includes('hdmi')) {
+    return 'HDMI Audio';
+  }
+  if (lowerName.includes('usb') || lowerName.includes('usb audio')) {
+    return 'USB Audio Device';
+  }
+  if (lowerName.includes('bluetooth')) {
+    return 'Bluetooth Audio';
+  }
+  if (lowerName.includes('speaker')) {
+    return 'Speaker';
+  }
+  if (lowerName.includes('headphone')) {
+    return 'Headphones';
+  }
+  if (lowerName.includes('microphone') || lowerName.includes('mic')) {
+    return 'Microphone';
+  }
+  if (lowerName.includes('line in')) {
+    return 'Line In';
+  }
+  if (lowerName.includes('line out')) {
+    return 'Line Out';
+  }
+  if (lowerName.includes('built-in')) {
+    return type === 'playback' ? 'Built-in Speaker' : 'Built-in Microphone';
+  }
+  
+  // If nothing matches, clean up the technical name
+  let cleaned = technicalName
+    .replace(/alsa_output\.|alsa_input\./gi, '')
+    .replace(/\.platform.+/gi, '')
+    .replace(/mailbox\.stereo-fallback/gi, '')
+    .replace(/\.mono/gi, '')
+    .replace(/\./g, ' ')
+    .replace(/-/g, ' ')
+    .trim();
+  
+  // Capitalize first letter of each word
+  cleaned = cleaned
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+  
+  return cleaned || technicalName;
+}
+
+
 export interface AudioDevice {
   id: string;
   name: string;
@@ -26,41 +82,64 @@ export interface AudioSettings {
 // Get list of audio output devices
 export async function getAudioDevices(): Promise<{ playback: AudioDevice[], capture: AudioDevice[] }> {
   try {
-    // Try PulseAudio first (more reliable for device management)
+    let playbackDevices: AudioDevice[] = [];
+    let captureDevices: AudioDevice[] = [];
+
+    // Try PulseAudio first for playback (more reliable for device management)
     try {
       // Enable all available audio cards to make them available as sinks
       await enableAllAudioCards();
       
       const { stdout: sinkOut } = await execAsync('pactl list short sinks 2>/dev/null');
-      const playbackDevices = parsePulseDevices(sinkOut, 'playback');
-
-      const { stdout: sourceOut } = await execAsync('pactl list short sources 2>/dev/null');
-      const captureDevices = parsePulseDevices(sourceOut, 'capture');
-
-      return { playback: playbackDevices, capture: captureDevices };
+      playbackDevices = parsePulseDevices(sinkOut, 'playback');
     } catch {}
 
-    // Try ALSA as fallback
+    // Use ALSA for capture devices since arecord requires ALSA device names
     try {
-      const { stdout } = await execAsync('aplay -l 2>/dev/null');
-      const playbackDevices = parseAlsaDevices(stdout, 'playback');
-
       const { stdout: captureOut } = await execAsync('arecord -l 2>/dev/null');
-      const captureDevices = parseAlsaDevices(captureOut, 'capture');
+      captureDevices = parseAlsaDevices(captureOut, 'capture');
+      
+      if (captureDevices.length > 0) {
+        logger.info(`Found ${captureDevices.length} ALSA capture devices`);
+        return { playback: playbackDevices, capture: captureDevices };
+      }
+    } catch (alsaError) {
+      logger.debug('ALSA capture enumeration failed, trying PulseAudio:', alsaError);
+    }
 
-      return { playback: playbackDevices, capture: captureDevices };
+    // If ALSA capture failed, try PulseAudio (though IDs may not work with arecord)
+    try {
+      const { stdout: sourceOut } = await execAsync('pactl list short sources 2>/dev/null');
+      const pulseDevices = parsePulseDevices(sourceOut, 'capture');
+      
+      if (pulseDevices.length > 0) {
+        logger.warn('Using PulseAudio device IDs for capture - may not work with arecord');
+        return { playback: playbackDevices, capture: pulseDevices };
+      }
     } catch {}
 
-    // Fallback to mock devices
-    logger.warn('No audio system detected, using mock devices');
-    return {
-      playback: [
-        { id: 'hw:0,0', name: 'Built-in Audio', type: 'playback', isDefault: true, volume: 75, muted: false },
-      ],
-      capture: [
-        { id: 'hw:0,0', name: 'Built-in Microphone', type: 'capture', isDefault: true, volume: 80, muted: false },
-      ],
-    };
+    // If no playback devices found from PulseAudio, try ALSA
+    if (playbackDevices.length === 0) {
+      try {
+        const { stdout } = await execAsync('aplay -l 2>/dev/null');
+        playbackDevices = parseAlsaDevices(stdout, 'playback');
+      } catch {}
+    }
+
+    if (captureDevices.length === 0 && playbackDevices.length === 0) {
+      // Fallback to mock devices
+      logger.warn('No audio system detected, using mock devices');
+      return {
+        playback: [
+          { id: 'hw:0,0', name: 'Built-in Audio', type: 'playback', isDefault: true, volume: 75, muted: false },
+        ],
+        capture: [
+          { id: 'hw:0,0', name: 'Built-in Microphone', type: 'capture', isDefault: true, volume: 80, muted: false },
+        ],
+      };
+    }
+
+    return { playback: playbackDevices, capture: captureDevices };
   } catch (error) {
     logger.error('Failed to get audio devices', error);
     return { playback: [], capture: [] };
@@ -113,16 +192,8 @@ function parseAlsaDevices(output: string, type: 'playback' | 'capture'): AudioDe
     const match = line.match(/card (\d+):.+?\[(.+?)\]/);
     if (match) {
       const cardNum = match[1];
-      let name = match[2];
-      
-      // Provide more user-friendly names for common devices
-      if (name.includes('bcm2835')) {
-        name = '3.5mm Audio Jack (Built-in)';
-      } else if (name.includes('vc4-hdmi')) {
-        name = 'HDMI Audio';
-      } else if (name.includes('usb')) {
-        name = 'USB Audio Device';
-      }
+      const technicalName = match[2];
+      const name = getFriendlyDeviceName(technicalName, type);
       
       devices.push({
         id: `hw:${cardNum},0`,
@@ -146,19 +217,8 @@ function parsePulseDevices(output: string, type: 'playback' | 'capture'): AudioD
     if (!line.trim()) continue;
     const parts = line.split('\t');
     if (parts.length >= 2) {
-      // Extract a more user-friendly name from the device description
-      let friendlyName = parts[1];
-      
-      // Try to extract better names from common patterns
-      if (friendlyName.includes('bcm2835')) {
-        friendlyName = '3.5mm Audio Jack (Built-in)';
-      } else if (friendlyName.includes('hdmi')) {
-        friendlyName = 'HDMI Audio';
-      } else if (friendlyName.includes('usb')) {
-        friendlyName = 'USB Audio Device';
-      } else if (friendlyName.includes('bluetooth')) {
-        friendlyName = 'Bluetooth Audio';
-      }
+      const technicalName = parts[1];
+      const friendlyName = getFriendlyDeviceName(technicalName, type);
       
       devices.push({
         id: parts[0],
@@ -461,11 +521,64 @@ export async function stopDeviceAudio(): Promise<{ success: boolean; error?: str
 export async function recordTestAudio(): Promise<{ success: boolean; error?: string }> {
   try {
     // Record 3 seconds of audio to test microphone
-    await execAsync('timeout 3 arecord -d 3 -f cd -t wav /tmp/audio_test.wav 2>/dev/null || true');
+    // Use mono format (-c 1) for better compatibility with USB microphones
+    // Try to record from USB device (hw:3) first, fall back to default
+    try {
+      await execAsync('timeout 3 arecord -d 3 -c 1 -f dat -D hw:3,0 /tmp/audio_test.wav 2>/dev/null || true');
+    } catch {
+      // Fallback to default device if USB not available
+      await execAsync('timeout 3 arecord -d 3 -c 1 -f dat /tmp/audio_test.wav 2>/dev/null || true');
+    }
     logger.info('Recorded test audio');
     return { success: true };
   } catch (error: any) {
     logger.error('Failed to record test audio', error);
     return { success: false, error: error.message || 'Failed to record audio' };
+  }
+}
+
+// Play back the recorded test audio
+export async function playRecordedTestAudio(): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Check if test audio file exists
+    const { stdout } = await execAsync('[ -f /tmp/audio_test.wav ] && echo "exists" || echo "not found"');
+    if (stdout.includes('not found')) {
+      return { success: false, error: 'No recorded test audio found. Record audio first.' };
+    }
+    
+    // Play the recorded test audio using aplay
+    await execAsync('aplay /tmp/audio_test.wav 2>/dev/null &');
+    logger.info('Playing recorded test audio');
+    return { success: true };
+  } catch (error: any) {
+    logger.error('Failed to play recorded test audio', error);
+    return { success: false, error: error.message || 'Failed to play recorded audio' };
+  }
+}
+
+// Start live microphone listening (streams raw audio data)
+export async function startMicrophoneListener(): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Start streaming microphone audio (30 seconds max)
+    // This pipes the audio to a named pipe that the frontend can read
+    await execAsync('timeout 30 arecord -f cd -t raw 2>/dev/null > /tmp/mic_stream.raw &');
+    logger.info('Started microphone listener');
+    return { success: true };
+  } catch (error: any) {
+    logger.error('Failed to start microphone listener', error);
+    return { success: false, error: error.message || 'Failed to start listener' };
+  }
+}
+
+// Stop microphone listening
+export async function stopMicrophoneListener(): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Kill the arecord process
+    await execAsync('pkill -f "arecord.*mic_stream" 2>/dev/null || true');
+    logger.info('Stopped microphone listener');
+    return { success: true };
+  } catch (error: any) {
+    logger.error('Failed to stop microphone listener', error);
+    return { success: false, error: error.message || 'Failed to stop listener' };
   }
 }

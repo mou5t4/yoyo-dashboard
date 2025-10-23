@@ -47,6 +47,7 @@ export function MediaFileCard({
   const [newTitle, setNewTitle] = useState(title);
   
   const audioRef = useRef<HTMLAudioElement>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { audioMode } = useAudioMode();
 
   const formatDuration = (seconds?: number) => {
@@ -122,6 +123,33 @@ export function MediaFileCard({
       audioRef.current.volume = volume / 100;
     }
   }, [volume]);
+
+  // Simulate progress for device mode
+  useEffect(() => {
+    if (audioMode === 'device' && isPlaying && audioRef.current) {
+      progressIntervalRef.current = setInterval(() => {
+        setCurrentTime(prev => {
+          const duration = audioRef.current?.duration || 0;
+          if (prev >= duration) {
+            setIsPlaying(false);
+            return 0;
+          }
+          return prev + 0.1; // Update every 100ms
+        });
+      }, 100);
+    } else {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, [audioMode, isPlaying]);
 
   // If this card is not the currently playing one and it was playing, stop it and collapse it
   useEffect(() => {

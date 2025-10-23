@@ -20,6 +20,7 @@ export function AudioPlayer({ title, artist, src, onClose, audioMode = 'browser'
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -39,6 +40,32 @@ export function AudioPlayer({ title, artist, src, onClose, audioMode = 'browser'
       audio.removeEventListener('ended', handleEnded);
     };
   }, []);
+
+  // Simulate progress for device mode
+  useEffect(() => {
+    if (audioMode === 'device' && isPlaying) {
+      progressIntervalRef.current = setInterval(() => {
+        setCurrentTime(prev => {
+          if (prev >= duration) {
+            setIsPlaying(false);
+            return 0;
+          }
+          return prev + 0.1; // Update every 100ms
+        });
+      }, 100);
+    } else {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, [audioMode, isPlaying, duration]);
 
   const togglePlay = async () => {
     if (audioMode === 'device') {
@@ -177,8 +204,13 @@ export function AudioPlayer({ title, artist, src, onClose, audioMode = 'browser'
             }}
           />
         ) : (
-          <div className="w-full h-2 bg-gray-700 rounded-lg">
-            <div className="h-full bg-purple-500 rounded-lg animate-pulse"></div>
+          <div className="w-full h-2 bg-gray-700 rounded-lg overflow-hidden">
+            <div 
+              className="h-full bg-purple-500 rounded-lg transition-all"
+              style={{
+                width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%`
+              }}
+            />
           </div>
         )}
         <div className="flex justify-between text-xs text-gray-400">

@@ -27,26 +27,27 @@ export function AudioDeviceCard({
   const isPlayback = device.type === 'playback';
   const Icon = isPlayback ? Volume2 : Mic;
 
+  // Size configurations - balanced for card fit
   const sizeConfig = {
     small: {
-      card: 'p-1.5',
+      card: 'p-2 md:p-2.5',
       icon: 'h-4 w-4',
+      title: 'text-xs',
+      subtitle: 'text-xs',
+      badge: 'text-xs px-1.5 py-0.5'
+    },
+    medium: {
+      card: 'p-2 md:p-2.5',
+      icon: 'h-5 w-5',
       title: 'text-sm',
       subtitle: 'text-xs',
       badge: 'text-xs px-2 py-1'
     },
-    medium: {
-      card: 'p-2',
-      icon: 'h-5 w-5',
-      title: 'text-base',
-      subtitle: 'text-sm',
-      badge: 'text-xs px-2 py-1'
-    },
     large: {
-      card: 'p-3',
+      card: 'p-2 md:p-3',
       icon: 'h-6 w-6',
-      title: 'text-lg',
-      subtitle: 'text-base',
+      title: 'text-sm md:text-base',
+      subtitle: 'text-xs',
       badge: 'text-sm px-3 py-1'
     }
   };
@@ -102,9 +103,9 @@ export function AudioDeviceCard({
       )}
 
       {/* Device icon and info */}
-      <div className="flex items-start space-x-3">
+      <div className="flex items-start gap-2">
         <div className={cn(
-          'flex-shrink-0 p-2 rounded-lg transition-colors duration-300',
+          'flex-shrink-0 p-1.5 md:p-2 rounded-lg transition-colors duration-300',
           isSelected
             ? 'bg-blue-100 dark:bg-blue-900/40'
             : 'bg-gray-100 dark:bg-gray-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20'
@@ -118,9 +119,9 @@ export function AudioDeviceCard({
           )} />
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 space-y-0.5">
           <h3 className={cn(
-            'font-semibold text-gray-900 dark:text-white transition-colors duration-300',
+            'font-semibold text-gray-900 dark:text-white transition-colors duration-300 truncate',
             'group-hover:text-blue-900 dark:group-hover:text-blue-100',
             config.title
           )}>
@@ -128,7 +129,7 @@ export function AudioDeviceCard({
           </h3>
           
           <p className={cn(
-            'text-gray-500 dark:text-gray-400 mt-1 font-mono transition-colors duration-300',
+            'text-gray-500 dark:text-gray-400 font-mono transition-colors duration-300 truncate',
             'group-hover:text-gray-600 dark:group-hover:text-gray-300',
             config.subtitle
           )}>
@@ -136,9 +137,9 @@ export function AudioDeviceCard({
           </p>
 
           {/* Device type badge */}
-          <div className="mt-2">
+          <div className="mt-1">
             <span className={cn(
-              'inline-flex items-center px-2 py-1 rounded-full font-medium transition-colors duration-300',
+              'inline-flex items-center px-2 py-1 rounded-full font-medium transition-colors duration-300 text-xs',
               isPlayback
                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300'
                 : 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
@@ -153,11 +154,10 @@ export function AudioDeviceCard({
 
       {/* Default device badge */}
       {device.isDefault && (
-        <div className="absolute bottom-2 left-2">
+        <div className="absolute bottom-1.5 left-2">
           <span className={cn(
-            'inline-flex items-center px-2 py-1 rounded-full font-medium',
-            'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
-            config.badge
+            'inline-flex items-center px-1.5 py-0.5 rounded-full font-medium text-xs',
+            'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
           )}>
             Active
           </span>
@@ -206,8 +206,8 @@ export function AudioDeviceGrid({
 
   return (
     <div className={cn(
-      'grid gap-1.5',
-      'grid-cols-1 sm:grid-cols-2 lg:grid-cols-1',
+      'grid gap-2 sm:gap-2.5 md:gap-3',
+      'grid-cols-1',
       className
     )}>
       {devices.map((device) => (

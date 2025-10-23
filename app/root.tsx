@@ -24,12 +24,13 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import type { Theme } from "./contexts/ThemeContext";
 import { AudioModeProvider } from "./contexts/AudioModeContext";
 
-import leafletStyles from "leaflet/dist/leaflet.css?url";
+// TODO: Fix leaflet CSS import issue with ESM
+// import leafletStyles from "leaflet/dist/leaflet.css?url";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
   { rel: "stylesheet", href: enhancedAudioStyles },
-  { rel: "stylesheet", href: leafletStyles },
+  // { rel: "stylesheet", href: leafletStyles },
   { rel: "manifest", href: "/manifest.json" },
   { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
 ];
@@ -117,7 +118,7 @@ export function ErrorBoundary() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Error - {APP_NAME}</title>
+        <title>{`Error - ${APP_NAME}`}</title>
         <Meta />
         <Links />
       </head>
