@@ -63,16 +63,20 @@ export function MediaFileCard({
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
+        // When pausing
         audioRef.current.pause();
         setIsPlaying(false);
         
-        // Also stop device audio if it's playing
-        fetch('/api/audio/play', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({}),  // Empty body = stop request
-        }).catch(error => console.error('Device audio stop failed:', error));
+        // If device mode, also stop device audio
+        if (audioMode === 'device') {
+          fetch('/api/audio/play', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}),  // Empty = stop
+          }).catch(error => console.error('Device audio stop failed:', error));
+        }
       } else {
+        // When playing
         // Stop all other players
         if (onStopAllOthers) {
           onStopAllOthers();
@@ -82,7 +86,12 @@ export function MediaFileCard({
           setIsExpanded(true);
           onPlay(id, title, artist, filePath);
         }
-        audioRef.current.play().catch(err => console.error('Playback error:', err));
+        
+        // Only play browser audio if in browser mode
+        if (audioMode === 'browser') {
+          audioRef.current.play().catch(err => console.error('Playback error:', err));
+        }
+        
         setIsPlaying(true);
       }
     }
