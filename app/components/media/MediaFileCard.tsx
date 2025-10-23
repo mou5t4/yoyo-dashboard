@@ -65,6 +65,13 @@ export function MediaFileCard({
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
+        
+        // Also stop device audio if it's playing
+        fetch('/api/audio/play', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),  // Empty body = stop request
+        }).catch(error => console.error('Device audio stop failed:', error));
       } else {
         // Stop all other players
         if (onStopAllOthers) {
