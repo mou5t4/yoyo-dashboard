@@ -138,3 +138,42 @@ model AppState {
   updatedAt       DateTime @updatedAt
 }
 
+model MediaFile {
+  id            String         @id @default(cuid())
+  title         String
+  artist        String?
+  album         String?
+  duration      Float?         // Duration in seconds
+  fileSize      Int            // File size in bytes
+  filePath      String         // Relative path from public directory
+  mimeType      String
+  originalName  String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  playlistItems PlaylistItem[]
+  
+  @@index([createdAt])
+}
+
+model Playlist {
+  id        String         @id @default(cuid())
+  name      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  items     PlaylistItem[]
+}
+
+model PlaylistItem {
+  id         String    @id @default(cuid())
+  playlistId String
+  mediaId    String
+  position   Int       @default(0)
+  createdAt  DateTime  @default(now())
+  playlist   Playlist  @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  media      MediaFile @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  
+  @@unique([playlistId, mediaId])
+  @@index([playlistId])
+  @@index([mediaId])
+}
+

@@ -6,13 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Alert, AlertDescription } from "~/components/ui/alert";
-import { getAudioDevices, getAudioSettings, setVolume, setMute, playTestSound, recordTestAudio } from "~/services/audio.service.server";
+import { getAudioDevices, getAudioSettings, setVolume, setMute, playTestSound, recordTestAudio, setDefaultOutputDevice, setDefaultInputDevice, setAudioMode } from "~/services/audio.service.server";
 import { Volume2, VolumeX, Mic, MicOff, Play, Radio, CheckCircle2, XCircle, Speaker, Activity } from "lucide-react";
 
 // Import new components
 import { CircularVolumeKnob } from "~/components/audio/CircularVolumeKnob";
 import { AudioVisualizer } from "~/components/audio/AudioVisualizer";
 import { AudioDeviceGrid } from "~/components/audio/AudioDeviceCard";
+import { useAudioMode } from "~/contexts/AudioModeContext";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const devices = await getAudioDevices();
@@ -77,6 +78,48 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ success: false, error: result.error }, { status: 400 });
   }
 
+  if (intent === "set-output-device") {
+    const deviceId = formData.get("deviceId") as string;
+    
+    if (!deviceId) {
+      return json({ error: "Device ID is required", success: false }, { status: 400 });
+    }
+
+    const result = await setDefaultOutputDevice(deviceId);
+    if (result.success) {
+      return json({ success: true, message: `Output device set to ${deviceId}` });
+    }
+    return json({ success: false, error: result.error }, { status: 400 });
+  }
+
+  if (intent === "set-input-device") {
+    const deviceId = formData.get("deviceId") as string;
+    
+    if (!deviceId) {
+      return json({ error: "Device ID is required", success: false }, { status: 400 });
+    }
+
+    const result = await setDefaultInputDevice(deviceId);
+    if (result.success) {
+      return json({ success: true, message: `Input device set to ${deviceId}` });
+    }
+    return json({ success: false, error: result.error }, { status: 400 });
+  }
+
+  if (intent === "set-audio-mode") {
+    const mode = formData.get("mode") as "browser" | "device";
+    
+    if (!mode || !["browser", "device"].includes(mode)) {
+      return json({ error: "Invalid audio mode", success: false }, { status: 400 });
+    }
+
+    const result = await setAudioMode(mode);
+    if (result.success) {
+      return json({ success: true, message: `Audio mode set to ${mode}` });
+    }
+    return json({ success: false, error: result.error }, { status: 400 });
+  }
+
   return json({ error: "Invalid action", success: false }, { status: 400 });
 }
 
@@ -95,6 +138,7 @@ export default function AudioPage() {
   const [selectedInputDevice, setSelectedInputDevice] = useState<string | null>(null);
   
   const { t } = useTranslation();
+  const { audioMode, setAudioMode } = useAudioMode();
 
   // Handle test sound with animation
   const handleTestOutput = useCallback(async () => {
@@ -107,15 +151,31 @@ export default function AudioPage() {
     setTimeout(() => setIsTestingInput(false), 3000);
   }, []);
 
-  // Handle volume changes with debouncing
+  // Handle volume changes with immediate form submission
   const handleOutputVolumeChange = useCallback((value: number) => {
     setOutputVolume(value);
-    // Debounced form submission could be added here
+    // Submit form immediately to change system volume
+    const form = document.querySelector('form[data-volume-form="output"]') as HTMLFormElement;
+    if (form) {
+      const volumeInput = form.querySelector('input[name="volume"]') as HTMLInputElement;
+      if (volumeInput) {
+        volumeInput.value = value.toString();
+        form.requestSubmit();
+      }
+    }
   }, []);
 
   const handleInputVolumeChange = useCallback((value: number) => {
     setInputVolume(value);
-    // Debounced form submission could be added here
+    // Submit form immediately to change system volume
+    const form = document.querySelector('form[data-volume-form="input"]') as HTMLFormElement;
+    if (form) {
+      const volumeInput = form.querySelector('input[name="volume"]') as HTMLInputElement;
+      if (volumeInput) {
+        volumeInput.value = value.toString();
+        form.requestSubmit();
+      }
+    }
   }, []);
 
   // Prepare device data for new components
@@ -180,7 +240,7 @@ export default function AudioPage() {
               {/* Volume Control */}
               <div className="space-y-0">
                 <div className="flex justify-center py-0 -my-1">
-                  <Form method="post" onChange={(e) => e.currentTarget.requestSubmit()}>
+                  <Form method="post" data-volume-form="output">
                     <input type="hidden" name="intent" value="set-output-volume" />
                     <input type="hidden" name="volume" value={outputVolume} />
                     <CircularVolumeKnob
@@ -245,8 +305,66 @@ export default function AudioPage() {
                 <AudioDeviceGrid
                   devices={outputDevices}
                   selectedDevice={selectedOutputDevice ? outputDevices.find(d => d.id === selectedOutputDevice) : undefined}
-                  onDeviceSelect={(device) => setSelectedOutputDevice(device.id)}
+                  onDeviceSelect={(device) => {
+                    setSelectedOutputDevice(device.id);
+                    // Submit form to change the default device
+                    const form = document.createElement('form');
+                    form.method = 'post';
+                    form.innerHTML = `
+                      <input type="hidden" name="intent" value="set-output-device" />
+                      <input type="hidden" name="deviceId" value="${device.id}" />
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                  }}
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Audio Mode Selector Card */}
+          <Card className="md:col-span-1 lg:col-span-1 hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-1">
+              <CardTitle className="flex items-center space-x-2">
+                <Radio className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <span>Audio Output Mode</span>
+              </CardTitle>
+              <CardDescription className="text-gray-500 dark:text-gray-400">
+                Choose where music plays
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Output Mode</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant={audioMode === 'browser' ? 'default' : 'outline'}
+                    className="w-full h-12 flex flex-col items-center justify-center space-y-1"
+                    onClick={() => setAudioMode('browser')}
+                  >
+                    <Speaker className="h-4 w-4" />
+                    <span className="text-xs">Browser</span>
+                  </Button>
+                  <Button
+                    variant={audioMode === 'device' ? 'default' : 'outline'}
+                    className="w-full h-12 flex flex-col items-center justify-center space-y-1"
+                    onClick={() => setAudioMode('device')}
+                  >
+                    <Radio className="h-4 w-4" />
+                    <span className="text-xs">Device</span>
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <Speaker className="h-3 w-3" />
+                  <span><strong>Browser:</strong> Plays through your computer speakers</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Radio className="h-3 w-3" />
+                  <span><strong>Device:</strong> Plays through Raspberry Pi audio jack</span>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -269,7 +387,7 @@ export default function AudioPage() {
               {/* Volume Control */}
               <div className="space-y-0">
                 <div className="flex justify-center py-0 -my-1">
-                  <Form method="post" onChange={(e) => e.currentTarget.requestSubmit()}>
+                  <Form method="post" data-volume-form="input">
                     <input type="hidden" name="intent" value="set-input-volume" />
                     <input type="hidden" name="volume" value={inputVolume} />
                     <CircularVolumeKnob
@@ -334,7 +452,18 @@ export default function AudioPage() {
                 <AudioDeviceGrid
                   devices={inputDevices}
                   selectedDevice={selectedInputDevice ? inputDevices.find(d => d.id === selectedInputDevice) : undefined}
-                  onDeviceSelect={(device) => setSelectedInputDevice(device.id)}
+                  onDeviceSelect={(device) => {
+                    setSelectedInputDevice(device.id);
+                    // Submit form to change the default device
+                    const form = document.createElement('form');
+                    form.method = 'post';
+                    form.innerHTML = `
+                      <input type="hidden" name="intent" value="set-input-device" />
+                      <input type="hidden" name="deviceId" value="${device.id}" />
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                  }}
                 />
               </div>
             </CardContent>

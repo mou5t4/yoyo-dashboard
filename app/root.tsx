@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
 
 import styles from "./styles/global.css?url";
+import enhancedAudioStyles from "./styles/enhanced-audio-player.css?url";
 import { APP_NAME } from "./lib/constants";
 import { i18nServer } from "./i18n.server";
 import { isRTL, defaultLanguage } from "./i18n";
@@ -21,11 +22,13 @@ import { getUserId } from "./lib/session.server";
 import { prisma } from "./lib/db.server";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import type { Theme } from "./contexts/ThemeContext";
+import { AudioModeProvider } from "./contexts/AudioModeContext";
 
 import leafletStyles from "leaflet/dist/leaflet.css?url";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: enhancedAudioStyles },
   { rel: "stylesheet", href: leafletStyles },
   { rel: "manifest", href: "/manifest.json" },
   { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
@@ -81,7 +84,9 @@ export default function App() {
       </head>
       <body className="min-h-screen overflow-x-hidden">
         <ThemeProvider defaultTheme={theme}>
-          <Outlet />
+          <AudioModeProvider>
+            <Outlet />
+          </AudioModeProvider>
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />

@@ -1,0 +1,25 @@
+import { json, type ActionFunctionArgs } from "@remix-run/node";
+import { playAudioOnDevice, stopDeviceAudio } from "~/services/audio.service.server";
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const action = formData.get("action");
+
+  if (action === "play") {
+    const filePath = formData.get("filePath") as string;
+    
+    if (!filePath) {
+      return json({ error: "File path is required", success: false }, { status: 400 });
+    }
+
+    const result = await playAudioOnDevice(filePath);
+    return json(result);
+  }
+
+  if (action === "stop") {
+    const result = await stopDeviceAudio();
+    return json(result);
+  }
+
+  return json({ error: "Invalid action", success: false }, { status: 400 });
+}

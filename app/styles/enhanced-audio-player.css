@@ -1,0 +1,122 @@
+/* Enhanced Audio Player Styles - EXACT from provided snippet */
+.enhanced-audio-player {
+  background: #f5f5f5;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  padding-top: 20px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.dark .enhanced-audio-player {
+  background: #191919;
+}
+
+/* Audio element styling - EXACT from snippet */
+audio {
+  width: 100%;
+  opacity: 0.75;
+}
+
+/* EQ container - EXACT from snippet */
+#div-eq-container {
+  height: 255px;
+  position: relative;
+  margin: 10px;
+  -webkit-box-reflect: below 53px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.30)));
+}
+
+/* Visualization container - ensure it's visible */
+#visualisation {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark #visualisation {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Visualization bars - EXACT from snippet */
+#visualisation > div {
+  display: inline-block;
+  position: absolute;
+  bottom: 0px;
+}
+
+/* Round visualization circles - EXACT from snippet */
+.vis-circle {
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* Round visualization container - EXACT from snippet */
+#round-visualisation {
+  position: absolute;
+  width: 4%; 
+  height: 4%; 
+  top: 48%; 
+  left: 48%; 
+  background: #bf1aee; 
+  border-radius: 50%;
+}
+
+/* Round visualization wrapper - EXACT from snippet */
+#div-vis-round {
+  position: relative; 
+  top: 0%; 
+  width: 30vmin; 
+  height: 30vmin;
+}
+
+/* Center div utility - EXACT from snippet */
+.center-div {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Button container - EXACT from snippet */
+.button-container {
+  width: 250px;
+}
+
+/* Play button styling - EXACT from snippet */
+.play-button {
+  padding: 5px 20px;
+  border-radius: 4px;
+  border: 1px solid black;
+  margin-top: 20px;
+  cursor: pointer;
+  background: #333;
+  color: white;
+}
+
+.dark .play-button {
+  border: 1px solid #ccc;
+  background: #e5e5e5;
+  color: black;
+}
+
+.play-button:hover {
+  background: #555;
+}
+
+.dark .play-button:hover {
+  background: #d0d0d0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #div-eq-container {
+    height: 200px;
+  }
+  
+  #div-vis-round {
+    width: 25vmin;
+    height: 25vmin;
+  }
+}
