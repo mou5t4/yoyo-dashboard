@@ -7,8 +7,10 @@ export async function action({ request }: ActionFunctionArgs) {
     const body = await request.json();
     const { filePath } = body;
     
+    // If no filePath, treat it as a stop request
     if (!filePath) {
-      return json({ error: "File path is required", success: false }, { status: 400 });
+      const result = await stopDeviceAudio();
+      return json(result);
     }
 
     const result = await playAudioOnDevice(filePath);

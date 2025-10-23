@@ -65,11 +65,19 @@ export default function Content() {
     
     // If device mode is selected, send the play command to the server
     if (audioMode === 'device') {
+      // First stop any existing playback by calling with no filePath
       fetch('/api/audio/play', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filePath }),
-      }).catch(error => console.error('Device audio play failed:', error));
+        body: JSON.stringify({}),
+      }).then(() => {
+        // Then play the new song
+        fetch('/api/audio/play', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filePath }),
+        }).catch(error => console.error('Device audio play failed:', error));
+      }).catch(error => console.error('Device audio stop failed:', error));
     }
   };
 
