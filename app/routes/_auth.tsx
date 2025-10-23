@@ -24,6 +24,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({ user, language });
 }
 
+export let handle = {
+  i18n: ["common", "content"],
+};
+
 export default function AuthLayout() {
   const { user, language } = useLoaderData<typeof loader>();
   const isMobile = useIsMobile();
