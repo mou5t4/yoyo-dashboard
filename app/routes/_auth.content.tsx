@@ -62,6 +62,15 @@ export default function Content() {
 
   const handlePlay = (id: string, title: string, artist: string | undefined, filePath: string) => {
     setCurrentlyPlayingId(id);
+    
+    // If device mode is selected, send the play command to the server
+    if (audioMode === 'device') {
+      fetch('/api/audio/play', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filePath }),
+      }).catch(error => console.error('Device audio play failed:', error));
+    }
   };
 
   const handleStopAllOthers = () => {
