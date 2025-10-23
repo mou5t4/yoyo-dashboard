@@ -2,6 +2,8 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { logger } from '~/lib/logger.server';
 import fs from 'fs/promises';
+import type { BatteryData } from '~/types/battery.types';
+import { BATTERY_DATA_FILE } from '~/types/battery.types';
 
 const execAsync = promisify(exec);
 
@@ -56,23 +58,59 @@ export async function getDeviceStatus(): Promise<DeviceStatus> {
   }
 }
 
+/**
+ * Read battery data from the mock/real battery service file
+ */
+async function readBatteryDataFile(): Promise<BatteryData | null> {
+  try {
+    const data = await fs.readFile(BATTERY_DATA_FILE, 'utf-8');
+    const batteryData = JSON.parse(data) as BatteryData;
+    
+    // Validate the data structure
+    if (
+      typeof batteryData.capacity === 'number' &&
+      typeof batteryData.status === 'string' &&
+      typeof batteryData.timestamp === 'number'
+    ) {
+      // Check if data is stale (older than 2 minutes)
+      const ageMs = Date.now() - batteryData.timestamp;
+      if (ageMs > 120000) {
+        logger.warn(`Battery data is stale (${Math.round(ageMs / 1000)}s old)`);
+        return null;
+      }
+      
+      return batteryData;
+    }
+    
+    logger.warn('Invalid battery data structure');
+    return null;
+  } catch (error) {
+    // File doesn't exist or can't be read - this is normal if service isn't running
+    return null;
+  }
+}
+
 async function getBatteryLevel(): Promise<number> {
   try {
-    // Try multiple methods to get battery level
+    // Method 1: Try mock/real battery service first
+    const batteryData = await readBatteryDataFile();
+    if (batteryData) {
+      return Math.round(batteryData.capacity);
+    }
 
-    // Method 1: /sys/class/power_supply (most common on Linux)
+    // Method 2: /sys/class/power_supply (most common on Linux)
     try {
       const capacity = await fs.readFile('/sys/class/power_supply/BAT0/capacity', 'utf-8');
       return parseInt(capacity.trim());
     } catch {}
 
-    // Method 2: Alternative battery path
+    // Method 3: Alternative battery path
     try {
       const capacity = await fs.readFile('/sys/class/power_supply/BAT1/capacity', 'utf-8');
       return parseInt(capacity.trim());
     } catch {}
 
-    // Method 3: upower (if available)
+    // Method 4: upower (if available)
     try {
       const { stdout } = await execAsync('upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage');
       const match = stdout.match(/(\d+)%/);
@@ -89,13 +127,19 @@ async function getBatteryLevel(): Promise<number> {
 
 async function isCharging(): Promise<boolean> {
   try {
-    // Try /sys/class/power_supply
+    // Method 1: Try mock/real battery service first
+    const batteryData = await readBatteryDataFile();
+    if (batteryData) {
+      return batteryData.status === 'charging' || batteryData.status === 'full';
+    }
+
+    // Method 2: /sys/class/power_supply
     try {
       const status = await fs.readFile('/sys/class/power_supply/BAT0/status', 'utf-8');
       return status.trim() === 'Charging';
     } catch {}
 
-    // Try upower
+    // Method 3: upower
     try {
       const { stdout } = await execAsync('upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep state');
       return stdout.includes('charging');

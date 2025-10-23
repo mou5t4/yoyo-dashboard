@@ -133,9 +133,9 @@ export default function WiFiPage() {
       </div>
 
       {actionData?.success && (
-        <Alert variant="default" className="border-green-200 bg-green-50">
-          <CheckCircle2 className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-800">
+        <Alert variant="success">
+          <CheckCircle2 className="h-4 w-4 text-emerald-200" />
+          <AlertDescription className="text-white">
             {actionData.message}
             {actionData.ip && <span className="block mt-1">IP Address: {actionData.ip}</span>}
           </AlertDescription>

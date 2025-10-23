@@ -544,3 +544,60 @@ a[role="button"],
   transform: scaleX(-1);
 }
 
+/* Volume Button Knob Styles */
+.volume-button-knob {
+  position: relative;
+}
+
+.volume-button-knob svg {
+  display: block;
+  width: 100%;
+}
+
+.volume-button-knob .circle {
+  fill: #202528;
+  stroke: #080516;
+  stroke-width: 10px;
+}
+
+.volume-button-knob .slider-wrap {
+  filter: url(#inset-shadow-primary);
+}
+
+.volume-button-knob .slider {
+  --deg: 0deg;
+  --h: 270;
+  --s: 60%;
+  transform-origin: 50% 50%;
+  transform: rotate(var(--deg));
+  fill: rgba(255, 255, 255, 0.5);
+  cursor: grab;
+  transition: all 0.1s ease-in-out;
+  fill: hsl(var(--h), var(--s), 55%);
+}
+
+.volume-button-knob.without-animate .slider {
+  transition: unset;
+  cursor: grabbing;
+}
+
+.volume-button-knob .gradate line {
+  --deg: 0deg;
+  --h: 135;
+  --s: 10%;
+  --a: 0.2;
+  stroke-linecap: round;
+  stroke-width: 10px;
+  stroke: hsla(var(--h), var(--s), 55%, var(--a));
+  transform: rotate(var(--deg));
+  transform-origin: 50% 50%;
+  transition: all 0.1s ease-in-out;
+}
+
+.volume-button-knob .gradate line:hover,
+.volume-button-knob .gradate line.active {
+  --a: 1;
+  --s: 60%;
+  filter: url(#shadow-primary);
+}
+

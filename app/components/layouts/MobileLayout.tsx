@@ -71,7 +71,7 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
           />
           {/* Menu Panel */}
           <div className={cn(
-            "fixed top-0 bottom-0 w-[300px] z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200 dark:border-gray-700 shadow-2xl animate-slide-in m-3 rounded-3xl",
+            "fixed top-0 bottom-0 w-[300px] z-[60] bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200 dark:border-gray-700 shadow-2xl animate-slide-in m-3 rounded-3xl",
             rtl ? "right-0" : "left-0"
           )}>
           <div className="h-full overflow-y-auto pt-20 pb-6 scrollbar-hide">
