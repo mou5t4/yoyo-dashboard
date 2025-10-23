@@ -1,4 +1,4 @@
-import { Music, Trash2, FolderPlus, MoreVertical, Volume2, Play, Pause } from 'lucide-react';
+import { Music, Trash2, FolderPlus, MoreVertical, Volume2, Play, Pause, Edit } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Badge } from '~/components/ui/badge';
 import { useState, useRef, useEffect } from 'react';
@@ -16,6 +16,7 @@ interface MediaFileCardProps {
   onPlay: (id: string, title: string, artist: string | undefined, filePath: string) => void;
   onDelete: (id: string) => void;
   onAddToPlaylist: (mediaId: string) => void;
+  onRename: (id: string, newTitle: string) => void;
   isCurrentlyPlaying?: string | null;
   onStopAllOthers?: () => void;
 }
@@ -32,6 +33,7 @@ export function MediaFileCard({
   onPlay,
   onDelete,
   onAddToPlaylist,
+  onRename,
   isCurrentlyPlaying,
   onStopAllOthers,
 }: MediaFileCardProps) {
@@ -41,6 +43,8 @@ export function MediaFileCard({
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(100);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
+  const [showRenameDialog, setShowRenameDialog] = useState(false);
+  const [newTitle, setNewTitle] = useState(title);
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const { audioMode } = useAudioMode();
@@ -195,6 +199,16 @@ export function MediaFileCard({
                     </button>
                     <button
                       onClick={() => {
+                        setShowRenameDialog(true);
+                        setShowMenu(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-white hover:bg-gray-700 flex items-center gap-2"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Rename
+                    </button>
+                    <button
+                      onClick={() => {
                         if (confirm('Are you sure you want to delete this file?')) {
                           onDelete(id);
                         }
@@ -293,6 +307,58 @@ export function MediaFileCard({
           </div>
         )}
       </div>
+
+      {/* Rename Dialog */}
+      {showRenameDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg p-6 w-96 space-y-4">
+            <h3 className="text-lg font-semibold text-white">Rename File</h3>
+            
+            <input
+              type="text"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+              placeholder="Enter new file name"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onRename(id, newTitle);
+                  setShowRenameDialog(false);
+                  setNewTitle(title);
+                } else if (e.key === 'Escape') {
+                  setShowRenameDialog(false);
+                  setNewTitle(title);
+                }
+              }}
+              autoFocus
+            />
+            
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setShowRenameDialog(false);
+                  setNewTitle(title);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                className="bg-purple-600 hover:bg-purple-700"
+                onClick={() => {
+                  onRename(id, newTitle);
+                  setShowRenameDialog(false);
+                  setNewTitle(title);
+                }}
+              >
+                Rename
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -24,6 +24,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({ contentLibrary, currentPlayback, mediaLibrary, playlists });
 }
 
+export let handle = {
+  i18n: ["common", "content"],
+};
+
 export default function Content() {
   const { contentLibrary, currentPlayback, mediaLibrary, playlists } = useLoaderData<typeof loader>();
   const { t } = useTranslation("content");
@@ -133,6 +137,31 @@ export default function Content() {
       }
     } catch (error) {
       console.error('Add to playlist failed:', error);
+    }
+  };
+
+  const handleRename = async (mediaId: string, newTitle: string) => {
+    if (!newTitle.trim()) {
+      alert('Please enter a valid file name');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/media/${mediaId}/rename`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: newTitle }),
+      });
+
+      if (response.ok) {
+        revalidator.revalidate();
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to rename file');
+      }
+    } catch (error) {
+      console.error('Rename failed:', error);
+      alert('Failed to rename file');
     }
   };
 
@@ -271,6 +300,7 @@ export default function Content() {
                       onPlay={handlePlay}
                       onDelete={handleDelete}
                       onAddToPlaylist={setAddToPlaylistMediaId}
+                      onRename={handleRename}
                       isCurrentlyPlaying={currentlyPlayingId}
                       onStopAllOthers={handleStopAllOthers}
                     />

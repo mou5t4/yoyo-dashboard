@@ -183,6 +183,27 @@ export async function deleteMediaFile(id: string) {
 }
 
 /**
+ * Rename media file
+ */
+export async function renameMediaFile(id: string, newTitle: string) {
+  const mediaFile = await prisma.mediaFile.findUnique({
+    where: { id },
+  });
+
+  if (!mediaFile) {
+    throw new Error('Media file not found');
+  }
+
+  const updated = await prisma.mediaFile.update({
+    where: { id },
+    data: { title: newTitle },
+  });
+
+  logger.info('Media file renamed', { id, oldTitle: mediaFile.title, newTitle: updated.title });
+  return updated;
+}
+
+/**
  * Create new playlist
  */
 export async function createPlaylist(name: string) {

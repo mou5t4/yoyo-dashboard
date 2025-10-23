@@ -19,7 +19,6 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileDialogOpenRef = useRef(false);
-  const [fileDialogOpen, setFileDialogOpen] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -95,7 +94,8 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`
-          border-2 border-dashed rounded-lg p-6 text-center transition-colors
+          border-2 border-dashed rounded-lg p-8 text-center transition-colors
+          flex flex-col items-center justify-center min-h-[300px] mt-12
           ${isDragging ? 'border-purple-500 bg-purple-500/10' : 'border-gray-600'}
           ${uploadStatus === 'success' ? 'border-green-500 bg-green-500/10' : ''}
           ${uploadStatus === 'error' ? 'border-red-500 bg-red-500/10' : ''}
@@ -170,28 +170,33 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
               accept="audio/*"
               onChange={(e) => {
                 fileDialogOpenRef.current = false;
-                setFileDialogOpen(false);
                 const file = e.target.files?.[0];
                 if (file) handleFileSelect(file);
               }}
             />
             <Button
               onClick={() => {
-                // Use ref for synchronous check and state for rendering
+                // Use ref for synchronous check to prevent rapid clicks
                 if (!fileDialogOpenRef.current) {
                   fileDialogOpenRef.current = true;
-                  setFileDialogOpen(true);
-                  // Click immediately
-                  fileInputRef.current?.click();
+                  console.log('🔍 File picker button clicked - attempting to open file dialog...');
+                  try {
+                    // Click immediately
+                    fileInputRef.current?.click();
+                    console.log('✅ File input click() method called successfully');
+                  } catch (error) {
+                    console.error('❌ Error clicking file input:', error);
+                    alert('Error opening file picker. Check browser console for details.');
+                  }
                   // Reset after dialog interaction or timeout
                   setTimeout(() => {
                     fileDialogOpenRef.current = false;
-                    setFileDialogOpen(false);
                   }, 1000);
+                } else {
+                  console.warn('⚠️ File picker already open, ignoring click');
                 }
               }}
               className="bg-purple-600 hover:bg-purple-700"
-              disabled={fileDialogOpen}
             >
               <Upload className="h-4 w-4 mr-2" />
               {t('selectFiles')}

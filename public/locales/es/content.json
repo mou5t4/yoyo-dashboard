@@ -1,7 +1,7 @@
 {
   "content": {
-    "title": "Música e Historias",
-    "subtitle": "Lo que tu hijo puede escuchar",
+    "title": "Asistente de Voz",
+    "subtitle": "Administrar configuración del asistente de voz",
     "library": "Biblioteca",
     "contentLibrary": "Biblioteca de Contenido",
     "availableContent": "Listas de reproducción, podcasts y álbumes disponibles",
@@ -51,12 +51,10 @@
     "totalFiles": "archivos en total",
     "noMusicFiles": "No hay archivos de música aún",
     "uploadFilesToStart": "Sube algunos archivos para comenzar",
-    "addToPlaylist": "Agregar a Lista",
-    "noPlaylistsCreate": "No hay listas aún. ¡Crea una primero!"
+    "addToPlaylist": "Agregar a Lista"
   },
   "ai": {
-    "title": "Asistente de Voz",
-    "subtitle": "Administrar configuración del asistente de voz",
+    "noPlaylistsCreate": "No hay listas aún. ¡Crea una primero!",
     "enabled": "Asistente de voz activado",
     "disabled": "Asistente de voz desactivado",
     "turnOn": "Activar Asistente de Voz",

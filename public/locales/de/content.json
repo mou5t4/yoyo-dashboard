@@ -52,13 +52,16 @@
     "noMusicFiles": "Noch keine Musikdateien",
     "uploadFilesToStart": "Laden Sie einige Dateien hoch, um zu beginnen",
     "addToPlaylist": "Zur Playlist hinzufügen",
-    "noPlaylistsCreate": "Noch keine Playlists. Erstellen Sie zuerst eine!"
+    "manageYourMusic": "Verwalten Sie Ihre Musiksammlung",
+    "uploadFirstFile": "Erste Datei hochladen",
+    "files": "Dateien"
   },
   "ai": {
-    "title": "Sprachassistent",
-    "subtitle": "Sprachassistent-Einstellungen verwalten",
-    "enabled": "Sprachassistent ist an",
-    "disabled": "Sprachassistent ist aus",
+    "noPlaylistsCreate": "Noch keine Playlists. Erstellen Sie zuerst eine!",
+    "aiTitle": "Sprachassistent",
+    "aiSubtitle": "Sprachassistent-Einstellungen verwalten",
+    "aiEnabled": "Sprachassistent ist an",
+    "aiDisabled": "Sprachassistent ist aus",
     "turnOn": "Sprachassistent einschalten",
     "turnOff": "Sprachassistent ausschalten",
     "dailyLimit": "Tägliches Zeitlimit",

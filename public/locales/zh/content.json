@@ -1,7 +1,7 @@
 {
   "content": {
-    "title": "音乐和故事",
-    "subtitle": "您的孩子可以听什么",
+    "title": "语音助手",
+    "subtitle": "管理语音助手设置",
     "library": "库",
     "contentLibrary": "内容库",
     "availableContent": "可用的播放列表、播客和专辑",
@@ -51,12 +51,10 @@
     "totalFiles": "总文件数",
     "noMusicFiles": "还没有音乐文件",
     "uploadFilesToStart": "上传一些文件开始使用",
-    "addToPlaylist": "添加到播放列表",
-    "noPlaylistsCreate": "还没有播放列表。先创建一个！"
+    "addToPlaylist": "添加到播放列表"
   },
   "ai": {
-    "title": "语音助手",
-    "subtitle": "管理语音助手设置",
+    "noPlaylistsCreate": "还没有播放列表。先创建一个！",
     "enabled": "语音助手已开启",
     "disabled": "语音助手已关闭",
     "turnOn": "开启语音助手",

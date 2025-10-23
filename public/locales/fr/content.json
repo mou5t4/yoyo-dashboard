@@ -1,7 +1,7 @@
 {
   "content": {
-    "title": "Musique et histoires",
-    "subtitle": "Ce que votre enfant peut écouter",
+    "title": "Assistant vocal",
+    "subtitle": "Gérer les paramètres de l'assistant vocal",
     "library": "Bibliothèque",
     "contentLibrary": "Bibliothèque de contenu",
     "availableContent": "Listes de lecture, podcasts et albums disponibles",
@@ -51,12 +51,10 @@
     "totalFiles": "fichiers au total",
     "noMusicFiles": "Aucun fichier musical",
     "uploadFilesToStart": "Téléchargez des fichiers pour commencer",
-    "addToPlaylist": "Ajouter à la liste de lecture",
-    "noPlaylistsCreate": "Aucune liste de lecture. Créez-en une d'abord !"
+    "addToPlaylist": "Ajouter à la liste de lecture"
   },
   "ai": {
-    "title": "Assistant vocal",
-    "subtitle": "Gérer les paramètres de l'assistant vocal",
+    "noPlaylistsCreate": "Aucune liste de lecture. Créez-en une d'abord !",
     "enabled": "L'assistant vocal est activé",
     "disabled": "L'assistant vocal est désactivé",
     "turnOn": "Activer l'assistant vocal",
