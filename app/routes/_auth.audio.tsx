@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Alert, AlertDescription } from "~/components/ui/alert";
-import { getAudioDevices, getAudioSettings, setVolume, setMute, playTestSound, recordTestAudio, setDefaultOutputDevice, setDefaultInputDevice, setAudioMode } from "~/services/audio.service.server";
-import { Volume2, VolumeX, Mic, MicOff, Play, Radio, CheckCircle2, XCircle, Speaker, Activity } from "lucide-react";
+import { getAudioDevices, getAudioSettings, setVolume, setMute, playTestSound, recordTestAudio, setDefaultOutputDevice, setDefaultInputDevice, setAudioMode, stopDeviceAudio } from "~/services/audio.service.server";
+import { Volume2, VolumeX, Mic, MicOff, Play, Radio, CheckCircle2, XCircle, Speaker, Activity, Square } from "lucide-react";
 
 // Import new components
 import { CircularVolumeKnob } from "~/components/audio/CircularVolumeKnob";
@@ -116,6 +116,14 @@ export async function action({ request }: ActionFunctionArgs) {
     const result = await setAudioMode(mode);
     if (result.success) {
       return json({ success: true, message: `Audio mode set to ${mode}` });
+    }
+    return json({ success: false, error: result.error }, { status: 400 });
+  }
+
+  if (intent === "stop-audio") {
+    const result = await stopDeviceAudio();
+    if (result.success) {
+      return json({ success: true, message: "All audio stopped" });
     }
     return json({ success: false, error: result.error }, { status: 400 });
   }
@@ -293,6 +301,18 @@ export default function AudioPage() {
                   >
                     <Play className="h-4 w-4 mr-2" />
                     {t("audio.testSound")}
+                  </Button>
+                </Form>
+
+                <Form method="post" className="flex-1">
+                  <input type="hidden" name="intent" value="stop-audio" />
+                  <Button 
+                    type="submit" 
+                    variant="destructive" 
+                    className="w-full"
+                  >
+                    <Square className="h-4 w-4 mr-2" />
+                    Stop All Audio
                   </Button>
                 </Form>
               </div>
