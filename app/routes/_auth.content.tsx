@@ -39,6 +39,14 @@ export default function Content() {
   const [addToPlaylistMediaId, setAddToPlaylistMediaId] = useState<string | null>(null);
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(null);
 
+  // Find the currently playing song from mediaLibrary
+  const currentlyPlayingSong = currentlyPlayingId 
+    ? mediaLibrary.find(m => m.id === currentlyPlayingId)
+    : null;
+
+  // Display either the currently playing song or the API currentPlayback
+  const displayPlayback = currentlyPlayingSong || currentPlayback;
+
   const getContentIcon = (type: string) => {
     switch (type) {
       case 'playlist':
@@ -208,7 +216,7 @@ export default function Content() {
         {/* Left Column - Playlists & Current Playback */}
         <div className="xl:col-span-3 space-y-4">
           {/* Current Playback */}
-          {currentPlayback && (
+          {displayPlayback && (
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm flex items-center space-x-2">
@@ -222,9 +230,9 @@ export default function Content() {
                     <Music className="h-6 w-6 text-purple-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-white truncate">{currentPlayback.title}</p>
-                    <p className="text-xs text-gray-400 truncate">{currentPlayback.artist}</p>
-                    <Badge className="mt-1 text-xs bg-purple-900 text-purple-300">{currentPlayback.type}</Badge>
+                    <p className="font-medium text-sm text-white truncate">{displayPlayback.title}</p>
+                    <p className="text-xs text-gray-400 truncate">{displayPlayback.artist}</p>
+                    <Badge className="mt-1 text-xs bg-purple-900 text-purple-300">{displayPlayback.type}</Badge>
                   </div>
                 </div>
               </CardContent>
