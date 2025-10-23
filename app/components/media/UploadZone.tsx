@@ -18,6 +18,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileDialogOpen, setFileDialogOpen] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -42,6 +43,10 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     setSelectedFile(file);
     setUploadStatus('idle');
     setErrorMessage('');
+    // Reset file input so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleUpload = async () => {
@@ -163,13 +168,22 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
               className="hidden"
               accept="audio/*"
               onChange={(e) => {
+                setFileDialogOpen(false);
                 const file = e.target.files?.[0];
                 if (file) handleFileSelect(file);
               }}
             />
             <Button
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => {
+                if (!fileDialogOpen) {
+                  setFileDialogOpen(true);
+                  fileInputRef.current?.click();
+                  // Reset the flag after a delay to allow new attempts
+                  setTimeout(() => setFileDialogOpen(false), 500);
+                }
+              }}
               className="bg-purple-600 hover:bg-purple-700"
+              disabled={fileDialogOpen}
             >
               <Upload className="h-4 w-4 mr-2" />
               {t('selectFiles')}

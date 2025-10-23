@@ -117,6 +117,25 @@ export default function Content() {
     }
   };
 
+  const handleAddToPlaylist = async (playlistId: string, mediaId: string) => {
+    try {
+      const response = await fetch(`/api/playlists/${playlistId}/items`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mediaId }),
+      });
+
+      if (response.ok) {
+        revalidator.revalidate();
+      } else {
+        const error = await response.json();
+        console.error('Add to playlist failed:', error);
+      }
+    } catch (error) {
+      console.error('Add to playlist failed:', error);
+    }
+  };
+
   // Filter media by selected playlist
   const filteredMedia = selectedPlaylistId
     ? mediaLibrary.filter(media =>
@@ -269,10 +288,7 @@ export default function Content() {
           mediaId={addToPlaylistMediaId}
           playlists={playlists}
           onClose={() => setAddToPlaylistMediaId(null)}
-          onSuccess={() => {
-            revalidator.revalidate();
-            setAddToPlaylistMediaId(null);
-          }}
+          onAddToPlaylist={handleAddToPlaylist}
         />
       )}
 
