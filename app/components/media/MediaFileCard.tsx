@@ -45,9 +45,11 @@ export function MediaFileCard({
   const [showVolumeControl, setShowVolumeControl] = useState(false);
   const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
-  
+  const [hasStarted, setHasStarted] = useState(false);
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const volumeDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const { audioMode } = useAudioMode();
 
   const formatDuration = (seconds?: number) => {
@@ -67,32 +69,50 @@ export function MediaFileCard({
         // When pausing
         audioRef.current.pause();
         setIsPlaying(false);
-        
-        // If device mode, also stop device audio
+
+        // If device mode, pause device audio
         if (audioMode === 'device') {
           fetch('/api/audio/play', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({}),  // Empty = stop
-          }).catch(error => console.error('Device audio stop failed:', error));
+            body: JSON.stringify({ action: 'pause' }),
+          }).catch(error => console.error('Device audio pause failed:', error));
         }
       } else {
-        // When playing
+        // When playing or resuming
         // Stop all other players
         if (onStopAllOthers) {
           onStopAllOthers();
         }
-        // Expand the card and show player
+
+        // Expand the card if not already expanded
         if (!isExpanded) {
           setIsExpanded(true);
-          onPlay(id, title, artist, filePath);
         }
-        
-        // Only play browser audio if in browser mode
-        if (audioMode === 'browser') {
+
+        // Handle device mode vs browser mode
+        if (audioMode === 'device') {
+          if (!hasStarted) {
+            // First time starting - play from beginning
+            onPlay(id, title, artist, filePath);
+            setHasStarted(true);
+          } else {
+            // Resuming after pause - use resume endpoint
+            fetch('/api/audio/play', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'resume' }),
+            }).catch(error => console.error('Device audio resume failed:', error));
+          }
+        } else {
+          // Browser mode - standard play/resume
+          if (!hasStarted) {
+            onPlay(id, title, artist, filePath);
+            setHasStarted(true);
+          }
           audioRef.current.play().catch(err => console.error('Playback error:', err));
         }
-        
+
         setIsPlaying(true);
       }
     }
@@ -100,8 +120,30 @@ export function MediaFileCard({
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
+
+    // Update browser audio volume immediately for browser mode
     if (audioRef.current) {
       audioRef.current.volume = newVolume / 100;
+    }
+
+    // Debounce system volume updates for device mode
+    if (audioMode === 'device') {
+      // Clear any pending volume update
+      if (volumeDebounceRef.current) {
+        clearTimeout(volumeDebounceRef.current);
+      }
+
+      // Set new timeout to update volume after user stops sliding (300ms delay)
+      volumeDebounceRef.current = setTimeout(() => {
+        const formData = new FormData();
+        formData.append('intent', 'set-output-volume');
+        formData.append('volume', newVolume.toString());
+
+        fetch('/audio', {
+          method: 'POST',
+          body: formData,
+        }).catch(error => console.error('Failed to set system volume:', error));
+      }, 300);
     }
   };
 
@@ -157,8 +199,27 @@ export function MediaFileCard({
       audioRef.current.pause();
       setIsPlaying(false);
       setIsExpanded(false); // Collapse the card when another song plays
+      setHasStarted(false); // Reset hasStarted when another song plays
+
+      // If device mode, stop device audio completely
+      if (audioMode === 'device') {
+        fetch('/api/audio/play', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'stop' }),
+        }).catch(error => console.error('Device audio stop failed:', error));
+      }
     }
-  }, [isCurrentlyPlaying, id, isPlaying, isExpanded]);
+  }, [isCurrentlyPlaying, id, isPlaying, isExpanded, audioMode]);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (volumeDebounceRef.current) {
+        clearTimeout(volumeDebounceRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -281,7 +342,10 @@ export function MediaFileCard({
               setCurrentTime(audioRef.current.currentTime);
             }
           }}
-          onEnded={() => setIsPlaying(false)}
+          onEnded={() => {
+            setIsPlaying(false);
+            setHasStarted(false); // Reset when track ends
+          }}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
         />

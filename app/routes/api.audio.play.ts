@@ -1,5 +1,12 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { playAudioOnDevice, stopDeviceAudio, getAudioDevices } from "~/services/audio.service.server";
+import { getAudioDevices } from "~/services/audio.service.server";
+import {
+  playAudioOnDevice,
+  pauseDeviceAudio,
+  resumeDeviceAudio,
+  stopDeviceAudio,
+  getPlaybackState
+} from "~/services/audio-player.server";
 import fs from "fs";
 import { promisify } from "util";
 import { exec } from "child_process";
@@ -148,16 +155,40 @@ export async function action({ request }: ActionFunctionArgs) {
       }
     }
 
+    // Handle pause action
+    if (action === "pause") {
+      const result = await pauseDeviceAudio();
+      return json(result);
+    }
+
+    // Handle resume action
+    if (action === "resume") {
+      const result = await resumeDeviceAudio();
+      return json(result);
+    }
+
+    // Handle stop action
+    if (action === "stop") {
+      const result = await stopDeviceAudio();
+      return json(result);
+    }
+
+    // Handle playback state query
+    if (action === "get-state") {
+      const state = await getPlaybackState();
+      return json({ success: true, state });
+    }
+
     // Handle default play action
-    const { filePath } = body;
-    
+    const { filePath, seekPosition } = body;
+
     // If no filePath, treat it as a stop request
     if (!filePath) {
       const result = await stopDeviceAudio();
       return json(result);
     }
 
-    const result = await playAudioOnDevice(filePath);
+    const result = await playAudioOnDevice(filePath, seekPosition);
     return json(result);
   }
 

@@ -1,6 +1,6 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -159,8 +159,15 @@ export default function AudioPage() {
   const [isTestingOutput, setIsTestingOutput] = useState(false);
   const [isTestingInput, setIsTestingInput] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [listeningAudio, setListeningAudio] = useState<HTMLAudioElement | null>(null);
-  const [listeningAbortController, setListeningAbortController] = useState<AbortController | null>(null);
+  const [volume, setVolume] = useState(0);
+
+  // WebSocket and Web Audio API refs
+  const wsRef = useRef<WebSocket | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const nextPlayTimeRef = useRef(0);
+  const audioQueueRef = useRef<ArrayBuffer[]>([]);
+  const isProcessingQueueRef = useRef(false);
   
   const { t } = useTranslation();
   const { audioMode, setAudioMode } = useAudioMode();
@@ -220,7 +227,7 @@ export default function AudioPage() {
     }
   }, [selectedInputDevice]);
 
-  // Sync selected devices from settings when action completes
+  // Sync selected devices and mute states from settings when action completes
   useEffect(() => {
     if (actionData?.success && 'message' in actionData) {
       // If a device was successfully changed, update the selected device
@@ -235,6 +242,14 @@ export default function AudioPage() {
         if (defaultInput) {
           setSelectedInputDevice(defaultInput.id);
         }
+      } else if (actionData.message?.includes('Output muted')) {
+        setOutputMuted(true);
+      } else if (actionData.message?.includes('Output unmuted')) {
+        setOutputMuted(false);
+      } else if (actionData.message?.includes('Input muted')) {
+        setInputMuted(true);
+      } else if (actionData.message?.includes('Input unmuted')) {
+        setInputMuted(false);
       }
     }
   }, [actionData, outputDevices, inputDevices]);
@@ -278,82 +293,156 @@ export default function AudioPage() {
     }
   }, []);
 
-  // Handle live microphone listening - continuous streaming
-  const handleStartListening = useCallback(async () => {
-    try {
-      setIsListening(true);
-      console.log('Starting continuous microphone listening...');
+  // Queue audio chunk for processing
+  const queueAudioChunk = useCallback((arrayBuffer: ArrayBuffer) => {
+    if (!audioContextRef.current) return;
 
-      // Create AbortController for user control
-      const abortController = new AbortController();
-      setListeningAbortController(abortController);
+    audioQueueRef.current.push(arrayBuffer);
 
-      // Create audio element that streams continuously from the endpoint
-      const audio = new Audio();
-      audio.src = '/api/audio/stream?type=live-mic';
-
-      audio.onplay = () => {
-        console.log('Continuous audio streaming started');
-      };
-
-      audio.onended = () => {
-        console.log('Audio stream ended');
-        setIsListening(false);
-        setListeningAbortController(null);
-      };
-
-      audio.onerror = (e) => {
-        console.error('Audio stream error:', e);
-        setIsListening(false);
-        setListeningAbortController(null);
-      };
-
-      // Start playing the stream
-      await audio.play().catch(error => {
-        console.error('Failed to start streaming:', error);
-        setIsListening(false);
-        abortController.abort();
-        setListeningAbortController(null);
-      });
-
-      setListeningAudio(audio);
-      console.log('Continuous listening active - click Stop Listening to end');
-    } catch (error) {
-      console.error('Error starting continuous listening:', error);
-      setIsListening(false);
-      setListeningAbortController(null);
+    if (!isProcessingQueueRef.current) {
+      processAudioQueue();
     }
   }, []);
+
+  // Process queued audio chunks
+  const processAudioQueue = useCallback(async () => {
+    if (isProcessingQueueRef.current || audioQueueRef.current.length === 0) return;
+
+    isProcessingQueueRef.current = true;
+
+    while (audioQueueRef.current.length > 0 && audioContextRef.current) {
+      const arrayBuffer = audioQueueRef.current.shift()!;
+      await playAudioChunk(arrayBuffer);
+    }
+
+    isProcessingQueueRef.current = false;
+  }, []);
+
+  // Play individual audio chunk
+  const playAudioChunk = useCallback(async (arrayBuffer: ArrayBuffer) => {
+    if (!audioContextRef.current || !gainNodeRef.current) return;
+
+    // Convert Int16 to Float32 and calculate volume
+    const int16Array = new Int16Array(arrayBuffer);
+    const float32Array = new Float32Array(int16Array.length);
+
+    let sum = 0;
+    for (let i = 0; i < int16Array.length; i++) {
+      float32Array[i] = int16Array[i] / 32768.0;
+      sum += Math.abs(float32Array[i]);
+    }
+
+    // Update volume indicator
+    setVolume((sum / int16Array.length) * 100);
+
+    // Create audio buffer
+    const audioBuffer = audioContextRef.current.createBuffer(1, float32Array.length, 16000);
+    audioBuffer.getChannelData(0).set(float32Array);
+
+    // Schedule playback
+    const currentTime = audioContextRef.current.currentTime;
+
+    // If we're too far behind, reset to current time
+    if (nextPlayTimeRef.current < currentTime) {
+      nextPlayTimeRef.current = currentTime;
+    }
+
+    // Create and play buffer source
+    const source = audioContextRef.current.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(gainNodeRef.current);
+    source.start(nextPlayTimeRef.current);
+
+    // Update next play time
+    nextPlayTimeRef.current += audioBuffer.duration;
+  }, []);
+
+  // Handle live microphone listening with WebSocket
+  const handleStartListening = useCallback(async () => {
+    try {
+      console.log('Starting WebSocket microphone listening...');
+
+      // Create audio context (iOS requires user interaction)
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({
+        sampleRate: 16000
+      });
+
+      // Create gain node to boost volume
+      gainNodeRef.current = audioContextRef.current.createGain();
+      gainNodeRef.current.gain.value = 2.0; // Boost volume 2x
+      gainNodeRef.current.connect(audioContextRef.current.destination);
+
+      // Initialize playback time
+      nextPlayTimeRef.current = audioContextRef.current.currentTime;
+      audioQueueRef.current = [];
+      isProcessingQueueRef.current = false;
+
+      // Connect to WebSocket
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws/microphone`;
+
+      wsRef.current = new WebSocket(wsUrl);
+      wsRef.current.binaryType = 'arraybuffer';
+
+      wsRef.current.onopen = () => {
+        setIsListening(true);
+        console.log('WebSocket microphone connected');
+      };
+
+      wsRef.current.onmessage = (event) => {
+        queueAudioChunk(event.data);
+      };
+
+      wsRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        handleStopListening();
+      };
+
+      wsRef.current.onclose = () => {
+        console.log('WebSocket closed');
+        handleStopListening();
+      };
+    } catch (error) {
+      console.error('Error starting microphone listening:', error);
+      handleStopListening();
+    }
+  }, [queueAudioChunk]);
 
   // Handle stop listening
   const handleStopListening = useCallback(() => {
     try {
-      console.log('Stopping continuous listening...');
-      
-      // Abort the fetch request
-      if (listeningAbortController) {
-        listeningAbortController.abort();
-        setListeningAbortController(null);
+      console.log('Stopping microphone listening...');
+
+      // Close WebSocket
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
       }
-      
-      // Stop any playing audio
-      if (listeningAudio) {
-        listeningAudio.pause();
-        const url = listeningAudio.src;
-        if (url && url.startsWith('blob:')) {
-          URL.revokeObjectURL(url);
-        }
-        listeningAudio.src = '';
-        setListeningAudio(null);
+
+      // Close AudioContext
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
       }
-      
+
       setIsListening(false);
+      setVolume(0);
+      nextPlayTimeRef.current = 0;
+      audioQueueRef.current = [];
+      isProcessingQueueRef.current = false;
       console.log('Stopped listening');
     } catch (error) {
       console.error('Error stopping listening:', error);
       setIsListening(false);
     }
-  }, [listeningAudio, listeningAbortController]);
+  }, []);
+
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      handleStopListening();
+    };
+  }, [handleStopListening]);
 
   // Handle volume changes with immediate form submission
   const handleOutputVolumeChange = useCallback((value: number) => {
@@ -470,7 +559,6 @@ export default function AudioPage() {
                     type="submit"
                     variant={outputMuted ? "destructive" : "outline"}
                     className="w-full"
-                    onClick={() => setOutputMuted(!outputMuted)}
                   >
                     {outputMuted ? <VolumeX className="h-4 w-4 mr-2" /> : <Volume2 className="h-4 w-4 mr-2" />}
                     {outputMuted ? t("audio.unmute") : t("audio.mute")}
@@ -620,7 +708,6 @@ export default function AudioPage() {
                     type="submit"
                     variant={inputMuted ? "destructive" : "outline"}
                     className="w-full"
-                    onClick={() => setInputMuted(!inputMuted)}
                   >
                     {inputMuted ? <MicOff className="h-4 w-4 mr-2" /> : <Mic className="h-4 w-4 mr-2" />}
                     {inputMuted ? t("audio.unmute") : t("audio.mute")}
@@ -656,7 +743,7 @@ export default function AudioPage() {
                   </Button>
                 </Form>
 
-                <Button 
+                <Button
                   type="button"
                   variant={isListening ? "destructive" : "outline"}
                   className="w-full"
@@ -675,6 +762,21 @@ export default function AudioPage() {
                   )}
                 </Button>
               </div>
+
+              {/* Live Listening Volume Indicator */}
+              {isListening && (
+                <div className="mt-2">
+                  <Label className="text-xs font-medium mb-1 block text-gray-600 dark:text-gray-400">
+                    Live Audio Level
+                  </Label>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-100"
+                      style={{ width: `${Math.min(volume * 5, 100)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Input Devices */}
               <div>
