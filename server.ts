@@ -12,9 +12,6 @@ app.disable('x-powered-by');
 // Serve static files from the public directory
 app.use(express.static('public', { immutable: true, maxAge: '1y' }));
 
-// Serve uploaded files from the uploads directory
-app.use('/uploads', express.static('uploads', { maxAge: '1h' }));
-
 // Create HTTP server
 const server = createServer(app);
 

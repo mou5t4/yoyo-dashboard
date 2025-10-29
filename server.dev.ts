@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3000;
 // Disable x-powered-by header
 app.disable('x-powered-by');
 
+// Serve static files from the public directory
+app.use(express.static('public', { immutable: true, maxAge: '1y' }));
+
 // Create HTTP server
 const server = createServer(app);
 
