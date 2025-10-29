@@ -66,7 +66,13 @@ export default function LocationMap({
     const invalidateSizes = [100, 250, 500, 1000];
     invalidateSizes.forEach(delay => {
       setTimeout(() => {
-        if (mapRef.current) {
+        if (mapRef.current && mapContainerRef.current) {
+          const container = mapContainerRef.current;
+          console.log(`Map invalidateSize at ${delay}ms:`, {
+            containerWidth: container.offsetWidth,
+            containerHeight: container.offsetHeight,
+            mapSize: mapRef.current.getSize()
+          });
           mapRef.current.invalidateSize();
         }
       }, delay);
