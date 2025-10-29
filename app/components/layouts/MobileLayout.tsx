@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from '@remix-run/react';
+import { Link, useLocation, Form } from '@remix-run/react';
 import { X, Menu } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -95,16 +95,16 @@ export function MobileLayout({ language, children }: MobileLayoutProps) {
                 );
               })}
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-white/30">
-                <button
-                  onClick={() => {
-                    // Handle logout
-                    setMobileMenuOpen(false);
-                  }}
-                  className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-600 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-500/40 hover:text-red-700 dark:hover:text-white hover:shadow-lg active:bg-red-200 dark:active:bg-red-500/50 transition-all duration-300 w-full touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-100 dark:focus-visible:bg-red-500/40 focus-visible:text-red-700 dark:focus-visible:text-white"
-                >
-                  <span className="text-xl flex-shrink-0">🚪</span>
-                  <span className="flex-1 text-left">{t('nav.logout')}</span>
-                </button>
+                <Form method="post" action="/auth/logout">
+                  <button
+                    type="submit"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-600 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-500/40 hover:text-red-700 dark:hover:text-white hover:shadow-lg active:bg-red-200 dark:active:bg-red-500/50 transition-all duration-300 w-full touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-100 dark:focus-visible:bg-red-500/40 focus-visible:text-red-700 dark:focus-visible:text-white"
+                  >
+                    <span className="text-xl flex-shrink-0">🚪</span>
+                    <span className="flex-1 text-left">{t('nav.logout')}</span>
+                  </button>
+                </Form>
               </div>
             </nav>
           </div>

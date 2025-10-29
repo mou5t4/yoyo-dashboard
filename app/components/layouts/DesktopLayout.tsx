@@ -1,4 +1,4 @@
-import { Link, useLocation } from '@remix-run/react';
+import { Link, useLocation, Form } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { APP_NAME } from '~/lib/constants';
@@ -73,15 +73,15 @@ export function DesktopLayout({ language, children }: DesktopLayoutProps) {
 
           {/* Sidebar Footer */}
           <div className="p-6 border-t border-gray-200 dark:border-white/30">
-            <button
-              onClick={() => {
-                // Handle logout
-              }}
-              className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-600 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-500/40 hover:text-red-700 dark:hover:text-white hover:shadow-lg transition-all duration-300 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-100 dark:focus-visible:bg-red-500/40 focus-visible:text-red-700 dark:focus-visible:text-white"
-            >
-              <span className="text-xl flex-shrink-0">🚪</span>
-              <span className="flex-1 text-left">{t('nav.logout')}</span>
-            </button>
+            <Form method="post" action="/auth/logout">
+              <button
+                type="submit"
+                className="flex items-center gap-4 px-4 py-2.5 rounded-xl text-base font-semibold text-red-600 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-500/40 hover:text-red-700 dark:hover:text-white hover:shadow-lg transition-all duration-300 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:bg-red-100 dark:focus-visible:bg-red-500/40 focus-visible:text-red-700 dark:focus-visible:text-white"
+              >
+                <span className="text-xl flex-shrink-0">🚪</span>
+                <span className="flex-1 text-left">{t('nav.logout')}</span>
+              </button>
+            </Form>
           </div>
         </div>
       </aside>
