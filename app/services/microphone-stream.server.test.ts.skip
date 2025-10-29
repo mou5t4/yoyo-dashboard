@@ -1,0 +1,335 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { EventEmitter } from 'events';
+import type { ChildProcess } from 'child_process';
+
+// Mock dependencies
+vi.mock('child_process', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('child_process')>();
+  return {
+    ...actual,
+    spawn: vi.fn(),
+  };
+});
+import {
+  startAudioCapture,
+  stopAudioCapture,
+  handleMicrophoneConnection,
+  cleanup,
+} from './microphone-stream.server';
+import { spawn } from 'child_process';
+
+// Mock WebSocket
+class MockWebSocket extends EventEmitter {
+  readyState = 1; // WebSocket.OPEN
+  send = vi.fn();
+  close = vi.fn();
+}
+
+// Mock ChildProcess
+class MockChildProcess extends EventEmitter {
+  stdout = new EventEmitter();
+  stderr = new EventEmitter();
+  kill = vi.fn();
+}
+
+describe('Microphone Stream Server', () => {
+  let mockProcess: MockChildProcess;
+
+  beforeEach(() => {
+    mockProcess = new MockChildProcess();
+    vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ChildProcess);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    cleanup();
+  });
+
+  describe('startAudioCapture', () => {
+    it('should spawn arecord process with correct parameters', () => {
+      startAudioCapture();
+
+      expect(spawn).toHaveBeenCalledWith('arecord', [
+        '-D', 'plughw:3,0',
+        '-f', 'S16_LE',
+        '-c', '1',
+        '-r', '16000',
+        '-t', 'raw',
+      ]);
+    });
+
+    it('should log when audio capture starts', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      startAudioCapture();
+
+      expect(consoleSpy).toHaveBeenCalledWith('Starting microphone audio capture...');
+    });
+
+    it('should handle arecord process errors', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error');
+      startAudioCapture();
+
+      const error = new Error('Audio device not found');
+      mockProcess.emit('error', error);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to start arecord:', error);
+    });
+
+    it('should handle arecord process close', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      startAudioCapture();
+
+      mockProcess.emit('close', 0);
+
+      expect(consoleSpy).toHaveBeenCalledWith('arecord process exited with code 0');
+    });
+
+    it('should handle stderr output from arecord', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error');
+      startAudioCapture();
+
+      mockProcess.stderr.emit('data', Buffer.from('Warning: rate is not accurate'));
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'arecord error: Warning: rate is not accurate'
+      );
+    });
+  });
+
+  describe('stopAudioCapture', () => {
+    it('should kill the arecord process', () => {
+      startAudioCapture();
+      stopAudioCapture();
+
+      expect(mockProcess.kill).toHaveBeenCalled();
+    });
+
+    it('should log when stopping audio capture', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      startAudioCapture();
+      stopAudioCapture();
+
+      expect(consoleSpy).toHaveBeenCalledWith('Stopping microphone audio capture...');
+    });
+
+    it('should do nothing if no process is running', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      stopAudioCapture();
+
+      expect(consoleSpy).not.toHaveBeenCalledWith('Stopping microphone audio capture...');
+    });
+  });
+
+  describe('handleMicrophoneConnection', () => {
+    it('should start audio capture when first client connects', () => {
+      const ws = new MockWebSocket() as any;
+      handleMicrophoneConnection(ws);
+
+      expect(spawn).toHaveBeenCalled();
+    });
+
+    it('should log when client connects', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      const ws = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws);
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Microphone client connected. Total clients: 1'
+      );
+    });
+
+    it('should not start audio capture again for second client', () => {
+      const ws1 = new MockWebSocket() as any;
+      const ws2 = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws1);
+      vi.clearAllMocks(); // Clear the first spawn call
+
+      handleMicrophoneConnection(ws2);
+
+      expect(spawn).not.toHaveBeenCalled();
+    });
+
+    it('should broadcast audio data to all connected clients', () => {
+      const ws1 = new MockWebSocket() as any;
+      const ws2 = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws1);
+      handleMicrophoneConnection(ws2);
+
+      const audioData = Buffer.from([1, 2, 3, 4]);
+      mockProcess.stdout.emit('data', audioData);
+
+      expect(ws1.send).toHaveBeenCalledWith(audioData);
+      expect(ws2.send).toHaveBeenCalledWith(audioData);
+    });
+
+    it('should not send data to closed clients', () => {
+      const ws1 = new MockWebSocket() as any;
+      const ws2 = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws1);
+      handleMicrophoneConnection(ws2);
+
+      ws1.readyState = 3; // WebSocket.CLOSED
+
+      const audioData = Buffer.from([1, 2, 3, 4]);
+      mockProcess.stdout.emit('data', audioData);
+
+      expect(ws1.send).not.toHaveBeenCalled();
+      expect(ws2.send).toHaveBeenCalledWith(audioData);
+    });
+
+    it('should stop audio capture when last client disconnects', () => {
+      const ws = new MockWebSocket() as any;
+      handleMicrophoneConnection(ws);
+
+      ws.emit('close');
+
+      expect(mockProcess.kill).toHaveBeenCalled();
+    });
+
+    it('should log when client disconnects', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      const ws = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws);
+      ws.emit('close');
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Microphone client disconnected. Total clients: 0'
+      );
+    });
+
+    it('should handle WebSocket errors', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error');
+      const ws = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws);
+
+      const error = new Error('Connection lost');
+      ws.emit('error', error);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith('WebSocket error:', error);
+    });
+
+    it('should stop audio when client has error and is last client', () => {
+      const ws = new MockWebSocket() as any;
+      handleMicrophoneConnection(ws);
+
+      ws.emit('error', new Error('Connection lost'));
+
+      expect(mockProcess.kill).toHaveBeenCalled();
+    });
+
+    it('should not stop audio when client has error but other clients remain', () => {
+      const ws1 = new MockWebSocket() as any;
+      const ws2 = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws1);
+      handleMicrophoneConnection(ws2);
+
+      vi.clearAllMocks();
+      ws1.emit('error', new Error('Connection lost'));
+
+      expect(mockProcess.kill).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('cleanup', () => {
+    it('should stop audio capture', () => {
+      startAudioCapture();
+      cleanup();
+
+      expect(mockProcess.kill).toHaveBeenCalled();
+    });
+
+    it('should close all WebSocket connections', () => {
+      const ws1 = new MockWebSocket() as any;
+      const ws2 = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws1);
+      handleMicrophoneConnection(ws2);
+
+      cleanup();
+
+      expect(ws1.close).toHaveBeenCalled();
+      expect(ws2.close).toHaveBeenCalled();
+    });
+
+    it('should log cleanup message', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      cleanup();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Cleaning up microphone streaming service...'
+      );
+    });
+
+    it('should handle errors when closing WebSocket connections', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error');
+      const ws = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws);
+
+      const error = new Error('Already closed');
+      ws.close.mockImplementation(() => {
+        throw error;
+      });
+
+      cleanup();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error closing WebSocket:', error);
+    });
+
+    it('should reset client count to zero', () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      const ws = new MockWebSocket() as any;
+
+      handleMicrophoneConnection(ws);
+      cleanup();
+
+      // After cleanup, a new connection should start audio capture again
+      vi.clearAllMocks();
+      const ws2 = new MockWebSocket() as any;
+      handleMicrophoneConnection(ws2);
+
+      expect(spawn).toHaveBeenCalled();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Microphone client connected. Total clients: 1'
+      );
+    });
+  });
+
+  describe('multiple clients scenario', () => {
+    it('should handle multiple clients connecting and disconnecting in order', () => {
+      const ws1 = new MockWebSocket() as any;
+      const ws2 = new MockWebSocket() as any;
+      const ws3 = new MockWebSocket() as any;
+
+      // First client connects - should start audio
+      handleMicrophoneConnection(ws1);
+      expect(spawn).toHaveBeenCalledTimes(1);
+
+      // Second and third clients connect - should not restart audio
+      vi.clearAllMocks();
+      handleMicrophoneConnection(ws2);
+      handleMicrophoneConnection(ws3);
+      expect(spawn).not.toHaveBeenCalled();
+
+      // First client disconnects - should not stop audio
+      vi.clearAllMocks();
+      ws1.emit('close');
+      expect(mockProcess.kill).not.toHaveBeenCalled();
+
+      // Second client disconnects - should not stop audio
+      ws2.emit('close');
+      expect(mockProcess.kill).not.toHaveBeenCalled();
+
+      // Last client disconnects - should stop audio
+      ws3.emit('close');
+      expect(mockProcess.kill).toHaveBeenCalled();
+    });
+  });
+});

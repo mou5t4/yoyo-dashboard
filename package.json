@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build && tsc server.ts --outDir build --module ESNext --moduleResolution bundler --target ES2022 --skipLibCheck --resolveJsonModule --esModuleInterop",
-    "dev": "remix vite:dev",
+    "dev": "tsx server.dev.ts",
+    "dev:vite": "remix vite:dev",
     "start": "node build/server.js",
     "typecheck": "tsc",
     "db:generate": "prisma generate",
