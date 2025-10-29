@@ -33,11 +33,27 @@ export function startAudioCapture() {
   });
 
   arecordProcess.stderr?.on('data', (data: Buffer) => {
-    console.error(`arecord error: ${data.toString()}`);
+    const message = data.toString();
+
+    // Filter out normal informational messages
+    // "Recording raw data..." is just arecord telling us it's working
+    // "Aborted by signal Terminated" is expected when we kill the process
+    // "Interrupted system call" happens when we stop recording normally
+    const isInfoMessage = message.includes('Recording raw data') ||
+                         message.includes('Aborted by signal Terminated') ||
+                         message.includes('Interrupted system call');
+
+    if (!isInfoMessage) {
+      console.error(`arecord error: ${message}`);
+    }
   });
 
   arecordProcess.on('close', (code) => {
-    console.log(`arecord process exited with code ${code}`);
+    // Code 0 = normal exit, Code 1 = killed by signal (our stopAudioCapture)
+    // Only log if it's an unexpected exit code
+    if (code !== null && code !== 0 && code !== 1) {
+      console.warn(`arecord process exited unexpectedly with code ${code}`);
+    }
     arecordProcess = null;
   });
 
