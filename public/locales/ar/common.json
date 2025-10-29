@@ -40,6 +40,7 @@
     "reports": "النشاط",
     "settings": "الإعدادات",
     "audio": "الصوت",
+    "audioBluetooth": "الصوت والبلوتوث",
     "logout": "تسجيل الخروج"
   },
   "errors": {

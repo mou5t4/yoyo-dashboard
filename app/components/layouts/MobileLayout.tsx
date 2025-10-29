@@ -17,8 +17,7 @@ interface MobileLayoutProps {
 const navigation = [
   { key: 'dashboard', href: '/dashboard', icon: '🏠' },
   { key: 'wifi', href: '/wifi', icon: '📶' },
-  { key: 'bluetooth', href: '/bluetooth', icon: '🔵' },
-  { key: 'audio', href: '/audio', icon: '🔊' },
+  { key: 'audioBluetooth', href: '/audio-bluetooth', icon: '🔊' },
   { key: 'location', href: '/location', icon: '📍' },
   { key: 'contacts', href: '/contacts', icon: '👥' },
   { key: 'content', href: '/content', icon: '🎵' },

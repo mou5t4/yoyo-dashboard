@@ -40,6 +40,7 @@
     "reports": "Activity",
     "settings": "Settings",
     "audio": "Sound",
+    "audioBluetooth": "Audio & Bluetooth",
     "logout": "Sign Out"
   },
   "errors": {
