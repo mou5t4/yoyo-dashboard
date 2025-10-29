@@ -34,14 +34,15 @@ interface LocationMapProps {
   className?: string;
 }
 
-export default function LocationMap({ 
-  currentLocation, 
-  geofences = [], 
+export default function LocationMap({
+  currentLocation,
+  geofences = [],
   height = "500px",
   className = ""
 }: LocationMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
@@ -61,13 +62,32 @@ export default function LocationMap({
       maxZoom: 19,
     }).addTo(map);
 
-    // Force Leaflet to recalculate the map size after a short delay
-    // This ensures the map renders correctly in all containers
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 100);
+    // Force Leaflet to recalculate the map size multiple times
+    // This ensures the map renders correctly even in lazy-loaded containers
+    const invalidateSizes = [100, 250, 500, 1000];
+    invalidateSizes.forEach(delay => {
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+        }
+      }, delay);
+    });
+
+    // Set up ResizeObserver to handle container size changes
+    let resizeObserver: ResizeObserver | null = null;
+    if (wrapperRef.current && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+        }
+      });
+      resizeObserver.observe(wrapperRef.current);
+    }
 
     return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
       map.remove();
       mapRef.current = null;
     };
@@ -256,24 +276,38 @@ export default function LocationMap({
           }
 
           .location-map-container {
-            width: 100%;
-            height: 400px;
+            width: 100% !important;
+            height: 400px !important;
+            min-height: 400px !important;
             border-radius: 12px;
             overflow: hidden;
+            position: relative;
           }
 
           @media (min-width: 768px) {
             .location-map-container {
-              height: 500px;
+              height: 500px !important;
+              min-height: 500px !important;
             }
           }
 
+          .location-map-container > div {
+            width: 100% !important;
+            height: 100% !important;
+          }
+
           .location-map-container .leaflet-container {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             z-index: 10 !important;
+          }
+
+          .location-map-container .leaflet-pane,
+          .location-map-container .leaflet-map-pane {
+            width: 100% !important;
+            height: 100% !important;
           }
 
           .leaflet-popup-content-wrapper {
@@ -290,7 +324,7 @@ export default function LocationMap({
           }
         `}
       </style>
-      <div className={`location-map-container ${className}`}>
+      <div ref={wrapperRef} className={`location-map-container ${className}`}>
         <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
       </div>
     </>
