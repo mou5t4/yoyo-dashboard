@@ -22,6 +22,7 @@
     "i18n:split": "tsx scripts/split-namespaces.ts",
     "i18n:merge": "tsx scripts/merge-namespaces.ts",
     "i18n:coverage": "tsx scripts/translation-coverage.ts",
+    "media:sync": "tsx scripts/sync-media-files.ts",
     "battery:mock": "tsx services/mock-battery-service.ts",
     "battery:status": "cat /run/yoyo/battery.json",
     "gps:mock": "tsx services/mock-gps-service.ts",
