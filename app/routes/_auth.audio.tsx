@@ -714,35 +714,6 @@ export default function AudioPage() {
                   </Button>
                 </Form>
 
-                <Form method="post">
-                  <input type="hidden" name="intent" value="test-input" />
-                  <Button 
-                    type="submit" 
-                    variant="outline" 
-                    className="w-full"
-                    onClick={handleTestInput}
-                  >
-                    <Radio className="h-4 w-4 mr-2" />
-                    {t("audio.testRecording")}
-                  </Button>
-                </Form>
-              </div>
-
-              {/* Playback Controls */}
-              <div className="grid grid-cols-1 gap-2 mt-2">
-                <Form method="post">
-                  <input type="hidden" name="intent" value="play-recorded-audio" />
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    className="w-full"
-                    onClick={handlePlayRecording}
-                  >
-                    <Play className="h-4 w-4 mr-2" />
-                    Play Recording
-                  </Button>
-                </Form>
-
                 <Button
                   type="button"
                   variant={isListening ? "destructive" : "outline"}
