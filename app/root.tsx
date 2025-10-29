@@ -30,7 +30,12 @@ import { AudioModeProvider } from "./contexts/AudioModeContext";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
   { rel: "stylesheet", href: enhancedAudioStyles },
-  // { rel: "stylesheet", href: leafletStyles },
+  {
+    rel: "stylesheet",
+    href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+    integrity: "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=",
+    crossOrigin: "anonymous"
+  },
   { rel: "manifest", href: "/manifest.json" },
   { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
 ];
@@ -81,12 +86,6 @@ export default function App() {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossOrigin="anonymous"
-        />
         <Meta />
         <Links />
       </head>      <body className="min-h-screen overflow-x-hidden">
