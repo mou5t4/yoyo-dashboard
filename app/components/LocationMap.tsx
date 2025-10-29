@@ -61,6 +61,12 @@ export default function LocationMap({
       maxZoom: 19,
     }).addTo(map);
 
+    // Force Leaflet to recalculate the map size after a short delay
+    // This ensures the map renders correctly in all containers
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+
     return () => {
       map.remove();
       mapRef.current = null;
@@ -248,35 +254,45 @@ export default function LocationMap({
               opacity: 0.8;
             }
           }
-          
-          .leaflet-container {
+
+          .location-map-container {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+          }
+
+          @media (min-width: 768px) {
+            .location-map-container {
+              height: 500px;
+            }
+          }
+
+          .location-map-container .leaflet-container {
+            width: 100%;
+            height: 100%;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 10 !important;
           }
-          
+
           .leaflet-popup-content-wrapper {
             border-radius: 8px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
           }
-          
+
           .leaflet-popup-tip {
             box-shadow: 0 3px 14px rgba(0, 0, 0, 0.1);
           }
-          
-          /* Ensure map doesn't interfere with sidebar */
-          .leaflet-container {
-            z-index: 10 !important;
-          }
-          
+
           .leaflet-control-container {
             z-index: 11 !important;
           }
         `}
       </style>
-      <div 
-        ref={mapContainerRef} 
-        className={`w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden ${className}`}
-      />
+      <div className={`location-map-container ${className}`}>
+        <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
+      </div>
     </>
   );
 }
