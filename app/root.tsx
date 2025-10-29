@@ -78,12 +78,18 @@ export default function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#3b82f6" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossOrigin="anonymous"
+        />
         <Meta />
         <Links />
-      </head>
-      <body className="min-h-screen overflow-x-hidden">
+      </head>      <body className="min-h-screen overflow-x-hidden">
         <ThemeProvider defaultTheme={theme}>
           <AudioModeProvider>
             <Outlet />
